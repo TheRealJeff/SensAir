@@ -19,7 +19,7 @@ public class mBluetoothService extends AppCompatActivity {
     private static final String TAG = "MY_APP_DEBUG_TAG";
     private Handler handler; //get info from Bluetooth Services
 
-    //Define Messages when transimiting between the service and the UI.
+    //Define Messages when transmitting between the service and the UI.
     private interface MessageConstants {
         public static final int MESSAGE_READ = 0;
         public static final int MESSAGE_WRITE = 1;

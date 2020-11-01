@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity
 
     protected Button buttonReadValues;
     protected TextView  eco2, tvoc, combustibleGas;
+    protected mBluetoothService btService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity
 
     public void init()
     {
-        buttonReadValues = findViewById(R.id.buttonReadValues);
+
         tvoc = findViewById(R.id.tvocData);
         eco2 = findViewById(R.id.eco2Data);
         combustibleGas = findViewById(R.id.combustionData);
