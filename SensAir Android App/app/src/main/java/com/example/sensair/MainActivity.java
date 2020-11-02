@@ -1,36 +1,34 @@
 package com.example.sensair;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.IOException;
-import java.util.Set;
-import java.util.UUID;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
 {
 
-    private static final int REQUEST_ENABLE_BT = 1;
+
     protected Button buttonReadValues;
     protected TextView  eco2, tvoc, combustibleGas;
-    protected BluetoothAdapter mBluetoothAdapter;
-    protected BtHelper btHelper = new BtHelper();
-    public static final String SerialPortUUID="0000dfb1-0000-1000-8000-00805f9b34fb";
+    protected Intent btEnableIntent;
+    protected static final int REQUEST_ENABLE_BT = 1;
+    ArrayList<String>  btDevices = new ArrayList<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,62 +36,49 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        init();
+        btInit();
+        uiInit();
     }
 
-    public void init()
+    public void btInit()
     {
-//        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//        if (bluetoothAdapter == null) {
-//            // Device doesn't support Bluetooth
-//        }
-//        if (!bluetoothAdapter.isEnabled()) {
-//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-//        }
-//
-//        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-//
-//        if (pairedDevices.size() > 0) {
-//            // There are paired devices. Get the name and address of each paired device.
-//            for (BluetoothDevice device : pairedDevices) {
-//                String deviceName = device.getName();
-//                String deviceHardwareAddress = device.getAddress(); // MAC address
-//            }
-//        }
-//        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-//        registerReceiver(receiver, filter);
-//
-//        BluetoothManager bluetoothManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
-//        BluetoothDevice mBluetoothDevice = bluetoothManager.getAdapter() .getRemoteDevice("0x20CD3987DD5D");
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null)
-        {// Device does not support Bluetooth
-        }
-        if (!mBluetoothAdapter.isEnabled())
+        if (btAdapter == null)
         {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, 1);
+            String msg = "ERROR: Phone does not support bluetooth. Bluetooth connection failed!";
+            Toast.makeText(this,msg,Toast.LENGTH_LONG);
+            return;
+        }
+        else if (!btAdapter.isEnabled())
+        {
+            startActivityForResult(btEnableIntent, REQUEST_ENABLE_BT);
         }
 
-        BluetoothDevice myDevice;
-        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        if (pairedDevices.size() >0)
+        btAdapter.startDiscovery();
+        IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+
+        registerReceiver(bluetoothReceiver,intentFilter);
+
+    }
+
+    BroadcastReceiver bluetoothReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
         {
-            for (BluetoothDevice device : pairedDevices)
+            String action = intent.getAction();
+            if(BluetoothDevice.ACTION_FOUND.equals(action))
             {
-               // mDevice = device;
-                System.out.println("----------------BLUETOOTH DEVICE FOUND:");
-                System.out.println(device.toString());
-                if(device.getAddress()=="20:CD:39:87:DD:5D")
-                    myDevice = device;
+                BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                btDevices.add(bluetoothDevice.getName());
             }
         }
+    };
 
-
-
-
+    public void uiInit()
+    {
         tvoc = findViewById(R.id.tvocData);
         eco2 = findViewById(R.id.eco2Data);
         combustibleGas = findViewById(R.id.combustionData);
@@ -105,8 +90,8 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 /*
-                    * TODO Here we have to find out how to fetch data from dev board.
-                    *       Once we have the data, just set text to readings (maybe process data too)
+                 * TODO Here we have to find out how to fetch data from dev board.
+                 *       Once we have the data, just set text to readings (maybe process data too)
                  */
                 System.out.println("BUTTON CLICKED!!!");
                 eco2.setText("x ppm");
@@ -116,79 +101,21 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Discovery has found a device. Get the BluetoothDevice
-                // object and its info from the Intent.
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); // MAC address
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        if (requestCode == REQUEST_ENABLE_BT)
+        {
+            if (requestCode == RESULT_OK) {
+                String msg = "Bluetooth enabled";
+                Toast.makeText(this, msg, Toast.LENGTH_LONG);
+            }
+            else if (requestCode == RESULT_CANCELED)
+            {
+                String msg = "Bluetooth enable failed";
+                Toast.makeText(this, msg, Toast.LENGTH_LONG);
             }
         }
-    };
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Don't forget to unregister the ACTION_FOUND receiver.
-        unregisterReceiver(receiver);
+        super.onActivityResult(requestCode, resultCode, data);
     }
-
-
-//    private class ConnectThread extends Thread {
-//        private final BluetoothSocket mmSocket;
-//        private final BluetoothDevice mmDevice;
-//
-//        public ConnectThread(BluetoothDevice device) {
-//            // Use a temporary object that is later assigned to mmSocket
-//            // because mmSocket is final.
-//            BluetoothSocket tmp = null;
-//            mmDevice = device;
-//
-//            try {
-//                // Get a BluetoothSocket to connect with the given BluetoothDevice.
-//                // MY_UUID is the app's UUID string, also used in the server code.
-//                tmp = device.createRfcommSocketToServiceRecord(UUID.fromString(SerialPortUUID));
-//            } catch (IOException e) {
-//               e.printStackTrace();
-//            }
-//            mmSocket = tmp;
-//        }
-//
-//        public void run() {
-//            // Cancel discovery because it otherwise slows down the connection.
-//            btHelper.cancelDiscovery();
-//
-//            try {
-//                // Connect to the remote device through the socket. This call blocks
-//                // until it succeeds or throws an exception.
-//                mmSocket.connect();
-//            } catch (IOException connectException) {
-//                // Unable to connect; close the socket and return.
-//                try {
-//                    mmSocket.close();
-//                } catch (IOException closeException) {
-//                    closeException.printStackTrace();
-//                }
-//                return;
-//            }
-//
-//            // The connection attempt succeeded. Perform work associated with
-//            // the connection in a separate thread.
-//            manageMyConnectedSocket(mmSocket);
-//        }
-//
-//        // Closes the client socket and causes the thread to finish.
-//        public void cancel() {
-//            try {
-//                mmSocket.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-
 }
