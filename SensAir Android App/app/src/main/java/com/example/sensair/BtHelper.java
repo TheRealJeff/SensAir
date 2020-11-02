@@ -190,9 +190,7 @@ public class BtHelper
 
             }
         };
-
         handler.postDelayed(runnable, 4000);
     }
-
 }
 
