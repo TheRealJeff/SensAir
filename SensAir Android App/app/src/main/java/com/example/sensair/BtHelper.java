@@ -48,7 +48,8 @@ public class BtHelper
     }
 
     public void btEnable(Activity activity){
-        if(!myBTAdapter.isEnabled()){
+        if(!myBTAdapter.isEnabled())
+        {
             Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(activity, enableBT, REQUEST_ENABLE_BT, null);
         }

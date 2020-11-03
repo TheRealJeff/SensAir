@@ -2,19 +2,24 @@ package com.example.sensair;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.github.anastr.speedviewlib.SpeedView;
+import com.github.anastr.speedviewlib.components.Section;
+import com.github.anastr.speedviewlib.components.Style;
 
 import java.util.ArrayList;
 
@@ -22,12 +27,11 @@ public class MainActivity extends AppCompatActivity
 {
 
 
-    protected Button buttonReadValues;
-    protected TextView  eco2, tvoc, combustibleGas;
-    protected Intent btEnableIntent;
+    protected TextView textViewGauge;
+    protected SpeedView gaugeAirQuality;
+    protected Button buttonRealTime, buttonHistory, buttonProfile;
     protected static final int REQUEST_ENABLE_BT = 1;
     ArrayList<String>  btDevices = new ArrayList<>();
-
 
 
     @Override
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 
+
         if (btAdapter == null)
         {
             String msg = "ERROR: Phone does not support bluetooth. Bluetooth connection failed!";
@@ -59,46 +64,81 @@ public class MainActivity extends AppCompatActivity
         btAdapter.startDiscovery();
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 
+        BroadcastReceiver bluetoothReceiver = new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context context, Intent intent)
+            {
+                String action = intent.getAction();
+                if(BluetoothDevice.ACTION_FOUND.equals(action))
+                {
+                    BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    btDevices.add(bluetoothDevice.getName());
+                }
+            }
+        };
         registerReceiver(bluetoothReceiver,intentFilter);
+
+        ArrayList<BluetoothDevice>  pairedDevices = new ArrayList<>();
+        for(BluetoothDevice device : pairedDevices)
+        {
+            if(device.getName() == "SensAir")
+            {
+                String msg = "Connected to the SensAir!";
+                Toast.makeText(this, msg, Toast.LENGTH_LONG);
+            }
+            else
+            {
+                String msg = "Failed to connect to bluetooth: Please pair device in Settings.";
+                Toast.makeText(this, msg, Toast.LENGTH_LONG);
+            }
+        }
 
     }
 
-    BroadcastReceiver bluetoothReceiver = new BroadcastReceiver()
-    {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            String action = intent.getAction();
-            if(BluetoothDevice.ACTION_FOUND.equals(action))
-            {
-                BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                btDevices.add(bluetoothDevice.getName());
-            }
-        }
-    };
+
 
     public void uiInit()
     {
-        tvoc = findViewById(R.id.tvocData);
-        eco2 = findViewById(R.id.eco2Data);
-        combustibleGas = findViewById(R.id.combustionData);
-        buttonReadValues = findViewById(R.id.buttonReadValues);
+        gaugeAirQuality = (SpeedView) findViewById(R.id.gaugeAirQuality);
+        gaugeInit();
 
-        buttonReadValues.setOnClickListener(new OnClickListener()
+        buttonRealTime = (Button) findViewById(R.id.buttonRealTime);
+        buttonHistory = (Button) findViewById(R.id.buttonHistory);
+        buttonProfile = (Button) findViewById(R.id.buttonProfile);
+
+        buttonRealTime.setOnClickListener(new View.OnClickListener()
         {
-            @Override
-            public void onClick(View view)
+            public void onClick(View V)
             {
-                /*
-                 * TODO Here we have to find out how to fetch data from dev board.
-                 *       Once we have the data, just set text to readings (maybe process data too)
-                 */
-                System.out.println("BUTTON CLICKED!!!");
-                eco2.setText("x ppm");
-                tvoc.setText("y (out of n)");
-                combustibleGas.setText("z ppm");
+                Intent intent = new Intent(MainActivity.this, RealTimeActivity.class);
+                startActivity(intent);
             }
         });
+
+        buttonHistory.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View V)
+            {
+                Intent intent = new Intent(MainActivity.this, HistoryActivityListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        buttonProfile.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
     }
 
     @Override
@@ -117,5 +157,55 @@ public class MainActivity extends AppCompatActivity
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void gaugeInit()
+    {
+               // TODO set to user preference / default
+        gaugeAirQuality.speedTo(75);
+        gaugeAirQuality.setTrembleDegree(1);
+        gaugeAirQuality.makeSections(3,0,Style.BUTT);
+        ArrayList<Section> sections = gaugeAirQuality.getSections();
+        sections.get(0).setColor(Color.rgb(250,67,67));
+        sections.get(1).setColor(Color.rgb(255,255,102));
+        sections.get(2).setColor(Color.rgb(90,245,110));
+
+        textViewGauge = (TextView) findViewById(R.id.gaugeAnalysis);
+        float current_speed = gaugeAirQuality.getSpeed();
+        if(current_speed<33.33)
+        {
+            textViewGauge.setText("Poor. Evacuate.");
+            textViewGauge.setTextColor(Color.rgb(250,67,67));
+        }
+        else if(current_speed<66.66)
+        {
+            textViewGauge.setText("Moderate.");
+            textViewGauge.setTextColor(Color.rgb(255,255,102));
+        }
+        else if(current_speed<100)
+        {
+            textViewGauge.setText("Excellent!");
+            textViewGauge.setTextColor(Color.rgb(16,196,10));
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();  // inflates menu designed in /res/menu
+        inflater.inflate(R.menu.menu_main_activity,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();          // gets item ID
+        if(id == R.id.infoButton)          // if edit button is clicked
+        {
+            Intent intent = new Intent(MainActivity.this, InfoActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
