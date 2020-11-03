@@ -1,65 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AndroidLayouts">
-    <shared>
-      <config />
-    </shared>
-  </component>
-  <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
-  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f0f95d7f-5a5d-4d2a-a213-7166aac9f3e4" name="Default Changelist" comment="" />
+    <list default="true" id="2f4870a4-ee60-4f23-b040-9555c49a9339" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectId" id="1jfEezDV8NWUhG2dKyzy5PS3XKt" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
-    <ConfirmationsSetting value="1" id="Add" />
-  </component>
+  <component name="ProjectId" id="1jmzxlovdihNqiJ95C8yeWKc9mW" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="Pixel_2_API_30" />
-    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-11-03T04:52:37.938Z" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/java/com/example/sensair/ui/ambientAirQuality" />
-  </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/app/src/main/java/com/example/sensair/ui/ambientAirQuality" />
-    </key>
-    <key name="android.template.-402197571">
-      <recent name="com.example.sensair" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/app/src/main/res/menu" />
-    </key>
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
@@ -69,7 +42,7 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
       <module name="SensAir.app" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
@@ -132,75 +105,12 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="f0f95d7f-5a5d-4d2a-a213-7166aac9f3e4" name="Default Changelist" comment="" />
-      <created>1604186844072</created>
+      <changelist id="2f4870a4-ee60-4f23-b040-9555c49a9339" name="Default Changelist" comment="" />
+      <created>1604424303125</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1604186844072</updated>
+      <updated>1604424303125</updated>
     </task>
     <servers />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="827" y="268" width="374" height="592" key="#com.intellij.ide.util.MemberChooser" timestamp="1604385152732">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state x="2715" y="247" width="374" height="592" key="#com.intellij.ide.util.MemberChooser/54.27.1866.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1604289660501" />
-    <state x="827" y="268" key="#com.intellij.ide.util.MemberChooser/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604385152732" />
-    <state x="617" y="134" width="720" height="853" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1604390628051">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state x="617" y="134" width="720" height="853" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604390628051" />
-    <state x="720" y="302" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1604389339137">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state x="720" y="302" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604389339137" />
-    <state x="570" y="311" width="824" height="491" key="AndroidCreateResourceDirectoryDialog" timestamp="1604381089648">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state x="570" y="311" width="824" height="491" key="AndroidCreateResourceDirectoryDialog/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604381089648" />
-    <state x="570" y="311" width="824" height="491" key="AndroidCreateResourceFileDialog" timestamp="1604381370080">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state x="570" y="311" width="824" height="491" key="AndroidCreateResourceFileDialog/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604381370080" />
-    <state x="803" y="345" width="357" height="423" key="AndroidCreateXmlResourceDialog" timestamp="1604389494335">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state x="803" y="345" width="357" height="423" key="AndroidCreateXmlResourceDialog/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604389494335" />
-    <state x="1074" y="208" width="424" height="520" key="FileChooserDialogImpl" timestamp="1604392686074">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state x="1074" y="208" width="424" height="520" key="FileChooserDialogImpl/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604392686074" />
-    <state width="1820" height="359" key="GridCell.Tab.0.bottom" timestamp="1604393936359">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state width="1820" height="13" key="GridCell.Tab.0.bottom/54.27.1866.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1604294712073" />
-    <state width="1820" height="359" key="GridCell.Tab.0.bottom/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604393936359" />
-    <state width="1820" height="359" key="GridCell.Tab.0.center" timestamp="1604393936359">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state width="1820" height="13" key="GridCell.Tab.0.center/54.27.1866.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1604294712073" />
-    <state width="1820" height="359" key="GridCell.Tab.0.center/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604393936359" />
-    <state width="1820" height="359" key="GridCell.Tab.0.left" timestamp="1604393936359">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state width="1820" height="13" key="GridCell.Tab.0.left/54.27.1866.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1604294712073" />
-    <state width="1820" height="359" key="GridCell.Tab.0.left/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604393936359" />
-    <state width="1820" height="359" key="GridCell.Tab.0.right" timestamp="1604393936359">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state width="1820" height="13" key="GridCell.Tab.0.right/54.27.1866.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1604294712073" />
-    <state width="1820" height="359" key="GridCell.Tab.0.right/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604393936359" />
-    <state x="2103" y="204" width="1261" height="578" key="dock-window-1" timestamp="1604392512602">
-      <screen x="1920" y="0" width="1920" height="1080" />
-    </state>
-    <state x="2103" y="204" width="1261" height="578" key="dock-window-1/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604392512602" />
-    <state x="2044" y="66" width="1261" height="706" key="dock-window-2" timestamp="1604393796954">
-      <screen x="1920" y="0" width="1920" height="1080" />
-    </state>
-    <state x="2044" y="66" width="1261" height="706" key="dock-window-2/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604393796954" />
-    <state x="650" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1604375277929">
-      <screen x="54" y="27" width="1866" height="1053" />
-    </state>
-    <state x="650" y="259" width="672" height="678" key="search.everywhere.popup/54.27.1866.1053/1920.0.1920.1080@54.27.1866.1053" timestamp="1604375277929" />
   </component>
 </project>

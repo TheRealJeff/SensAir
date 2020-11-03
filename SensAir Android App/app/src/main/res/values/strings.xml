@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">SensAir</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="user_settings">Your Air Quality Profile</string>
+    <string name="app_settings">System Settings</string>
+
+    <!-- Messages Preferences -->
+    <string name="user_name">Name</string>
+    <string name="reply_title">Meter Preference</string>
+
+    <!-- Sync Preferences -->
+    <string name="allow_notifications">Allow critical air quality alerts</string>
+    <string name="allow_notifications_description">Notifies you when Air Quality is dangerously harmful.</string>
+    <string name="data_setting_title">Allow data collection</string>
+    <string name="data_setting_description">Allows SensAir to collect data about your air quality.</string>
+    <string name="title_activity_real_time">MainActivity</string>
+    <string name="title_hazardous_gasses">Hazardous Gasses</string>
+    <string name="title_ambient_air_quality">Ambient Air Quality</string>
+    <string name="title_historyactivity_list">History</string>
+    <string name="title_historyactivity_detail">HistoryActivity Detail</string>
+</resources>
