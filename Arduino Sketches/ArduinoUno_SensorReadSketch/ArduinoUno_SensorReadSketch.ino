@@ -4,11 +4,11 @@
 
 #define CCS811_ADDR 0x5B    // Default I2C Address 
 #define MQ2_PIN A0          // Pins
-#define RX 10
-#define TX 11
+#define RX 2
+#define TX 3
 
 
-SoftwareSerial bt_serial(10,11);     
+SoftwareSerial btSerial(RX,TX);    //  RX,TX     
 CCS811 ccs811(CCS811_ADDR);
 
 void setup()
@@ -17,8 +17,8 @@ void setup()
   digitalWrite(LED_BUILTIN, LOW);
 
   Serial.begin(9600); 
-  bt_serial.begin(9600);  //Baud Rate for AT-command Mode.  
-  Serial.println("***AT commands mode***"); 
+  btSerial.begin(38400);  //Baud Rate for AT-command Mode.  
+  Serial.println("|---------- Set Up ----------"); 
   
   while(!Serial){;}
   Wire.begin(); //  Inialize I2C 
@@ -39,47 +39,31 @@ void loop()
     ccs811.readAlgorithmResults();    // read results
     int mq2_reading = analogRead(MQ2_PIN);  
 
-   
-    Serial.print(ccs811.getCO2());
-    Serial.println("C");
-   
-    Serial.print(ccs811.getTVOC());
-    Serial.println("T");
+    int co2 = ccs811.getCO2();
+    Serial.print(co2);    // print co2 reading
+    Serial.print("C");
+    btSerial.print(co2);   
+    btSerial.print("C");
 
-    Serial.print(mq2_reading);
-    Serial.println("M");
+    int tvoc = ccs811.getTVOC();   // print tvoc reading
+    Serial.print(tvoc);   
+    Serial.print("T");
+    btSerial.print(tvoc);   
+    btSerial.print("T");
+
+    Serial.print(mq2_reading);    // print mq2 reading
+    Serial.print("M");
+    btSerial.print(mq2_reading);
+    btSerial.print("M");
 ;
   }
-
-  // Keep reading from HC-05 and send to Arduino Serial Monitor
     
-  //from bluetooth to Terminal. 
- if (bt_serial.available()) 
-   Serial.write(bt_serial.read()); 
- //from termial to bluetooth 
- if (Serial.available()) 
-   bt_serial.write(Serial.read());
+ 
+// if (btSerial.available())       // uncomment to enter AT command mode 
+//   Serial.write(btSerial.read()); 
+// if (Serial.available()) 
+//   btSerial.write(Serial.read());
 
   
   delay(100); //Don't spam the I2C bus
-}
-
-
-void sendCommand(const char * command){
-  Serial.print("Command send :");
-  Serial.println(command);
-  bt_serial.println(command);
-  //wait some time
-  delay(100);
-  
-  char reply[100];
-  int i = 0;
-  while (bt_serial.available()) {
-    reply[i] = bt_serial.read();
-    i += 1;
-  }
-  //end the string
-  reply[i] = '\0';
-  Serial.print(reply);
-  Serial.println("Reply end");
 }
