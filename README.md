@@ -9,6 +9,7 @@ Air Quality Sensor Application for Android.
     * Vcc = 5V
 * [CCS811 Dgital Gas Sensor](https://cdn-learn.adafruit.com/assets/assets/000/044/636/original/CCS811_DS000459_2-00-1098798.pdf)
     * I2C connection
+      * [Library & Examples](https://github.com/sparkfun/SparkFun_CCS811_Arduino_Library) for I2C
     * Vcc = 3.3V
 * [MQ2 Gas Sensor](https://docs.particle.io/assets/datasheets/electronsensorkit/MQ-2.pdf)
     * Analog sensor
@@ -16,7 +17,7 @@ Air Quality Sensor Application for Android.
 
 
 ## Resources
-* [CCS811 Sparkfun Library & Examples](https://github.com/sparkfun/SparkFun_CCS811_Arduino_Library) for CCS811 I2C communications
+
 
 
 ## Identifier Naming Convention
