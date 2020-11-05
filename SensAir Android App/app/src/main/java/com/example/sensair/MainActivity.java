@@ -22,6 +22,7 @@ import com.github.anastr.speedviewlib.components.Section;
 import com.github.anastr.speedviewlib.components.Style;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity
     protected SpeedView gaugeAirQuality;
     protected Button buttonRealTime, buttonHistory, buttonProfile;
     protected static final int REQUEST_ENABLE_BT = 1;
-    ArrayList<String>  btDevices = new ArrayList<>();
+    protected BluetoothDevice sensAir = null;
 
 
     @Override
@@ -60,37 +61,24 @@ public class MainActivity extends AppCompatActivity
         {
             startActivityForResult(btEnableIntent, REQUEST_ENABLE_BT);
         }
+        //TODO HANDLE SUCCESSFUL DEVICE CONNECTION
+        
 
-        btAdapter.startDiscovery();
-        IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-
-        BroadcastReceiver bluetoothReceiver = new BroadcastReceiver()
-        {
-            @Override
-            public void onReceive(Context context, Intent intent)
-            {
-                String action = intent.getAction();
-                if(BluetoothDevice.ACTION_FOUND.equals(action))
-                {
-                    BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    btDevices.add(bluetoothDevice.getName());
-                }
-            }
-        };
-        registerReceiver(bluetoothReceiver,intentFilter);
-
-        ArrayList<BluetoothDevice>  pairedDevices = new ArrayList<>();
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+        System.out.println("SIZE OF PAIRED DEVICE LIST: "+pairedDevices.size());
         for(BluetoothDevice device : pairedDevices)
         {
-            if(device.getName() == "SensAir")
+            System.out.println("NAME OF PAIRED DEVICE: "+device.getName());
+            if(device.getName().equals("SensAir"))
             {
+                sensAir = device;
                 String msg = "Connected to the SensAir!";
-                Toast.makeText(this, msg, Toast.LENGTH_LONG);
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
             }
             else
             {
                 String msg = "Failed to connect to bluetooth: Please pair device in Settings.";
-                Toast.makeText(this, msg, Toast.LENGTH_LONG);
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
             }
         }
 
@@ -139,6 +127,21 @@ public class MainActivity extends AppCompatActivity
     {
         super.onResume();
 
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+        boolean still_paired = false;
+        for(BluetoothDevice device : pairedDevices)
+        {
+            if(device.getName().equals("SensAir"))
+            {
+                still_paired = true;
+            }
+        }
+        if(!still_paired)
+        {
+            String msg = "Failed to connect to bluetooth: Please pair device in Settings.";
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

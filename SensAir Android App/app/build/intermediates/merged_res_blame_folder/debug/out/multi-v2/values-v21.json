@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/home/adrian/Documents/fall2020/COEN 390/Sensair CLONE/SensAir/SensAir Android App/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v21/values-v21.xml",
+            "outputFile": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v21/values-v21.xml",
             "map": [
                 {
                     "source": "/home/adrian/.gradle/caches/transforms-2/files-2.1/13afd07275879d25ea1fa731e9ef6e80/appcompat-1.2.0/res/values-v21/values-v21.xml",

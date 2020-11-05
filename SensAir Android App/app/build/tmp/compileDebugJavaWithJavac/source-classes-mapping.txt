@@ -49,4 +49,3 @@ com/example/sensair/MainActivity.java
  com.example.sensair.MainActivity$1
  com.example.sensair.MainActivity$2
  com.example.sensair.MainActivity$3
- com.example.sensair.MainActivity$4

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/home/adrian/Documents/fall2020/COEN 390/Sensair CLONE/SensAir/SensAir Android App/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-w480dp-port-v13/values-w480dp-port-v13.xml",
+            "outputFile": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-w480dp-port-v13/values-w480dp-port-v13.xml",
             "map": [
                 {
                     "source": "/home/adrian/.gradle/caches/transforms-2/files-2.1/51a6c4499cc1f9d65aea13e849a29fc4/material-1.2.1/res/values-w480dp-port-v13/values-w480dp-port-v13.xml",
