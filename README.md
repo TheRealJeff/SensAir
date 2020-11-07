@@ -1,6 +1,13 @@
 # SensAir
 Air Quality Sensor Application for Android. 
 
+## Priority To Do List 
+1. **Get the bluetooth working** using a bluetooth helper
+2. Implement the **search function** for the History Activity
+3. Add **new settings** to Profile Activity; implement the features using sharedpreferences
+4. Format the **Real Time Data Activity**
+5. Format the **History item (aka date) data**
+
 ## Hardware
 * [HC-05 (v2.0-20100601) Bluetooth Module](https://components101.com/sites/default/files/component_datasheet/HC-05%20Datasheet.pdf) for bluetooth.
     * **Bluetooth Address**: 35555e (Hex)
@@ -24,10 +31,6 @@ Air Quality Sensor Application for Android.
 * [MQ2 Gas Sensor](https://docs.particle.io/assets/datasheets/electronsensorkit/MQ-2.pdf)
     * Analog sensor
     * Vcc = 5V
-
-
-## Resources
-
 
 
 ## Identifier Naming Convention
