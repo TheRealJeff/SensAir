@@ -26,7 +26,8 @@
             android:name="com.example.sensair.HistoryActivityListActivity"
             android:label="@string/title_historyactivity_list"
             android:parentActivityName="com.example.sensair.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
         <activity
             android:name="com.example.sensair.HistoryActivityDetailActivity"
             android:label="@string/title_historyactivity_detail"
@@ -39,10 +40,11 @@
         <activity
             android:name="com.example.sensair.RealTimeActivity"
             android:label="@string/title_activity_real_time"
-            android:parentActivityName="com.example.sensair.MainActivity" >
+            android:parentActivityName="com.example.sensair.MainActivity"
+            android:theme="@style/AppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.sensair.HistoryActivityListActivity" />
+                android:value="com.example.sensair.RealTimeActivity" />
         </activity>
         <activity
             android:name="com.example.sensair.ProfileActivity"

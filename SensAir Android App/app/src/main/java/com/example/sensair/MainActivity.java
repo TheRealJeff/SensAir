@@ -4,17 +4,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.github.anastr.speedviewlib.SpeedView;
@@ -22,17 +22,19 @@ import com.github.anastr.speedviewlib.components.Section;
 import com.github.anastr.speedviewlib.components.Style;
 
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
-
 
     protected TextView textViewGauge;
     protected SpeedView gaugeAirQuality;
-    protected Button buttonRealTime, buttonHistory, buttonProfile;
+    protected ImageButton buttonRealTime, buttonHistory, buttonProfile;
+    protected Spinner spinner;
     protected static final int REQUEST_ENABLE_BT = 1;
+    protected BtHelper btHelper;
     protected BluetoothDevice sensAir = null;
+    protected List<String> categories = new ArrayList<>();
 
 
     @Override
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity
 
         btInit();
         uiInit();
+        dropDownInit();
+
     }
 
     public void btInit()
@@ -62,38 +66,30 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(btEnableIntent, REQUEST_ENABLE_BT);
         }
         //TODO HANDLE SUCCESSFUL DEVICE CONNECTION
-        
 
-        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
-        System.out.println("SIZE OF PAIRED DEVICE LIST: "+pairedDevices.size());
-        for(BluetoothDevice device : pairedDevices)
+        btHelper = new BtHelper(this);
+
+        if(btHelper.isConnected())
         {
-            System.out.println("NAME OF PAIRED DEVICE: "+device.getName());
-            if(device.getName().equals("SensAir"))
-            {
-                sensAir = device;
-                String msg = "Connected to the SensAir!";
-                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-            }
-            else
-            {
-                String msg = "Failed to connect to bluetooth: Please pair device in Settings.";
-                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-            }
+            String msg = "Connected to the SensAir!";
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
         }
-
+        else
+        {
+            String msg = "Failed to connect to bluetooth: Please pair device in Settings.";
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            return;
+        }
     }
-
-
 
     public void uiInit()
     {
         gaugeAirQuality = (SpeedView) findViewById(R.id.gaugeAirQuality);
         gaugeInit();
 
-        buttonRealTime = (Button) findViewById(R.id.buttonRealTime);
-        buttonHistory = (Button) findViewById(R.id.buttonHistory);
-        buttonProfile = (Button) findViewById(R.id.buttonProfile);
+        buttonRealTime = (ImageButton) findViewById(R.id.buttonRealTime);
+        buttonHistory = (ImageButton) findViewById(R.id.buttonHistory);
+        buttonProfile = (ImageButton) findViewById(R.id.buttonProfile);
 
         buttonRealTime.setOnClickListener(new View.OnClickListener()
         {
@@ -120,28 +116,85 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+
+    }
+
+    public void gaugeInit()
+    {
+        // TODO set to user preference / default
+        gaugeAirQuality.speedTo(75);
+        gaugeAirQuality.setTrembleDegree(1);
+        gaugeAirQuality.makeSections(3, 0, Style.BUTT);
+        ArrayList<Section> sections = gaugeAirQuality.getSections();
+        sections.get(0).setColor(Color.rgb(250, 67, 67));
+        sections.get(1).setColor(Color.rgb(255, 255, 102));
+        sections.get(2).setColor(Color.rgb(90, 245, 110));
+
+    }
+
+    public void dropDownInit()
+    {
+        Spinner spinner = findViewById(R.id.spinner);
+        assert spinner != null;
+        spinner.setOnItemSelectedListener(this);
+
+        categories.add("Overall Air Quality");
+        categories.add("CO2");
+        categories.add("TVOC");
+        categories.add("Combustible Gas");
+        categories.add("Humidity");
+        categories.add("Pressure");
+        categories.add("Temperature");
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
+        dataAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
+        spinner.setSelection(0);
     }
 
     @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (position) {
+            case 0:
+                //TODO Handle CO2 choice and display meter values
+                break;
+            case 1:
+                //TODO Handle TVOC choice and display meter values
+                break;
+            case 2:
+                //TODO Handle MQ2 choice and display meter values
+                break;
+            case 3:
+                //TODO Handle HUMUDITY choice and display meter values
+                break;
+            case 4:
+                //TODO Handle PRESSURE choice and display meter values
+                break;
+            case 5:
+                //TODO Handle TEMPERATURE choice and display meter values
+                break;
+
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        if(!btHelper.isConnected())
+        {
+            String msg = "Oops! Lost connection to the SensAir. Please pair device in Settings.";
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        }
+    }
+
     protected void onResume()
     {
         super.onResume();
-
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
-        boolean still_paired = false;
-        for(BluetoothDevice device : pairedDevices)
-        {
-            if(device.getName().equals("SensAir"))
-            {
-                still_paired = true;
-            }
-        }
-        if(!still_paired)
-        {
-            String msg = "Failed to connect to bluetooth: Please pair device in Settings.";
-            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
@@ -160,36 +213,6 @@ public class MainActivity extends AppCompatActivity
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public void gaugeInit()
-    {
-               // TODO set to user preference / default
-        gaugeAirQuality.speedTo(75);
-        gaugeAirQuality.setTrembleDegree(1);
-        gaugeAirQuality.makeSections(3,0,Style.BUTT);
-        ArrayList<Section> sections = gaugeAirQuality.getSections();
-        sections.get(0).setColor(Color.rgb(250,67,67));
-        sections.get(1).setColor(Color.rgb(255,255,102));
-        sections.get(2).setColor(Color.rgb(90,245,110));
-
-        textViewGauge = (TextView) findViewById(R.id.gaugeAnalysis);
-        float current_speed = gaugeAirQuality.getSpeed();
-        if(current_speed<33.33)
-        {
-            textViewGauge.setText("Poor. Evacuate.");
-            textViewGauge.setTextColor(Color.rgb(250,67,67));
-        }
-        else if(current_speed<66.66)
-        {
-            textViewGauge.setText("Moderate.");
-            textViewGauge.setTextColor(Color.rgb(255,255,102));
-        }
-        else if(current_speed<100)
-        {
-            textViewGauge.setText("Excellent!");
-            textViewGauge.setTextColor(Color.rgb(16,196,10));
-        }
     }
 
     @Override
@@ -211,4 +234,5 @@ public class MainActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

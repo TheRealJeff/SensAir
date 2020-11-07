@@ -1320,6 +1320,8 @@ dimen action_bar_size
 dimen activity_horizontal_margin
 dimen activity_vertical_margin
 dimen app_bar_height
+dimen appbar_padding
+dimen appbar_padding_top
 dimen appcompat_dialog_background_inset
 dimen cardview_compat_inset_shadow
 dimen cardview_default_elevation
@@ -1696,8 +1698,10 @@ drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
 drawable ic_arrow_down_24dp
+drawable ic_bar_chart_black_18dp
 drawable ic_cloud_queue_black_18dp
 drawable ic_dashboard_black_24dp
+drawable ic_history_black_18dp
 drawable ic_home_black_24dp
 drawable ic_info_black_18dp
 drawable ic_info_white_18dp
@@ -1710,6 +1714,7 @@ drawable ic_mtrl_chip_close_circle
 drawable ic_notifications_black_24dp
 drawable ic_search_black_18dp
 drawable ic_search_white_18dp
+drawable ic_settings_white_18dp
 drawable ic_warning_black_18dp
 drawable material_ic_calendar_black_24dp
 drawable material_ic_clear_black_24dp
@@ -1758,6 +1763,7 @@ id FLOAT
 id FUNCTION
 id HORIZONTAL
 id HalfLineIndicator
+id History
 id INTEGER
 id KiteIndicator
 id LEFT
@@ -1769,9 +1775,11 @@ id NeedleIndicator
 id NoIndicator
 id NormalIndicator
 id NormalSmallIndicator
+id Profile
 id QuarterLineIndicator
 id RIGHT
 id ROUND
+id RealTime
 id SHIFT
 id SHOW_ALL
 id SHOW_PATH
@@ -1940,7 +1948,6 @@ id forever
 id fragment_container_view_tag
 id frameLayout
 id gaugeAirQuality
-id gaugeAnalysis
 id ghost_view
 id ghost_view_holder
 id gone
@@ -1949,6 +1956,7 @@ id graph_wrap
 id group_divider
 id groups
 id hideable
+id history_toolbar
 id historyactivity_detail
 id historyactivity_detail_container
 id historyactivity_list
@@ -1981,6 +1989,7 @@ id listMode
 id list_item
 id mainActivityTitle
 id masked
+id mdInfo
 id message
 id middle
 id mini
@@ -2149,7 +2158,6 @@ id title
 id titleDividerNoCustom
 id title_template
 id toggle
-id toolbar
 id toolbar_layout
 id top
 id topPanel
@@ -2265,7 +2273,7 @@ layout historyactivity_list
 layout historyactivity_list_content
 layout image_frame
 layout info_activity
-layout main_fragment
+layout info_fragment
 layout mtrl_alert_dialog
 layout mtrl_alert_dialog_actions
 layout mtrl_alert_dialog_title
@@ -2319,6 +2327,7 @@ layout preference_widget_switch_compat
 layout select_dialog_item_material
 layout select_dialog_multichoice_material
 layout select_dialog_singlechoice_material
+layout spinner_main_activity_dropdown
 layout support_simple_spinner_dropdown_item
 layout test_action_chip
 layout test_chip_zero_corner_radius
@@ -2440,8 +2449,11 @@ string reply_title
 string search_menu_title
 string status_bar_notification_info_overflow
 string summary_collapsed_preference_list
+string tab_text_1
+string tab_text_2
 string title_activity_profile
 string title_activity_real_time
+string title_activity_real_time_quality
 string title_ambient_air_quality
 string title_hazardous_gasses
 string title_historyactivity_detail

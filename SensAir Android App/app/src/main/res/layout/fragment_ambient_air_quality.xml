@@ -6,6 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".ui.ambientAirQuality.ambientAirQuality.AmbientAirQualityFragment">
 
+
+
+
     <TextView
         android:id="@+id/text_ambient_air_quality"
         android:layout_width="match_parent"

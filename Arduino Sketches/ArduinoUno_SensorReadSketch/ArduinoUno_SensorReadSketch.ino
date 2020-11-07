@@ -40,69 +40,69 @@ void setup()
 
 void loop()
 {
-//  if (ccs811.dataAvailable())
-//  {
-//    ccs811.readAlgorithmResults();    // read results from CSS811
-//                                      // for each datapoint, we write it to bluetooth then print in serial
-//    int co2 = ccs811.getCO2();        // co2
-//      btSerial.write(co2);   
-//      btSerial.write('C');
-//      Serial.print("CO2:\t\t");
-//      Serial.print(co2);
-//      Serial.println(" ppm");
-//      
+  if (ccs811.dataAvailable())
+  {
+    ccs811.readAlgorithmResults();    // read results from CSS811
+                                      // for each datapoint, we write it to bluetooth then print in serial
+    int co2 = ccs811.getCO2();        // co2
+      btSerial.write(co2);   
+      btSerial.write('C');
+      Serial.print("CO2:\t\t");
+      Serial.print(co2);
+      Serial.println(" ppm");
+      
+  
+    int tvoc = ccs811.getTVOC();    // TVOC
+      btSerial.write(tvoc);   
+      btSerial.write('V');
+      Serial.print("TVOC:\t\t");
+      Serial.print(tvoc);
+      Serial.println(" ppb");
+
+    
+    int mq2_reading = analogRead(MQ2_PIN);  // MQ2   
+      btSerial.write(mq2_reading);
+      btSerial.write('M');
+      Serial.print("MQ2:\t\t");
+      Serial.print(mq2_reading);
+      Serial.println(" ppb");
+
+    float humidity = bme280.readFloatHumidity();  // BME280 humidity
+      btSerial.write(humidity);   
+      btSerial.write('H');
+      Serial.print("HUMIDITY:\t");
+      Serial.print(humidity);
+      Serial.println(" %");
+
+    float pressure = bme280.readFloatPressure();  // BME280 pressure
+      btSerial.write(pressure);   
+      btSerial.write('P');
+      Serial.print("PRESSURE:\t");
+      Serial.print(pressure);
+      Serial.println(" Pa");
+
+
+      btSerial.write(alt);                      // BME280 altitude (measured in setup)
+      btSerial.write('A');
+      Serial.print("ALTITUDE:\t");
+      Serial.print(alt);
+      Serial.println(" m");
+
+    float temp = bme280.readTempC();            // BME280 temp
+      btSerial.write(temp);   
+      btSerial.write('T');
+      Serial.print("TEMPERATURE:\t");
+      Serial.print(temp);  
+      Serial.println(" C");  
+      Serial.print("\n\n");
+  }
+
+//  if (btSerial.available())       // UNCOMMENT to allow for AT commands. Also uncomment all else in loop()
+//    Serial.write(btSerial.read());
+//
 //  
-//    int tvoc = ccs811.getTVOC();    // TVOC
-//      btSerial.write(tvoc);   
-//      btSerial.write('V');
-//      Serial.print("TVOC:\t\t");
-//      Serial.print(tvoc);
-//      Serial.println(" ppb");
-//
-//    
-//    int mq2_reading = analogRead(MQ2_PIN);  // MQ2   
-//      btSerial.write(mq2_reading);
-//      btSerial.write('M');
-//      Serial.print("MQ2:\t\t");
-//      Serial.print(mq2_reading);
-//      Serial.println(" ppb");
-//
-//    float humidity = bme280.readFloatHumidity();  // BME280 humidity
-//      btSerial.write(humidity);   
-//      btSerial.write('H');
-//      Serial.print("HUMIDITY:\t");
-//      Serial.print(humidity);
-//      Serial.println(" %");
-//
-//    float pressure = bme280.readFloatPressure();  // BME280 pressure
-//      btSerial.write(pressure);   
-//      btSerial.write('P');
-//      Serial.print("PRESSURE:\t");
-//      Serial.print(pressure);
-//      Serial.println(" Pa");
-//
-//
-//      btSerial.write(alt);                      // BME280 altitude (measured in setup)
-//      btSerial.write('A');
-//      Serial.print("ALTITUDE:\t");
-//      Serial.print(alt);
-//      Serial.println(" m");
-//
-//    float temp = bme280.readTempC();            // BME280 temp
-//      btSerial.write(temp);   
-//      btSerial.write('T');
-//      Serial.print("TEMPERATURE:\t");
-//      Serial.print(temp);  
-//      Serial.println(" C");  
-//      Serial.print("\n\n");
-//  }
-
-  if (btSerial.available())       // UNCOMMENT to allow for AT commands. Also uncomment all else in loop()
-    Serial.write(btSerial.read());
-
+//  if (Serial.available())
+//    btSerial.write(Serial.read());
   
-  if (Serial.available())
-    btSerial.write(Serial.read());
-  
-//  delay(50); //Don't spam the I2C bus
+  delay(50); //Don't spam the I2C bus
 }

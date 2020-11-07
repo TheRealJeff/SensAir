@@ -1,10 +1,12 @@
 package com.example.sensair;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -16,8 +18,7 @@ public class RealTimeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);  // shows back button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // enables back button
+        uiInit();
 
         setContentView(R.layout.activity_real_time);
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -29,13 +30,26 @@ public class RealTimeActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
 
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
+    public boolean onSupportNavigateUp()
+    {
+        super.onBackPressed();
         return true;
     }
+
+    public void uiInit()
+    {
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.history_toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
 
 }

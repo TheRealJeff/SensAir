@@ -597,6 +597,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="app_bar_height">200dp</dimen>
+    <dimen name="appbar_padding">16dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
     <dimen name="appcompat_dialog_background_inset">16dp</dimen>
     <dimen name="cardview_compat_inset_shadow">1dp</dimen>
     <dimen name="cardview_default_elevation">2dp</dimen>
@@ -1084,11 +1086,14 @@
     <string name="search_menu_title">Search</string>
     <string name="status_bar_notification_info_overflow">999+</string>
     <string name="summary_collapsed_preference_list"><ns1:g id="current_items">%1$s</ns1:g>, <ns1:g id="added_items">%2$s</ns1:g></string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
     <string name="title_activity_profile">ProfileActivity</string>
-    <string name="title_activity_real_time">MainActivity</string>
+    <string name="title_activity_real_time">Real Time Air Quality</string>
+    <string name="title_activity_real_time_quality">RealTimeQualityActivity</string>
     <string name="title_ambient_air_quality">Ambient Air Quality</string>
     <string name="title_hazardous_gasses">Hazardous Gasses</string>
-    <string name="title_historyactivity_detail">HistoryActivity Detail</string>
+    <string name="title_historyactivity_detail">HistoryActivity  Detail</string>
     <string name="title_historyactivity_list">History</string>
     <string name="user_name">Name</string>
     <string name="user_settings">Your Air Quality Profile</string>
