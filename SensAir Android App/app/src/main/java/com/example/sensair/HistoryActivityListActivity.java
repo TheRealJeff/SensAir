@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +28,8 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class HistoryActivityListActivity extends AppCompatActivity {
+public class HistoryActivityListActivity extends AppCompatActivity
+{
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -38,12 +38,13 @@ public class HistoryActivityListActivity extends AppCompatActivity {
     private boolean mTwoPane;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_historyactivity_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.history_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -58,7 +59,8 @@ public class HistoryActivityListActivity extends AppCompatActivity {
             }
         });
 
-        if (findViewById(R.id.historyactivity_detail_container) != null) {
+        if (findViewById(R.id.historyactivity_detail_container) != null)
+        {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the

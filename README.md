@@ -1,9 +1,36 @@
 # SensAir
 Air Quality Sensor Application for Android. 
 
-## Resources
-* [DFRobot Bluno Wiki](https://wiki.dfrobot.com/Bluno_SKU_DFR0267#target_4) for bluetooth connectivity using the Bluno
-* [CCS811 Sparkfun Library & Examples](https://github.com/sparkfun/SparkFun_CCS811_Arduino_Library) for CCS811 I2C communications
+## Priority To Do List 
+1. **Get the bluetooth working** using a bluetooth helper
+2. Implement the **search function** for the History Activity
+3. Add **new settings** to Profile Activity; implement the features using sharedpreferences
+4. Format the **Real Time Data Activity**
+5. Format the **History item (aka date) data**
+
+## Hardware
+* [HC-05 (v2.0-20100601) Bluetooth Module](https://components101.com/sites/default/files/component_datasheet/HC-05%20Datasheet.pdf) for bluetooth.
+    * **Bluetooth Address**: 35555e (Hex)
+    * **Bluetooth MAC address**: 00:18:E4:35:55:5E
+    * **Baud rate**: 38400
+      * All attributes can be changed using AT commands and vary from part to part.
+    * [List of AT Commands](https://roboindia.com/tutorial-content/arduino_code/hc-05_at_commands.zip)
+      * Before trying AT commands, make sure the LED is blinking slowly (about once every two seconds) If it is not, then cut power to HC-05 and re-power it while holding down the button to toggle AT and Pairing mode.
+    * Vcc = 5V
+    
+* [SparkFun CCS811 Air Quality Breakout Board](https://cdn-learn.adafruit.com/assets/assets/000/044/636/original/CCS811_DS000459_2-00-1098798.pdf)
+    * I2C connection
+      * [CCS811 Library & Examples](https://github.com/sparkfun/SparkFun_CCS811_Arduino_Library) for I2C
+    * Vcc = 3.3V
+
+* [SparkFun BME 280 Atmospheric Breakout Board](https://cdn.sparkfun.com/assets/e/7/3/b/1/BME280_Datasheet.pdf)
+    * I2C connection
+      * [BME 280 Library & Examples](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library) for I2C
+    * Vcc = 3.3V
+
+* [MQ2 Gas Sensor](https://docs.particle.io/assets/datasheets/electronsensorkit/MQ-2.pdf)
+    * Analog sensor
+    * Vcc = 5V
 
 
 ## Identifier Naming Convention

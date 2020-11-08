@@ -1,0 +1,256 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:2:1-60:12
+INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:2:1-60:12
+INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:2:1-60:12
+INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:2:1-60:12
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/7a2c95f3edfa7f9b014eab411c2a7c2f/constraintlayout-2.0.1/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.preference:preference:1.1.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/9054f98615fe650bb5a8615668b55692/preference-1.1.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.navigation:navigation-ui:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/ea6196c000d10ccdd0ea83bdb0471e01/navigation-ui-2.2.2/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.material:material:1.2.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/51a6c4499cc1f9d65aea13e849a29fc4/material-1.2.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.appcompat:appcompat:1.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/13afd07275879d25ea1fa731e9ef6e80/appcompat-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.github.anastr:speedviewlib:1.5.3] /home/adrian/.gradle/caches/transforms-2/files-2.1/3a06b1bf1c7c194906c5181685f381f9/jetified-speedviewlib-1.5.3/AndroidManifest.xml:2:1-14:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-ktx:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/7e2cdbedcc21a5b7c044e3202acf2af2/jetified-lifecycle-livedata-ktx-2.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/22598cf4205e64c294095147a34860ad/jetified-lifecycle-viewmodel-ktx-2.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.github.mukeshsolanki:MarkdownView-Android:1.0.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/5c34448cdd55382fb18b9e6dd2536f3f/jetified-MarkdownView-Android-1.0.1/AndroidManifest.xml:2:1-12:12
+MERGED from [androidx.navigation:navigation-fragment:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/3f61844c51de774a20aedf77e05c1299/navigation-fragment-2.2.2/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/fa7cd2642f564d2f0be93612bf1cfaee/jetified-viewpager2-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/423e9cafe38275b490b8818042a82e7f/recyclerview-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/f0ebbc2d54dc5d073bf6a47d85344ed8/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/f075c58822aad8d63991699e80155fe7/jetified-appcompat-resources-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/98e69c8b28b4089af0aefd63ec06a6c0/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.fragment:fragment:1.2.4] /home/adrian/.gradle/caches/transforms-2/files-2.1/8be26b9d2036af27513b1ed567557ec3/fragment-1.2.4/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/a27071dc71f12282dd2d07a6e16aeec7/coordinatorlayout-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.transition:transition:1.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/ff4963453cb4146f5d72e2e648d22674/transition-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/6aa76aab8a9240c16875cd09da3ec042/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/28d3f36607292cde10ada65caa8f7479/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/4581317f64fe64c0be011cd963058f23/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/1205a8002cc0dddbff822841e3a2c516/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/728f1db9b1a91f1f0cc7f96e245fc444/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-runtime:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/388689fb2aa0d73ab7be07f74f81badb/navigation-runtime-2.2.2/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/9ce4e1ebaaff41cdd8b2ea43c77b2a3a/jetified-activity-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.navigation:navigation-common:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/0cafe045e70ae6346c57b97c254a0e28/navigation-common-2.2.2/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core:1.3.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/1447baa9cd0179714e5451877565981b/core-1.3.1/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/1603df217eb2abd0219bd146edf6e24d/jetified-lifecycle-viewmodel-savedstate-2.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/9e6e33a759083983bfea7c6252c675cf/lifecycle-viewmodel-2.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.cardview:cardview:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/b60be2226d85189056b135948c49c4a9/cardview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/d9d372646b0b2490ee3b30f0624e4b1b/versionedparcelable-1.1.0/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/549cf88ac58c713cdb60600d8d6d60c7/lifecycle-livedata-2.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/33365754e0609cfc456bb77983b51892/jetified-lifecycle-livedata-core-ktx-2.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/ce34f96326834c616b021f47c0e78939/lifecycle-livedata-core-2.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/abdc24fc10aee07ff3d6ac3d4a61897c/core-runtime-2.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.savedstate:savedstate:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/491e5494eebfce9e18a77f552f226830/jetified-savedstate-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/afe222f0e8ad198e33bc58427a35d0f2/lifecycle-runtime-2.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/cd13bc1710bc1c9d13f0c284a7743fa5/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/79bada0fbcb6e110a70868e70e13dffa/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:17:1-24:12
+INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:2:1-60:12
+INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:2:1-60:12
+INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:2:1-60:12
+	package
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:3:5-34
+		INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+		INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:2:1-60:12
+		INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:2:1-60:12
+		INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.BLUETOOTH
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:5:5-68
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:5:22-65
+uses-permission#android.permission.BLUETOOTH_ADMIN
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:6:5-74
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:6:22-71
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:7:5-79
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:7:22-76
+application
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:9:5-58:19
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/7a2c95f3edfa7f9b014eab411c2a7c2f/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/7a2c95f3edfa7f9b014eab411c2a7c2f/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
+MERGED from [com.google.android.material:material:1.2.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/51a6c4499cc1f9d65aea13e849a29fc4/material-1.2.1/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.2.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/51a6c4499cc1f9d65aea13e849a29fc4/material-1.2.1/AndroidManifest.xml:22:5-20
+MERGED from [com.github.anastr:speedviewlib:1.5.3] /home/adrian/.gradle/caches/transforms-2/files-2.1/3a06b1bf1c7c194906c5181685f381f9/jetified-speedviewlib-1.5.3/AndroidManifest.xml:11:5-12:19
+MERGED from [com.github.anastr:speedviewlib:1.5.3] /home/adrian/.gradle/caches/transforms-2/files-2.1/3a06b1bf1c7c194906c5181685f381f9/jetified-speedviewlib-1.5.3/AndroidManifest.xml:11:5-12:19
+MERGED from [androidx.core:core:1.3.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/1447baa9cd0179714e5451877565981b/core-1.3.1/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.3.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/1447baa9cd0179714e5451877565981b/core-1.3.1/AndroidManifest.xml:24:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/d9d372646b0b2490ee3b30f0624e4b1b/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/d9d372646b0b2490ee3b30f0624e4b1b/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.3.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/1447baa9cd0179714e5451877565981b/core-1.3.1/AndroidManifest.xml:24:18-86
+	android:supportsRtl
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:14:9-35
+	android:label
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:12:9-41
+	android:roundIcon
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:13:9-54
+	android:icon
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:11:9-43
+	android:allowBackup
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:10:9-35
+	android:theme
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:15:9-40
+activity#com.example.sensair.HistoryActivityListActivity
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:16:9-21:20
+	android:parentActivityName
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:19:13-55
+	android:label
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:18:13-63
+	android:theme
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:20:13-56
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:17:13-56
+activity#com.example.sensair.HistoryActivityDetailActivity
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:22:9-30:20
+	android:parentActivityName
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:25:13-70
+	android:label
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:24:13-65
+	android:theme
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:26:13-56
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:23:13-58
+meta-data#android.support.PARENT_ACTIVITY
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:27:13-29:83
+	android:value
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:29:17-80
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:28:17-63
+activity#com.example.sensair.RealTimeActivity
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:31:9-39:20
+	android:parentActivityName
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:35:13-74
+	android:label
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:33:13-61
+	android:theme
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:34:13-44
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:32:13-45
+activity#com.example.sensair.ProfileActivity
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:40:9-47:20
+	android:parentActivityName
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:43:13-55
+	android:label
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:42:13-59
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:41:13-44
+activity#com.example.sensair.InfoActivity
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:48:9-50:58
+	android:parentActivityName
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:50:13-55
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:49:13-41
+activity#com.example.sensair.MainActivity
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:51:9-57:20
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:51:19-47
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:52:13-56:29
+action#android.intent.action.MAIN
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:53:17-69
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:53:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:55:17-77
+	android:name
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml:55:27-74
+uses-sdk
+INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/7a2c95f3edfa7f9b014eab411c2a7c2f/constraintlayout-2.0.1/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/7a2c95f3edfa7f9b014eab411c2a7c2f/constraintlayout-2.0.1/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.preference:preference:1.1.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/9054f98615fe650bb5a8615668b55692/preference-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.preference:preference:1.1.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/9054f98615fe650bb5a8615668b55692/preference-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.navigation:navigation-ui:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/ea6196c000d10ccdd0ea83bdb0471e01/navigation-ui-2.2.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.navigation:navigation-ui:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/ea6196c000d10ccdd0ea83bdb0471e01/navigation-ui-2.2.2/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.material:material:1.2.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/51a6c4499cc1f9d65aea13e849a29fc4/material-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.2.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/51a6c4499cc1f9d65aea13e849a29fc4/material-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/13afd07275879d25ea1fa731e9ef6e80/appcompat-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/13afd07275879d25ea1fa731e9ef6e80/appcompat-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.github.anastr:speedviewlib:1.5.3] /home/adrian/.gradle/caches/transforms-2/files-2.1/3a06b1bf1c7c194906c5181685f381f9/jetified-speedviewlib-1.5.3/AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.anastr:speedviewlib:1.5.3] /home/adrian/.gradle/caches/transforms-2/files-2.1/3a06b1bf1c7c194906c5181685f381f9/jetified-speedviewlib-1.5.3/AndroidManifest.xml:7:5-9:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-ktx:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/7e2cdbedcc21a5b7c044e3202acf2af2/jetified-lifecycle-livedata-ktx-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-ktx:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/7e2cdbedcc21a5b7c044e3202acf2af2/jetified-lifecycle-livedata-ktx-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/22598cf4205e64c294095147a34860ad/jetified-lifecycle-viewmodel-ktx-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/22598cf4205e64c294095147a34860ad/jetified-lifecycle-viewmodel-ktx-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.github.mukeshsolanki:MarkdownView-Android:1.0.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/5c34448cdd55382fb18b9e6dd2536f3f/jetified-MarkdownView-Android-1.0.1/AndroidManifest.xml:8:5-10:41
+MERGED from [com.github.mukeshsolanki:MarkdownView-Android:1.0.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/5c34448cdd55382fb18b9e6dd2536f3f/jetified-MarkdownView-Android-1.0.1/AndroidManifest.xml:8:5-10:41
+MERGED from [androidx.navigation:navigation-fragment:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/3f61844c51de774a20aedf77e05c1299/navigation-fragment-2.2.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.navigation:navigation-fragment:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/3f61844c51de774a20aedf77e05c1299/navigation-fragment-2.2.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/fa7cd2642f564d2f0be93612bf1cfaee/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/fa7cd2642f564d2f0be93612bf1cfaee/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/423e9cafe38275b490b8818042a82e7f/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/423e9cafe38275b490b8818042a82e7f/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/f0ebbc2d54dc5d073bf6a47d85344ed8/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/f0ebbc2d54dc5d073bf6a47d85344ed8/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/f075c58822aad8d63991699e80155fe7/jetified-appcompat-resources-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/f075c58822aad8d63991699e80155fe7/jetified-appcompat-resources-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/98e69c8b28b4089af0aefd63ec06a6c0/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/98e69c8b28b4089af0aefd63ec06a6c0/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.2.4] /home/adrian/.gradle/caches/transforms-2/files-2.1/8be26b9d2036af27513b1ed567557ec3/fragment-1.2.4/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.2.4] /home/adrian/.gradle/caches/transforms-2/files-2.1/8be26b9d2036af27513b1ed567557ec3/fragment-1.2.4/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/a27071dc71f12282dd2d07a6e16aeec7/coordinatorlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/a27071dc71f12282dd2d07a6e16aeec7/coordinatorlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/ff4963453cb4146f5d72e2e648d22674/transition-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/ff4963453cb4146f5d72e2e648d22674/transition-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/6aa76aab8a9240c16875cd09da3ec042/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/6aa76aab8a9240c16875cd09da3ec042/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/28d3f36607292cde10ada65caa8f7479/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/28d3f36607292cde10ada65caa8f7479/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/4581317f64fe64c0be011cd963058f23/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/4581317f64fe64c0be011cd963058f23/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/1205a8002cc0dddbff822841e3a2c516/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/1205a8002cc0dddbff822841e3a2c516/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/728f1db9b1a91f1f0cc7f96e245fc444/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/728f1db9b1a91f1f0cc7f96e245fc444/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/388689fb2aa0d73ab7be07f74f81badb/navigation-runtime-2.2.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.navigation:navigation-runtime:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/388689fb2aa0d73ab7be07f74f81badb/navigation-runtime-2.2.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/9ce4e1ebaaff41cdd8b2ea43c77b2a3a/jetified-activity-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/9ce4e1ebaaff41cdd8b2ea43c77b2a3a/jetified-activity-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.navigation:navigation-common:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/0cafe045e70ae6346c57b97c254a0e28/navigation-common-2.2.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.navigation:navigation-common:2.2.2] /home/adrian/.gradle/caches/transforms-2/files-2.1/0cafe045e70ae6346c57b97c254a0e28/navigation-common-2.2.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.3.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/1447baa9cd0179714e5451877565981b/core-1.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.3.1] /home/adrian/.gradle/caches/transforms-2/files-2.1/1447baa9cd0179714e5451877565981b/core-1.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/1603df217eb2abd0219bd146edf6e24d/jetified-lifecycle-viewmodel-savedstate-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/1603df217eb2abd0219bd146edf6e24d/jetified-lifecycle-viewmodel-savedstate-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/9e6e33a759083983bfea7c6252c675cf/lifecycle-viewmodel-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/9e6e33a759083983bfea7c6252c675cf/lifecycle-viewmodel-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cardview:cardview:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/b60be2226d85189056b135948c49c4a9/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/b60be2226d85189056b135948c49c4a9/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/d9d372646b0b2490ee3b30f0624e4b1b/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/d9d372646b0b2490ee3b30f0624e4b1b/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/549cf88ac58c713cdb60600d8d6d60c7/lifecycle-livedata-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/549cf88ac58c713cdb60600d8d6d60c7/lifecycle-livedata-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/33365754e0609cfc456bb77983b51892/jetified-lifecycle-livedata-core-ktx-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/33365754e0609cfc456bb77983b51892/jetified-lifecycle-livedata-core-ktx-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/ce34f96326834c616b021f47c0e78939/lifecycle-livedata-core-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/ce34f96326834c616b021f47c0e78939/lifecycle-livedata-core-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/abdc24fc10aee07ff3d6ac3d4a61897c/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/abdc24fc10aee07ff3d6ac3d4a61897c/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/491e5494eebfce9e18a77f552f226830/jetified-savedstate-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/491e5494eebfce9e18a77f552f226830/jetified-savedstate-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/afe222f0e8ad198e33bc58427a35d0f2/lifecycle-runtime-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/afe222f0e8ad198e33bc58427a35d0f2/lifecycle-runtime-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/cd13bc1710bc1c9d13f0c284a7743fa5/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/cd13bc1710bc1c9d13f0c284a7743fa5/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/79bada0fbcb6e110a70868e70e13dffa/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /home/adrian/.gradle/caches/transforms-2/files-2.1/79bada0fbcb6e110a70868e70e13dffa/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:20:5-22:41
+INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+		INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+		ADDED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml
+		INJECTED from /home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/AndroidManifest.xml

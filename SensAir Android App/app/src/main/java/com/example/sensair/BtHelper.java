@@ -1,197 +1,112 @@
 package com.example.sensair;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.widget.TextView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 
-import static androidx.core.app.ActivityCompat.startActivityForResult;
-
-public class BtHelper
+public class BtHelper extends AppCompatActivity
 {
-   static final UUID mUUID = UUID.fromString("902c3dac-8cb1-4f58-8d66-ef9b13ed4095");
-   private static final int REQUEST_ENABLE_BT = 1;
+    private static final String TAG = "MY_APP_DEBUG_TAG";
+    private Handler handler; //get info from Bluetooth Services
+    protected Context context;
+    protected BluetoothDevice device;
+    protected final UUID MY_UUID =  UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    protected mBluetoothService mmBluetoothService;
 
-    private BluetoothAdapter myBTAdapter;
-    private BluetoothSocket btSocket = null;
-    private int highHR = 0;
-    private int lowHR = 0;
-    protected BluetoothDevice hc05;
-    protected Context btContext;
-    protected boolean firstOn;
-    private boolean streamOn;
-
-    public BtHelper(Context context, String mac)
+    public BtHelper(Context context)
     {
-        myBTAdapter = BluetoothAdapter.getDefaultAdapter();
-        streamOn = false;
-        btContext = context;
-        setHc05(mac);
+        this.context = context;
     }
 
-    public void btEnable(Activity activity){
-        if(!myBTAdapter.isEnabled())
-        {
-            Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(activity, enableBT, REQUEST_ENABLE_BT, null);
-        }
+    //Define Messages when transmitting between the service and the UI.
+    private interface MessageConstants {
+        public static final int MESSAGE_READ = 0;
+        public static final int MESSAGE_WRITE = 1;
+        public static final int MESSAGE_TOAST = 2;
     }
 
-    public void setHc05(String mac)
-    {
-        hc05 = myBTAdapter.getRemoteDevice(mac);
-    }
+    private class  ConnectedThread extends Thread {
+        private final BluetoothSocket mSocket;
+        private final BluetoothDevice mDevice;
+        //        private final InputStream mInStream;
+        //private final OutputStream mOutStream; Use this to send data to target device
+        private byte[] mBuffer; //mBuffer store for the stream
 
-    public void estConnect()
-    {
-        new BTconnection().execute();
-    }
+        public ConnectedThread(BluetoothSocket socket) {
+            mDevice = device;
+            BluetoothSocket tmp = null;
+            mmBluetoothService = new mBluetoothService(socket);
 
-    public BluetoothDevice getHC05()
-    {
-        return hc05;
-    }
+            //Get the input and output stream, using temp because member streams are final
+            try {
+                tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
 
-    public ArrayList<BluetoothDevice> deviceList()
-    {
-        return new ArrayList<>(myBTAdapter.getBondedDevices());
-
-    }
-
-    private class BTconnection extends AsyncTask<Void, Void, Void>
-    {
-        boolean isConnected = true;
-
-        @Override
-        protected void onPreExecute() {
-            // TODO can display here when connecting to device
+            } catch (IOException e) {
+                Log.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!       Error occurred when creating socket.", e);
+            }
+            mSocket = tmp;
         }
 
-        @Override
-        protected Void doInBackground(Void... devices)
-        {
+        public void run() {
+            BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+            btAdapter.cancelDiscovery();
 
             try {
-                if (btSocket == null || !streamOn) {
-                    //disconnectnConfirm();
-                    hc05 = getHC05();
-                    btSocket = hc05.createInsecureRfcommSocketToServiceRecord(mUUID);
-                    btSocket.connect();
-                }
-            } catch (IOException e) {
-                isConnected = false;
-            }
-            if (!isConnected)
-            {
-                    // TODO notify that device is off
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute (Void result){
-            super.onPostExecute(result);
-
-            if(!isConnected){
-                Toast.makeText(btContext,"Connection to BlueTooth Failed.",Toast.LENGTH_LONG);
-                if(btSocket != null)
-                {
-                    try
-                    {
-                        btSocket = null;
-                        hc05 = getHC05();
-                        btSocket = hc05.createInsecureRfcommSocketToServiceRecord(mUUID);
-                        btSocket.connect();
-                    } catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    };
-
-                }
-            } else {
-                Toast.makeText(btContext,"Successfully connected to SensAir device!",Toast.LENGTH_LONG);
-                streamOn = true;
-            }
-        }
-    }
-
-    private class ContentAsync extends AsyncTask<Void,Void,Void>
-    {
-
-        public ContentAsync()
-        {
-            // TODO content synchronization
-        }
-        @Override
-        protected Void doInBackground(Void... voids)
-        {
-            return null;
-        }
-    }
-
-    public void content(TextView textview, boolean active)
-    {
-        InputStream inputStream = null;
-        String data = "";
-        System.out.println("content: BTSOCKET" + btSocket);
-        if(btSocket != null){
-            if(btSocket.isConnected()) {
+                mSocket.connect();
+            } catch (IOException connectException) {
+                // Unable to connect; close the socket and return.
                 try {
-                    inputStream = btSocket.getInputStream();
-                    inputStream.skip(inputStream.available());
-
-                    for (int i = 0; i < 3; i++)
-                    {
-                        byte b = (byte) inputStream.read();
-                        data += (char) b;
-                    }
-
-                    // TODO Handle reading of bytes
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    mSocket.close();
+                } catch (IOException closeException) {
+                    Log.e(TAG, "Could not close the client socket", closeException);
                 }
+                return;
+            }
+            mmBluetoothService = new mBluetoothService(mSocket);
+        }
+
+        public void cancel() {
+            try {
+                mSocket.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Could not close the client socket", e);
             }
         }
-        refresh(textview, (btContext));
     }
 
-    private void refresh(final TextView textview, final Context context)
+    public boolean isConnected()
     {
-        final Handler handler = new Handler(Looper.getMainLooper()){
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+        for (BluetoothDevice device : pairedDevices)
+        {
+            if (device.getName().equals("SensAir"))
+            {
+                setDevice(device);
+                return true;
             }
-        };
+        }
+        return false;
+    }
 
-        final Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                // TODO Synchronize content. Run threads to send data
-
-            }
-        };
-        handler.postDelayed(runnable, 4000);
+    public void setDevice(BluetoothDevice device)
+    {
+        this.device = device;
     }
 }
-

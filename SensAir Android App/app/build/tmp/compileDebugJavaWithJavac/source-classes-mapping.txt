@@ -1,0 +1,49 @@
+com/example/sensair/ui/historyFragments/InfoFragment.java
+ com.example.sensair.ui.historyFragments.InfoFragment
+com/example/sensair/ui/hazardousGasses/HazardousGasViewModel.java
+ com.example.sensair.ui.hazardousGasses.HazardousGasViewModel
+com/example/sensair/RealTimeActivity.java
+ com.example.sensair.RealTimeActivity
+com/example/sensair/ui/hazardousGasses/HazardousGasFragment.java
+ com.example.sensair.ui.hazardousGasses.HazardousGasFragment
+ com.example.sensair.ui.hazardousGasses.HazardousGasFragment$1
+com/example/sensair/mBluetoothService.java
+ com.example.sensair.mBluetoothService
+ com.example.sensair.mBluetoothService$ConnectedThread
+ com.example.sensair.mBluetoothService$MessageConstants
+com/example/sensair/ui/ambientAirQuality/ambientAirQuality/AmbientAirQualityFragment.java
+ com.example.sensair.ui.ambientAirQuality.ambientAirQuality.AmbientAirQualityFragment
+ com.example.sensair.ui.ambientAirQuality.ambientAirQuality.AmbientAirQualityFragment$1
+com/example/sensair/MainActivity.java
+ com.example.sensair.MainActivity
+ com.example.sensair.MainActivity$1
+ com.example.sensair.MainActivity$2
+ com.example.sensair.MainActivity$3
+com/example/sensair/BtHelper.java
+ com.example.sensair.BtHelper
+ com.example.sensair.BtHelper$ConnectedThread
+ com.example.sensair.BtHelper$MessageConstants
+com/example/sensair/HistoryActivityDetailFragment.java
+ com.example.sensair.HistoryActivityDetailFragment
+com/example/sensair/BuildConfig.java
+ com.example.sensair.BuildConfig
+com/example/sensair/ui/historyFragments/MainViewModel.java
+ com.example.sensair.ui.historyFragments.MainViewModel
+com/example/sensair/InfoActivity.java
+ com.example.sensair.InfoActivity
+com/example/sensair/ui/ambientAirQuality/ambientAirQuality/AmbientAirQualityViewModel.java
+ com.example.sensair.ui.ambientAirQuality.ambientAirQuality.AmbientAirQualityViewModel
+com/example/sensair/ProfileActivity.java
+ com.example.sensair.ProfileActivity
+ com.example.sensair.ProfileActivity$SettingsFragment
+com/example/sensair/HistoryActivityListActivity.java
+ com.example.sensair.HistoryActivityListActivity
+ com.example.sensair.HistoryActivityListActivity$1
+ com.example.sensair.HistoryActivityListActivity$SimpleItemRecyclerViewAdapter
+ com.example.sensair.HistoryActivityListActivity$SimpleItemRecyclerViewAdapter$1
+ com.example.sensair.HistoryActivityListActivity$SimpleItemRecyclerViewAdapter$ViewHolder
+com/example/sensair/dummy/DummyContent.java
+ com.example.sensair.dummy.DummyContent
+ com.example.sensair.dummy.DummyContent$DummyItem
+com/example/sensair/HistoryActivityDetailActivity.java
+ com.example.sensair.HistoryActivityDetailActivity

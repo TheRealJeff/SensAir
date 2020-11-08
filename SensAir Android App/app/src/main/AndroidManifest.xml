@@ -16,8 +16,9 @@
         <activity
             android:name=".HistoryActivityListActivity"
             android:label="@string/title_historyactivity_list"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".HistoryActivityDetailActivity"
             android:label="@string/title_historyactivity_detail"
@@ -30,10 +31,11 @@
         <activity
             android:name=".RealTimeActivity"
             android:label="@string/title_activity_real_time"
-            android:parentActivityName=".MainActivity">
+            android:theme="@style/AppTheme"
+            android:parentActivityName="com.example.sensair.MainActivity">
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.sensair.HistoryActivityListActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.sensair.RealTimeActivity" />
         </activity>
         <activity
             android:name=".ProfileActivity"
@@ -43,8 +45,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.sensair.HistoryActivityListActivity" />
         </activity>
-        <activity android:name=".InfoActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".InfoActivity"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
