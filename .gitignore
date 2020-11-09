@@ -1,18 +1,18 @@
 *.iml
 .gradle
-/SensAir\ Android\ App/.idea
-/SensAir\ Android\ App/build
-/SensAir\ Android\ App/app/build
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+/SensAirAndroidApp/.idea
+/SensAirAndroidApp/build
+/SensAirAndroidApp/app/build
+/SensAirAndroidApp/local.properties
+/SensAirAndroidApp/.idea/caches
+/SensAirAndroidApp/.idea/libraries
+/SensAirAndroidApp/.idea/modules.xml
+/SensAirAndroidApp/.idea/workspace.xml
+/SensAirAndroidApp/.idea/navEditor.xml
+/SensAirAndroidApp/.idea/assetWizardSettings.xml
 .DS_Store
-/build
-/captures
+/SensAirAndroidApp/build
+/SensAirAndroidApp/captures
 .externalNativeBuild
 .cxx
 *.apk
