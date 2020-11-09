@@ -2,6 +2,7 @@
 .gradle
 /SensAir\ Android\ App/.idea
 /SensAir\ Android\ App/build
+/SensAir\ Android\ App/app/build
 /local.properties
 /.idea/caches
 /.idea/libraries

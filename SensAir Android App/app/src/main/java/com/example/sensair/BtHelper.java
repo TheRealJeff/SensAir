@@ -34,6 +34,8 @@ public class BtHelper extends AppCompatActivity
         this.context = context;
     }
 
+    //test comment
+
     //Define Messages when transmitting between the service and the UI.
     private interface MessageConstants {
         public static final int MESSAGE_READ = 0;
