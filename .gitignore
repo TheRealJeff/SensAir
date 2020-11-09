@@ -1,6 +1,6 @@
 *.iml
 .gradle
-SensAir\ Android\ App/.idea
+SensAir*Android*App/.idea
 /local.properties
 /.idea/caches
 /.idea/libraries
