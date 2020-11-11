@@ -1,12 +1,15 @@
 package com.example.sensair;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,20 +24,34 @@ import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.Section;
 import com.github.anastr.speedviewlib.components.Style;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
 
-    protected TextView textViewGauge;
     protected SpeedView gaugeAirQuality;
     protected ImageButton buttonRealTime, buttonHistory, buttonProfile;
-    protected Spinner spinner;
     protected static final int REQUEST_ENABLE_BT = 1;
-    protected BtHelper btHelper;
-    protected BluetoothDevice sensAir = null;
     protected List<String> categories = new ArrayList<>();
+    protected BluetoothHelper mBluetooth = new BluetoothHelper();
+    private String DEVICE_NAME = "SensAir";
+
+    private float co2;
+    private float tvoc;
+    private float mq2;
+    private float humidity;
+    private float pressure;
+    private float altitude;
+    private float temperature;
+
 
 
     @Override
@@ -43,10 +60,65 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btInit();
+//        btInit();
         uiInit();
         dropDownInit();
 
+
+        mBluetooth.Connect(DEVICE_NAME);
+        mBluetooth.setBluetoothHelperListener(new BluetoothHelper.BluetoothHelperListener() {
+            @Override
+            public void onBluetoothHelperMessageReceived(BluetoothHelper bluetoothhelper, final String message)
+            {
+                 runOnUiThread(new Runnable()
+                 {
+                     @Override
+                     public void run()
+                     {
+                         // Update here your User Interface
+                         System.out.println(message);
+                         String[] data = message.split(",");
+                         co2 = Float.parseFloat(data[0].substring(0,data[0].length()-1));
+                         tvoc = Float.parseFloat(data[1].substring(0,data[1].length()-1));
+                         mq2 = Float.parseFloat(data[2].substring(0,data[2].length()-1));
+                         humidity = Float.parseFloat(data[3].substring(0,data[3].length()-1));
+                         pressure = Float.parseFloat(data[4].substring(0,data[4].length()-1));
+                         altitude = Float.parseFloat(data[5].substring(0,data[5].length()-1));
+                         temperature = Float.parseFloat(data[6].substring(0,data[6].length()-1));
+
+                         System.out.println("\n\n-------------------DATA REQUEST-------------------");
+                         System.out.println("CO2: "+(co2));
+                         System.out.println("TVOC: "+tvoc);
+                         System.out.println("MQ2: "+mq2);
+                         System.out.println("Humidity: "+humidity);
+                         System.out.println("Pressure: "+pressure);
+                         System.out.println("Altitude: "+altitude);
+                         System.out.println("Temperature: "+temperature);
+                     }
+                 });
+            }
+
+            @Override
+            public void onBluetoothHelperConnectionStateChanged(BluetoothHelper bluetoothhelper, boolean isConnected) {
+                if (isConnected)
+                {
+                    System.out.println("Connected");
+                    mBluetooth.SendMessage("1");
+                    System.out.println("Sending Message");
+                }
+                else
+                {
+                    System.out.println("Disconnected");
+                    mBluetooth.Connect(DEVICE_NAME);
+                }
+            }
+        });
+
+    }
+
+    public void getData()
+    {
+        mBluetooth.SendMessage("1");
     }
 
     public void btInit()
@@ -58,28 +130,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (btAdapter == null)
         {
             String msg = "ERROR: Phone does not support bluetooth. Bluetooth connection failed!";
-            Toast.makeText(this,msg,Toast.LENGTH_LONG);
+            Toast.makeText(this, msg, Toast.LENGTH_LONG);
             return;
-        }
-        else if (!btAdapter.isEnabled())
+        } else if (!btAdapter.isEnabled())
         {
             startActivityForResult(btEnableIntent, REQUEST_ENABLE_BT);
         }
         //TODO HANDLE SUCCESSFUL DEVICE CONNECTION
 
-        btHelper = new BtHelper(this);
-
-        if(btHelper.isConnected())
-        {
-            String msg = "Connected to the SensAir!";
-            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            String msg = "Failed to connect to bluetooth: Please pair device in Settings.";
-            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-            return;
-        }
     }
 
     public void uiInit()
@@ -122,13 +180,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void gaugeInit()
     {
         // TODO set to user preference / default
-        gaugeAirQuality.speedTo(75);
-        gaugeAirQuality.setTrembleDegree(1);
-        gaugeAirQuality.makeSections(3, 0, Style.BUTT);
-        ArrayList<Section> sections = gaugeAirQuality.getSections();
-        sections.get(0).setColor(Color.rgb(250, 67, 67));
-        sections.get(1).setColor(Color.rgb(255, 255, 102));
-        sections.get(2).setColor(Color.rgb(90, 245, 110));
+//        gaugeAirQuality.speedTo(75);
+        gaugeAirQuality.setTrembleDegree((float)0.5);
+//        gaugeAirQuality.makeSections(3, 0, Style.BUTT);
+//        ArrayList<Section> sections = gaugeAirQuality.getSections();
+//        sections.get(0).setColor(Color.rgb(250, 67, 67));
+//        sections.get(1).setColor(Color.rgb(255, 255, 102));
+//        sections.get(2).setColor(Color.rgb(90, 245, 110));
 
     }
 
@@ -155,41 +213,69 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
-            case 0:
-                //TODO Handle CO2 choice and display meter values
-                break;
-            case 1:
-                //TODO Handle TVOC choice and display meter values
-                break;
-            case 2:
-                //TODO Handle MQ2 choice and display meter values
-                break;
-            case 3:
-                //TODO Handle HUMUDITY choice and display meter values
-                break;
-            case 4:
-                //TODO Handle PRESSURE choice and display meter values
-                break;
-            case 5:
-                //TODO Handle TEMPERATURE choice and display meter values
-                break;
+            case 0:     // overall quality
+                //TODO Handle Overall choice and display meter values
 
+                break;
+            case 1:     // CO2          TODO for all: adjust sections so that danger zones are properly reflected
+                gaugeAirQuality.speedTo(0);
+                gaugeAirQuality.setMinMaxSpeed(0,2000);
+                gaugeAirQuality.setUnit(" PPM");
+                gaugeAirQuality.speedTo(co2);
+                break;
+            case 2:     // TVOC
+                getData();
+                gaugeAirQuality.speedTo(0);
+                gaugeAirQuality.setMinMaxSpeed(0,600);
+                gaugeAirQuality.setUnit(" PPB");
+                gaugeAirQuality.speedTo(tvoc);
+                break;
+            case 3:     // MQ2
+                getData();
+                gaugeAirQuality.speedTo(0);
+                gaugeAirQuality.setMinMaxSpeed(0,600);
+                gaugeAirQuality.setUnit(" PPB");
+                gaugeAirQuality.speedTo(mq2);
+                break;
+            case 4:     // Humidity
+                getData();
+                gaugeAirQuality.speedTo(0);
+                gaugeAirQuality.setMinMaxSpeed(0,100);
+                gaugeAirQuality.setUnit(" %");
+                gaugeAirQuality.speedTo(humidity);
+                break;
+            case 5:     // Pressure
+                getData();
+                gaugeAirQuality.speedTo(0);
+                gaugeAirQuality.setMinMaxSpeed(0,150);
+                gaugeAirQuality.setUnit(" KPa");
+                gaugeAirQuality.speedTo(pressure/1000);
+                break;
+            case 6:     // Temperature
+                getData();
+                gaugeAirQuality.speedTo(0);
+                gaugeAirQuality.setMinMaxSpeed(0,40);
+                gaugeAirQuality.setUnit(" Celsius");
+                gaugeAirQuality.speedTo(temperature);
+                break;
         }
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
+    public void onNothingSelected(AdapterView<?> arg0)
+    {
+
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        if(!btHelper.isConnected())
-        {
-            String msg = "Oops! Lost connection to the SensAir. Please pair device in Settings.";
-            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-        }
+        //TODO Check if still connected
+
+//            String msg = "Oops! Lost connection to the SensAir. Please pair device in Settings.";
+//            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+
     }
 
     protected void onResume()
@@ -234,5 +320,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 }

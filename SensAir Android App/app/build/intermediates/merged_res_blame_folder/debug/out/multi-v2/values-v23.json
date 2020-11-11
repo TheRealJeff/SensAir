@@ -4,26 +4,18 @@
             "outputFile": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v23/values-v23.xml",
             "map": [
                 {
-                    "source": "/home/adrian/.gradle/caches/transforms-2/files-2.1/b60be2226d85189056b135948c49c4a9/cardview-1.0.0/res/values-v23/values-v23.xml",
+                    "source": "/home/adrian/.gradle/caches/transforms-2/files-2.1/4767afcccfee65f97d3eafaa0b7d3b03/appcompat-1.2.0/res/values-v23/values-v23.xml",
                     "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endLines": "4",
-                        "endColumns": "12",
-                        "endOffsets": "200"
-                    },
-                    "to": {
-                        "startLines": "50",
-                        "startColumns": "4",
-                        "startOffsets": "3524",
-                        "endLines": "52",
-                        "endColumns": "12",
-                        "endOffsets": "3669"
+                        "startLines": "2,3,4,5,6,20,34,35,36,39,43,44,45,46",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,190,325,400,487,1371,2267,2386,2513,2735,2959,3074,3181,3294",
+                        "endLines": "2,3,4,5,19,33,34,35,38,42,43,44,45,49",
+                        "endColumns": "134,134,74,86,12,12,118,126,12,12,114,106,112,12",
+                        "endOffsets": "185,320,395,482,1366,2262,2381,2508,2730,2954,3069,3176,3289,3519"
                     }
                 },
                 {
-                    "source": "/home/adrian/.gradle/caches/transforms-2/files-2.1/51a6c4499cc1f9d65aea13e849a29fc4/material-1.2.1/res/values-v23/values-v23.xml",
+                    "source": "/home/adrian/.gradle/caches/transforms-2/files-2.1/00129a812cb193f29d3935da4e383a6c/material-1.2.1/res/values-v23/values-v23.xml",
                     "from": {
                         "startLines": "2,6",
                         "startColumns": "4,4",
@@ -42,14 +34,22 @@
                     }
                 },
                 {
-                    "source": "/home/adrian/.gradle/caches/transforms-2/files-2.1/13afd07275879d25ea1fa731e9ef6e80/appcompat-1.2.0/res/values-v23/values-v23.xml",
+                    "source": "/home/adrian/.gradle/caches/transforms-2/files-2.1/96405c8733564cfb352cd373903e67bb/cardview-1.0.0/res/values-v23/values-v23.xml",
                     "from": {
-                        "startLines": "2,3,4,5,6,20,34,35,36,39,43,44,45,46",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,190,325,400,487,1371,2267,2386,2513,2735,2959,3074,3181,3294",
-                        "endLines": "2,3,4,5,19,33,34,35,38,42,43,44,45,49",
-                        "endColumns": "134,134,74,86,12,12,118,126,12,12,114,106,112,12",
-                        "endOffsets": "185,320,395,482,1366,2262,2381,2508,2730,2954,3069,3176,3289,3519"
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "4",
+                        "endColumns": "12",
+                        "endOffsets": "200"
+                    },
+                    "to": {
+                        "startLines": "50",
+                        "startColumns": "4",
+                        "startOffsets": "3524",
+                        "endLines": "52",
+                        "endColumns": "12",
+                        "endOffsets": "3669"
                     }
                 }
             ]

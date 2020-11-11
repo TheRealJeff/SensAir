@@ -40,6 +40,10 @@
         "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/layout/historyactivity_detail.xml"
     },
     {
+        "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/layout_spinner_item.xml.flat",
+        "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/layout/spinner_item.xml"
+    },
+    {
         "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/drawable_ic_search_white_18dp.xml.flat",
         "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/drawable/ic_search_white_18dp.xml"
     },
