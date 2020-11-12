@@ -52,12 +52,12 @@
         "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/drawable/ic_history_black_18dp.xml"
     },
     {
-        "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat",
-        "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/layout/activity_main.xml"
-    },
-    {
         "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/layout_info_activity.xml.flat",
         "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/layout/info_activity.xml"
+    },
+    {
+        "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat",
+        "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/layout/activity_main.xml"
     },
     {
         "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher_foreground.png.flat",
@@ -80,16 +80,16 @@
         "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/layout/activity_real_time.xml"
     },
     {
-        "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher_round.png.flat",
-        "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/mipmap-hdpi/ic_launcher_round.png"
+        "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/layout-w900dp_historyactivity_list.xml.flat",
+        "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/layout-w900dp/historyactivity_list.xml"
     },
     {
         "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/drawable_ic_info_black_18dp.xml.flat",
         "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/drawable/ic_info_black_18dp.xml"
     },
     {
-        "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/layout-w900dp_historyactivity_list.xml.flat",
-        "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/layout-w900dp/historyactivity_list.xml"
+        "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/src/main/res/mipmap-hdpi/ic_launcher_round.png"
     },
     {
         "merged": "/home/adrian/Documents/fall2020/COEN 390/SensAir/SensAir Android App/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher_foreground.png.flat",

@@ -10,10 +10,6 @@ com/example/sensair/ui/hazardousGasses/HazardousGasFragment.java
 com/example/sensair/ui/ambientAirQuality/ambientAirQuality/AmbientAirQualityFragment.java
  com.example.sensair.ui.ambientAirQuality.ambientAirQuality.AmbientAirQualityFragment
  com.example.sensair.ui.ambientAirQuality.ambientAirQuality.AmbientAirQualityFragment$1
-com/example/sensair/BtHelper.java
- com.example.sensair.BtHelper
- com.example.sensair.BtHelper$MessageConstants
- com.example.sensair.BtHelper$ReadData
 com/example/sensair/HistoryActivityDetailFragment.java
  com.example.sensair.HistoryActivityDetailFragment
 com/example/sensair/BuildConfig.java
@@ -43,5 +39,7 @@ com/example/sensair/MainActivity.java
  com.example.sensair.MainActivity$1
  com.example.sensair.MainActivity$1$1
  com.example.sensair.MainActivity$2
+ com.example.sensair.MainActivity$2$1
  com.example.sensair.MainActivity$3
  com.example.sensair.MainActivity$4
+ com.example.sensair.MainActivity$5
