@@ -21,6 +21,7 @@ void setup()
   btSerial.begin(9600);  //Baud Rate for AT-command Mode.  
   Serial.println("|---------- Set Up ----------|"); 
   
+//  while(!Serial){;}
   Wire.begin(); //  Inialize I2C 
   Wire.setClock(400000);
 
@@ -39,66 +40,66 @@ void setup()
 
 void loop()
 {
-  int flag;
-  if(btSerial.available())
-    flag = btSerial.read();
-  if(flag=='1')
-  {
     ccs811.readAlgorithmResults();    // read results from CSS811
                                       // for each datapoint, we write it to bluetooth then print in serial
-    int co2 = ccs811.getCO2();                      // co2                    ppm
-    int tvoc = ccs811.getTVOC();                    // TVOC                   ppb
-    int mq2_reading = analogRead(MQ2_PIN);          // MQ2                    ppb
-    float humidity = bme280.readFloatHumidity();    // BME280 humidity        %
-    float pressure = bme280.readFloatPressure();    // BME280 pressure        Pascals
-    float temp = bme280.readTempC()-5;                // BME280 temp            Celsius
+    int co2 = ccs811.getCO2();        // co2
+      Serial.print("CO2:\t\t");
+      Serial.print(co2);
+      Serial.println(" ppm");
+      
   
-    String co2_str = String(co2)+"C,";
-    String tvoc_str = String(tvoc)+"t,";
-    String mq2_str = String(mq2_reading)+"M,";
-    String humidity_str = String(humidity)+"H,";
-    String pressure_str = String(pressure)+"P,";
-    String alt_str = String(alt)+"A,";
-    String temp_str = String(temp)+"T,";
+    int tvoc = ccs811.getTVOC();    // TVOC
+      Serial.print("TVOC:\t\t");
+      Serial.print(tvoc);
+      Serial.println(" ppb");
 
-    btSerial.print(co2_str);
-    btSerial.print(tvoc_str);
-    btSerial.print(mq2_str);
-    btSerial.print(humidity_str);
-    btSerial.print(pressure_str);
-    btSerial.print(alt_str);
-    btSerial.print(temp_str);
-    btSerial.print('\n');
-  }
-//      Serial.print("CO2:\t\t");
-//      Serial.print(co2);
-//      Serial.println(" ppm");
-//    
-//      Serial.print("TVOC:\t\t");
-//      Serial.print(tvoc);
-//      Serial.println(" ppb");
-//  
-//      Serial.print("MQ2:\t\t");
-//      Serial.print(mq2_reading);
-//      Serial.println(" ppb");
-//    
-//      Serial.print("HUMIDITY:\t");
-//      Serial.print(humidity);
-//      Serial.println(" %");
-//    
-//      Serial.print("PRESSURE:\t");
-//      Serial.print(pressure);
-//      Serial.println(" Pa");
-//
-//      Serial.print("ALTITUDE:\t");
-//      Serial.print(alt);
-//      Serial.println(" m");
-//  
-//      Serial.print("TEMPERATURE:\t");
-//      Serial.print(temp);   
-//      Serial.print("\n\n");
+    
+    int mq2_reading = analogRead(MQ2_PIN);  // MQ2   
+      Serial.print("MQ2:\t\t");
+      Serial.print(mq2_reading);
+      Serial.println(" ppb");
 
-  delay(50); //Don't spam the I2C bus
+    float humidity = bme280.readFloatHumidity();  // BME280 humidity
+      Serial.print("HUMIDITY:\t");
+      Serial.print(humidity);
+      Serial.println(" %");
+
+    float pressure = bme280.readFloatPressure();  // BME280 pressure
+      btSerial.print(String(pressure));   
+      btSerial.print(",");
+      Serial.print("PRESSURE:\t");
+      Serial.print(pressure);
+      Serial.println(" Pa");
+
+
+      Serial.print("ALTITUDE:\t");
+      Serial.print(alt);
+      Serial.println(" m");
+  
+    float temp = bme280.readTempC();            // BME280 temp
+      Serial.print("TEMPERATURE:\t");
+      Serial.print(temp);   
+      Serial.print("\n\n");
+ 
+
+  String co2_str = String(co2)+"C";
+  String tvoc_str = String(tvoc)+"T";
+  String mq2_str = String(mq2_reading)+"M";
+  String humidity_str = String(humidity)+"H";
+  String pressure_str = String(pressure)+"P";
+  String alt_str = String(alt)+"A";
+  String temp_str = String(temp)+"T";
+  
+  
+  btSerial.print(co2_str);
+  btSerial.print(tvoc_str);
+  btSerial.print(mq2_str);
+  btSerial.print(humidity_str);
+  btSerial.print(pressure_str);
+  btSerial.print(alt_str);
+  btSerial.print(temp_str);
+
+  delay(20); //Don't spam the I2C bus
 
 //  if (btSerial.available())       // UNCOMMENT to allow for AT commands. Also uncomment all else in loop()
 //    Serial.write(btSerial.read());
