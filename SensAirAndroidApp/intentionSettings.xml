@@ -1,5 +1,0 @@
-<application>
-  <component name="IntentionManagerSettings">
-    <ignoreAction name="Java/Annotations/Edit method contract" />
-  </component>
-</application>
