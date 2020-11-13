@@ -67,13 +67,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                      public void run()
                      {
                          String[] data = message.split(",");
-                         co2 = Float.parseFloat(data[0].substring(0,data[0].length()-1));
-                         tvoc = Float.parseFloat(data[1].substring(0,data[1].length()-1));
-                         mq2 = Float.parseFloat(data[2].substring(0,data[2].length()-1));
-                         humidity = Float.parseFloat(data[3].substring(0,data[3].length()-1));
-                         pressure = Float.parseFloat(data[4].substring(0,data[4].length()-1));
-                         altitude = Float.parseFloat(data[5].substring(0,data[5].length()-1));
-                         temperature = Float.parseFloat(data[6].substring(0,data[6].length()-1));
+                         if(data.length == 7)
+                         {
+                             co2 = Float.parseFloat(data[0].substring(0, data[0].length() - 1));
+                             tvoc = Float.parseFloat(data[1].substring(0, data[1].length() - 1));
+                             mq2 = Float.parseFloat(data[2].substring(0, data[2].length() - 1));
+                             humidity = Float.parseFloat(data[3].substring(0, data[3].length() - 1));
+                             pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
+                             altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
+                             temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
+                         }
                      }
                  });
             }
@@ -223,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         categories.add("Temperature");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
-        dataAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        dataAdapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(dataAdapter);
         spinner.setSelection(0);
     }
