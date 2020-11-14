@@ -347,15 +347,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 
         boolean isPaired = false;
-        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
-        for(BluetoothDevice device : pairedDevices)
+        if(btAdapter!=null)
         {
-            if(device.getName().equals("SensAir"))
-                isPaired = true;
-        }
-        if(!isPaired)
-        {
-            longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
+            Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+            for (BluetoothDevice device : pairedDevices)
+            {
+                if (device.getName().equals("SensAir"))
+                    isPaired = true;
+            }
+            if (!isPaired)
+            {
+                longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
+            }
         }
     }
 
