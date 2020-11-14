@@ -3,6 +3,7 @@ package com.example.sensair;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.github.anastr.speedviewlib.components.Style;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
@@ -51,34 +53,71 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        btInit();
+        btInit();
         uiInit();
         dropDownInit();
+    }
 
+    public void getData()
+    {
+        mBluetooth.SendMessage("1");
+    }
 
+    public void btInit()
+    {
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+        if (btAdapter == null)
+        {
+            longToast("ERROR: Phone does not support bluetooth. Bluetooth connection failed!");
+            return;
+        } else if (!btAdapter.isEnabled())
+        {
+            startActivityForResult(btEnableIntent, REQUEST_ENABLE_BT);
+        }
+
+        boolean isPaired = false;
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+        for(BluetoothDevice device : pairedDevices)
+        {
+            if(device.getName().equals("SensAir"))
+                isPaired = true;
+        }
+        if(isPaired)
+        {
+            longToast("Successfully connected to SensAir device!");
+            startBluetoothThreading();
+        }
+        else
+            longToast("Failed to connect to SensAir device. Please go to settings and re-connect.");
+    }
+
+    public void startBluetoothThreading()
+    {
         mBluetooth.Connect(DEVICE_NAME);
         mBluetooth.setBluetoothHelperListener(new BluetoothHelper.BluetoothHelperListener() {
             @Override
             public void onBluetoothHelperMessageReceived(BluetoothHelper bluetoothhelper, final String message)
             {
-                 runOnUiThread(new Runnable()
-                 {
-                     @Override
-                     public void run()
-                     {
-                         String[] data = message.split(",");
-                         if(data.length == 7)
-                         {
-                             co2 = Float.parseFloat(data[0].substring(0, data[0].length() - 1));
-                             tvoc = Float.parseFloat(data[1].substring(0, data[1].length() - 1));
-                             mq2 = Float.parseFloat(data[2].substring(0, data[2].length() - 1));
-                             humidity = Float.parseFloat(data[3].substring(0, data[3].length() - 1));
-                             pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
-                             altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
-                             temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
-                         }
-                     }
-                 });
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        String[] data = message.split(",");
+                        if(data.length == 7)
+                        {
+                            co2 = Float.parseFloat(data[0].substring(0, data[0].length() - 1));
+                            tvoc = Float.parseFloat(data[1].substring(0, data[1].length() - 1));
+                            mq2 = Float.parseFloat(data[2].substring(0, data[2].length() - 1));
+                            humidity = Float.parseFloat(data[3].substring(0, data[3].length() - 1));
+                            pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
+                            altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
+                            temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
+                        }
+                    }
+                });
             }
 
             @Override
@@ -143,29 +182,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         };
         thread.start();
-    }
-
-    public void getData()
-    {
-        mBluetooth.SendMessage("1");
-    }
-
-    public void btInit()
-    {
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
-        if (btAdapter == null)
-        {
-            String msg = "ERROR: Phone does not support bluetooth. Bluetooth connection failed!";
-            Toast.makeText(this, msg, Toast.LENGTH_LONG);
-            return;
-        } else if (!btAdapter.isEnabled())
-        {
-            startActivityForResult(btEnableIntent, REQUEST_ENABLE_BT);
-        }
-        //TODO HANDLE SUCCESSFUL DEVICE CONNECTION
-
     }
 
     public void uiInit()
@@ -324,38 +340,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        //TODO Check if still connected
-
-//            String msg = "Oops! Lost connection to the SensAir. Please pair device in Settings.";
-//            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-
-    }
-
     protected void onResume()
     {
         super.onResume();
-    }
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
-    {
-        if (requestCode == REQUEST_ENABLE_BT)
+        boolean isPaired = false;
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+        for(BluetoothDevice device : pairedDevices)
         {
-            if (requestCode == RESULT_OK) {
-                String msg = "Bluetooth enabled";
-                Toast.makeText(this, msg, Toast.LENGTH_LONG);
-            }
-            else if (requestCode == RESULT_CANCELED)
-            {
-                String msg = "Bluetooth enable failed";
-                Toast.makeText(this, msg, Toast.LENGTH_LONG);
-            }
+            if(device.getName().equals("SensAir"))
+                isPaired = true;
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        if(!isPaired)
+        {
+            longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
+        }
     }
 
     @Override
@@ -369,8 +370,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        int id = item.getItemId();          // gets item ID
-        if(id == R.id.infoButton)          // if edit button is clicked
+        int id = item.getItemId();
+        if(id == R.id.infoButton)
         {
             Intent intent = new Intent(MainActivity.this, InfoActivity.class);
             startActivity(intent);
@@ -378,5 +379,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return super.onOptionsItemSelected(item);
     }
 
+    public void print(String s)
+    {
+        System.out.println(s);
+    }
 
+
+    public void longToast(String toast_message)
+    {
+        Toast.makeText(this,toast_message,Toast.LENGTH_LONG).show();
+    }
+
+    public void shortToast(String toast_message)
+    {
+        Toast.makeText(this,toast_message,Toast.LENGTH_SHORT).show();
+    }
 }
