@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_hazardous_gasses"
-        android:name="com.example.sensair.ui.hazardousGasses.HazardousGasFragment"
+        android:name="com.example.sensair.HazardousGasFragment"
         android:label="@string/title_hazardous_gasses"
         tools:layout="@layout/fragment_hazardous_gasses" />
 
     <fragment
         android:id="@+id/navigation_ambient_air_quality"
-        android:name="com.example.sensair.ui.ambientAirQuality.ambientAirQuality.AmbientAirQualityFragment"
+        android:name="com.example.sensair.AmbientAirQualityFragment"
         android:label="@string/title_ambient_air_quality"
         tools:layout="@layout/fragment_ambient_air_quality" />
 </navigation>
