@@ -3,9 +3,14 @@ package com.example.sensair;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +26,7 @@ import com.github.anastr.speedviewlib.components.Style;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
@@ -29,12 +35,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     protected SpeedView gaugeAirQuality;
     protected ImageButton buttonRealTime, buttonHistory, buttonProfile;
-    protected static final int REQUEST_ENABLE_BT = 1;
     protected List<String> categories = new ArrayList<>();
-    protected BluetoothHelper mBluetooth = new BluetoothHelper();
-    private final String DEVICE_NAME = "SensAir";
-    private Thread thread;
-    Spinner spinner;
+    protected Thread thread;
+    protected Spinner spinner;
+    protected BluetoothService btService;
+    protected boolean btIsBound = false;
 
     private float co2;
     private float tvoc;
@@ -51,118 +56,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        btInit();
         uiInit();
         dropDownInit();
 
-
-        mBluetooth.Connect(DEVICE_NAME);
-        mBluetooth.setBluetoothHelperListener(new BluetoothHelper.BluetoothHelperListener() {
-            @Override
-            public void onBluetoothHelperMessageReceived(BluetoothHelper bluetoothhelper, final String message)
-            {
-                 runOnUiThread(new Runnable()
-                 {
-                     @Override
-                     public void run()
-                     {
-                         String[] data = message.split(",");
-                         co2 = Float.parseFloat(data[0].substring(0,data[0].length()-1));
-                         tvoc = Float.parseFloat(data[1].substring(0,data[1].length()-1));
-                         mq2 = Float.parseFloat(data[2].substring(0,data[2].length()-1));
-                         humidity = Float.parseFloat(data[3].substring(0,data[3].length()-1));
-                         pressure = Float.parseFloat(data[4].substring(0,data[4].length()-1));
-                         altitude = Float.parseFloat(data[5].substring(0,data[5].length()-1));
-                         temperature = Float.parseFloat(data[6].substring(0,data[6].length()-1));
-                     }
-                 });
-            }
-
-            @Override
-            public void onBluetoothHelperConnectionStateChanged(BluetoothHelper bluetoothhelper, boolean isConnected) {
-                if (isConnected)
-                {
-                    System.out.println("Connected");
-                    mBluetooth.SendMessage("1");
-                    System.out.println("Sending Message");
-                }
-                else
-                {
-                    System.out.println("Disconnected");
-                    mBluetooth.Connect(DEVICE_NAME);
-                }
-            }
-        });
-
-        thread = new Thread() {
-
-            @Override
-            public void run() {
-                while (!thread.isInterrupted())
-                {
-                    try
-                    {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            getData();
-                            switch (spinner.getSelectedItemPosition()) {
-                                case 0:     // overall quality
-                                    //TODO Handle Overall choice and display meter values
-                                    break;
-                                case 1:     // CO2          TODO for all: adjust sections so that danger zones are properly reflected
-                                    gaugeAirQuality.speedTo(co2);
-                                    break;
-                                case 2:     // TVOC
-                                    gaugeAirQuality.speedTo(tvoc);
-                                    break;
-                                case 3:     // MQ2
-                                    gaugeAirQuality.speedTo(mq2);
-                                    break;
-                                case 4:     // Humidity
-                                    gaugeAirQuality.speedTo(humidity);
-                                    break;
-                                case 5:     // Pressure
-                                    gaugeAirQuality.speedTo(pressure / 1000);
-                                    break;
-                                case 6:     // Temperature
-                                    gaugeAirQuality.speedTo(temperature);
-                                    break;
-                            }
-                        }
-                    });
-                }
-            }
-        };
-        thread.start();
-    }
-
-    public void getData()
-    {
-        mBluetooth.SendMessage("1");
-    }
-
-    public void btInit()
-    {
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
-        if (btAdapter == null)
+        if(checkBluetoothConnection())
         {
-            String msg = "ERROR: Phone does not support bluetooth. Bluetooth connection failed!";
-            Toast.makeText(this, msg, Toast.LENGTH_LONG);
-            return;
-        } else if (!btAdapter.isEnabled())
-        {
-            startActivityForResult(btEnableIntent, REQUEST_ENABLE_BT);
+            longToast("Successfully connected to the SensAir Device!");
+            startBluetoothThreading();
         }
-        //TODO HANDLE SUCCESSFUL DEVICE CONNECTION
-
+        else
+        {
+            longToast("Failed to connect to the SensAir Device. Please check Bluetooth Settings and try again.");
+        }
     }
 
     public void uiInit()
@@ -194,7 +99,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         buttonProfile.setOnClickListener(new View.OnClickListener()
         {
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
             }
@@ -223,10 +129,108 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         categories.add("Temperature");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
-        dataAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        dataAdapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(dataAdapter);
         spinner.setSelection(0);
     }
+
+    public void startBluetoothThreading()
+    {
+        thread =new Thread()
+        {
+
+            @Override
+            public void run () {
+            while (!thread.isInterrupted())
+            {
+                try
+                {
+                    Thread.sleep(100);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if(btIsBound)
+                        {
+                            co2 = btService.getCo2();
+                            tvoc = btService.getTvoc();
+                            mq2 = btService.getMq2();
+                            humidity = btService.getHumidity();
+                            pressure = btService.getPressure();
+                            altitude = btService.getAltitude();
+                            temperature = btService.getTemperature();
+                        }
+
+                        switch (spinner.getSelectedItemPosition())
+                        {
+                            case 0:     // overall quality
+                                //TODO Handle Overall choice and display meter values
+                                break;
+                            case 1:     // CO2          TODO for all: adjust sections so that danger zones are properly reflected
+                                gaugeAirQuality.speedTo(co2);
+                                break;
+                            case 2:     // TVOC
+                                gaugeAirQuality.speedTo(tvoc);
+                                break;
+                            case 3:     // MQ2
+                                gaugeAirQuality.speedTo(mq2);
+                                break;
+                            case 4:     // Humidity
+                                gaugeAirQuality.speedTo(humidity);
+                                break;
+                            case 5:     // Pressure
+                                gaugeAirQuality.speedTo(pressure / 1000);
+                                break;
+                            case 6:     // Temperature
+                                gaugeAirQuality.speedTo(temperature);
+                                break;
+                        }
+                    }
+                });
+            }
+        }
+    };
+            thread.start();
+}
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        unbindService(connection);
+        btIsBound = false;
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        Intent intent = new Intent(this, BluetoothService.class);
+        bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
+    }
+
+    private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
+            btService = binder.getService();
+            btIsBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            btIsBound = false;
+        }
+    };
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
@@ -272,41 +276,34 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //                    section_2.setStartEndOffset((float).4004,(float).8);
 //                    section_3.setStartEndOffset((float).8004,1);
 
-
-                getData();
-                gaugeAirQuality.setUnit(" PPM");
+                gaugeAirQuality.setUnit(" ppm");
                 gaugeAirQuality.speedTo(co2);
                 break;
             case 2:     // TVOC
-                getData();
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,600);
-                gaugeAirQuality.setUnit(" PPB");
+                gaugeAirQuality.setUnit(" ppb");
                 gaugeAirQuality.speedTo(tvoc);
                 break;
             case 3:     // MQ2
-                getData();
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,600);
-                gaugeAirQuality.setUnit(" PPB");
+                gaugeAirQuality.setUnit(" ppb");
                 gaugeAirQuality.speedTo(mq2);
                 break;
             case 4:     // Humidity
-                getData();
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,100);
                 gaugeAirQuality.setUnit(" %");
                 gaugeAirQuality.speedTo(humidity);
                 break;
             case 5:     // Pressure
-                getData();
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,150);
                 gaugeAirQuality.setUnit(" KPa");
                 gaugeAirQuality.speedTo(pressure/1000);
                 break;
             case 6:     // Temperature
-                getData();
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,40);
                 gaugeAirQuality.setUnit(" Celsius");
@@ -321,38 +318,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        //TODO Check if still connected
-
-//            String msg = "Oops! Lost connection to the SensAir. Please pair device in Settings.";
-//            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-
-    }
-
     protected void onResume()
     {
         super.onResume();
-    }
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
-    {
-        if (requestCode == REQUEST_ENABLE_BT)
+        boolean isPaired = false;
+        if(btAdapter!=null)
         {
-            if (requestCode == RESULT_OK) {
-                String msg = "Bluetooth enabled";
-                Toast.makeText(this, msg, Toast.LENGTH_LONG);
-            }
-            else if (requestCode == RESULT_CANCELED)
+            Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+            for (BluetoothDevice device : pairedDevices)
             {
-                String msg = "Bluetooth enable failed";
-                Toast.makeText(this, msg, Toast.LENGTH_LONG);
+                if (device.getName().equals("SensAir"))
+                    isPaired = true;
+            }
+            if (!isPaired)
+            {
+                longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -366,8 +351,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        int id = item.getItemId();          // gets item ID
-        if(id == R.id.infoButton)          // if edit button is clicked
+        int id = item.getItemId();
+        if(id == R.id.infoButton)
         {
             Intent intent = new Intent(MainActivity.this, InfoActivity.class);
             startActivity(intent);
@@ -375,5 +360,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return super.onOptionsItemSelected(item);
     }
 
+    public Boolean checkBluetoothConnection()
+    {
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 
+        if (btAdapter == null)
+        {
+            return false;
+        }
+
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+        for(BluetoothDevice device : pairedDevices)
+        {
+            if(device.getName().equals("SensAir"))
+                return true;
+        }
+        return false;
+    }
+
+    public void print(String s)
+    {
+        System.out.println(s);
+    }
+
+
+    public void longToast(String toast_message)
+    {
+        Toast.makeText(this,toast_message,Toast.LENGTH_LONG).show();
+    }
+
+    public void shortToast(String toast_message)
+    {
+        Toast.makeText(this,toast_message,Toast.LENGTH_SHORT).show();
+    }
 }
