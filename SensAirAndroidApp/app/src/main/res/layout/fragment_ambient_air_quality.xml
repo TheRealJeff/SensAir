@@ -80,7 +80,7 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="10dp"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/HumidityDivider" />
 
@@ -91,7 +91,7 @@
         android:layout_marginTop="10dp"
         android:text=" %"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/humidityData"
         app:layout_constraintTop_toBottomOf="@+id/HumidityDivider" />
@@ -103,7 +103,7 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="10dp"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/PressureDivider" />
 
@@ -114,7 +114,7 @@
         android:layout_marginTop="10dp"
         android:text=" KPa"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/pressureData"
         app:layout_constraintTop_toBottomOf="@+id/PressureDivider" />
@@ -126,7 +126,7 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="10dp"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TemperatureDivider" />
 
@@ -137,7 +137,7 @@
         android:layout_marginTop="10dp"
         android:text=" Celsius"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/temperatureData"
         app:layout_constraintTop_toBottomOf="@+id/TemperatureDivider" />
@@ -170,7 +170,7 @@
         android:layout_marginTop="10dp"
         android:text=" meters"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/altitudeData"
         app:layout_constraintTop_toBottomOf="@+id/ALtitudeDivider" />
@@ -182,7 +182,7 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="10dp"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ALtitudeDivider" />
 

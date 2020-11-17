@@ -99,7 +99,6 @@ public class RealTimeActivity extends AppCompatActivity
                             if(btIsBound)
                             {
                                 co2 = btService.getCo2();
-                                print(Float.toString(co2));
                                 tvoc = btService.getTvoc();
                                 mq2 = btService.getMq2();
                                 humidity = btService.getHumidity();

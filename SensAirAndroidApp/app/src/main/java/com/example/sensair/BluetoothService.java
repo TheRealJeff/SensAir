@@ -97,7 +97,7 @@ public class BluetoothService extends Service
                 {
                     try
                     {
-                        Thread.sleep(100);
+                        Thread.sleep(500);
                     } catch (InterruptedException e)
                     {
                         e.printStackTrace();
@@ -181,5 +181,19 @@ public class BluetoothService extends Service
     public float getTemperature()
     {
         return temperature;
+    }
+    public float getOverallQuality()
+    {
+        float co2_weight = 0;
+        float tvoc_weight = 0;
+        float mq2_weight = 0;
+
+        if(co2<1000) co2_weight=1;
+        if(tvoc<250) tvoc_weight=1;
+        if(mq2<240) mq2_weight = 1;
+
+        float score = (co2_weight+tvoc_weight+mq2_weight)/3;
+        score*=100f;
+        return score;
     }
 }
