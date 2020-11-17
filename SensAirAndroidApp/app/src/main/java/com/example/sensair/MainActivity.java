@@ -19,8 +19,13 @@ import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.Section;
 import com.github.anastr.speedviewlib.components.Style;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
@@ -44,6 +49,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private float altitude;
     private float temperature;
 
+    DBHelper AirDB ;
+    List<AirData> airDataList ;
+    static String key;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -66,7 +76,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                      @Override
                      public void run()
                      {
-                         String[] data = message.split(",");
+
+
+                         /** String[] data = message.split(",");
                          co2 = Float.parseFloat(data[0].substring(0,data[0].length()-1));
                          tvoc = Float.parseFloat(data[1].substring(0,data[1].length()-1));
                          mq2 = Float.parseFloat(data[2].substring(0,data[2].length()-1));
@@ -74,6 +86,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                          pressure = Float.parseFloat(data[4].substring(0,data[4].length()-1));
                          altitude = Float.parseFloat(data[5].substring(0,data[5].length()-1));
                          temperature = Float.parseFloat(data[6].substring(0,data[6].length()-1));
+                         AirData airData = new AirData(null,String.valueOf(co2),String.valueOf(tvoc),
+                                 String.valueOf(mq2),String.valueOf(humidity),String.valueOf(pressure),String.valueOf(temperature));
+                          */
                      }
                  });
             }
@@ -140,6 +155,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         };
         thread.start();
+
+        AirDB = new DBHelper(getApplicationContext());
+        airDataList = AirDB.getAllData();
+
+        key = null;
+        if(airDataList.size() == 0){
+            int fubar = new Random().nextInt(1000);
+            key = String.valueOf(fubar);
+            AirData airData = new AirData(key, "get", "good", "kid", "kid", "kid", "kid", "kid");
+            AirDB.insertAirData(airData);
+       }
+
+        for(int i = 0; i < (airDataList.size()) ; i++){
+            if(key != airDataList.get(i).getKey()) {
+                int fubar = new Random().nextInt(1000);
+                key = String.valueOf(fubar);
+                AirData airData = new AirData(key, "get", "good", "kid", "kid", "kid", "kid", "kid");
+                AirDB.insertAirData(airData);
+                break;
+            }
+        }
     }
 
     public void getData()
@@ -187,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             public void onClick(View V)
             {
-                Intent intent = new Intent(MainActivity.this, HistoryActivityListActivity.class);
+                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
                 startActivity(intent);
             }
         });
