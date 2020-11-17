@@ -124,7 +124,7 @@
 | 12,800   | Death within 1   to 3 minutes                                                         |
 ***
 
-####**Humidity**
+#### **Humidity**
  measured in precentage, Simply put humidity is the amount of concentration of water vapor in the air. Combined with heat, it can have adverse effects on the human body as well as properties and furniture. Areas located around open bodies of water have higher levels of humidity especially in hotter climates.Humidity levels (both high or low) can have dire consequences and make living conditions unpleasant.
 * __Symptoms (high humidity):__
  * Dehydration
