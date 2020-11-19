@@ -118,7 +118,7 @@ public class BluetoothService extends Service
                     pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
                     altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
-                    print("BLUETOOTH RECEIVING");
+                    print("BLUETOOTH RECEIVING" + "\t\tCO2: "+ co2);
                 }
             }
 

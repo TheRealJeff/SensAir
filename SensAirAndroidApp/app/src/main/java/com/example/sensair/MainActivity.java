@@ -124,9 +124,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setOnItemSelectedListener(this);
 
         categories.add("Overall Air Quality");
-        categories.add("Carbon Dioxide");
-        categories.add("TVOC");
         categories.add("Carbon Monoxide");
+        categories.add("Carbon Dioxide");
+        categories.add("Volatile Organic Compounds");
         categories.add("Humidity");
         categories.add("Pressure");
         categories.add("Temperature");
@@ -190,14 +190,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     gaugeAirQuality.setUnit("Excellent Air Quality Index!");
                                 }
                                 break;
-                            case 1:     // CO2          TODO for all: adjust sections so that danger zones are properly reflected
+                            case 1:     // CO
+                                gaugeAirQuality.speedTo(mq2);
+                                break;
+                            case 2:     // CO
                                 gaugeAirQuality.speedTo(co2);
                                 break;
-                            case 2:     // TVOC
+                            case 3:     // TVOC
                                 gaugeAirQuality.speedTo(tvoc);
-                                break;
-                            case 3:     // MQ2
-                                gaugeAirQuality.speedTo(mq2);
                                 break;
                             case 4:     // Humidity
                                 gaugeAirQuality.speedTo(humidity);
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onStop()
     {
         super.onStop();
-        unbindService(connection);
+//        unbindService(connection);
         btIsBound = false;
     }
 
@@ -234,11 +234,80 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startService(intent);
     }
 
+    protected void onResume()
+    {
+        super.onResume();
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+        boolean isPaired = false;
+        if(btAdapter!=null)
+        {
+            Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+            for (BluetoothDevice device : pairedDevices)
+            {
+                if (device.getName().equals("SensAir"))
+                    isPaired = true;
+            }
+            if (!isPaired)
+            {
+                longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
+            }
+            else
+            {
+//                Intent intent = new Intent(this, BluetoothService.class);
+//                bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
+//                startService(intent);
+            }
+        }
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        super.onStop();
+        unbindService(connection);
+        btIsBound = false;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+    {
+        setGaugeMetric(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0)
+    {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();  // inflates menu designed in /res/menu
+        inflater.inflate(R.menu.menu_main_activity,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+        if(id == R.id.infoButton)
+        {
+            Intent intent = new Intent(MainActivity.this, InfoActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private final ServiceConnection connection = new ServiceConnection() {
 
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
+        public void onServiceConnected(ComponentName className, IBinder service)
+        {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
             btService = binder.getService();
@@ -251,12 +320,39 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     };
 
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+    public Boolean checkBluetoothConnection()
     {
-        setGaugeMetric(position);
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 
+        if (btAdapter == null)
+        {
+            return false;
+        }
+
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+        for(BluetoothDevice device : pairedDevices)
+        {
+            if(device.getName().equals("SensAir"))
+                return true;
+        }
+        return false;
+    }
+
+    public void print(String s)
+    {
+        System.out.println(s);
+    }
+
+
+    public void longToast(String toast_message)
+    {
+        Toast.makeText(this,toast_message,Toast.LENGTH_LONG).show();
+    }
+
+    public void shortToast(String toast_message)
+    {
+        Toast.makeText(this,toast_message,Toast.LENGTH_SHORT).show();
     }
 
     public void setGaugeMetric(int position)
@@ -286,7 +382,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.setTickNumber(0);
 
                 break;
-            case 1:     // CO2
+            case 1:     // CO
+                gaugeAirQuality.speedTo(0);
+                gaugeAirQuality.setMinMaxSpeed(0,600);
+                gaugeAirQuality.setUnit("Parts-per Billion (ppb)");
+
+                s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
+                s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),110);
+                s3 = new Section(.8f,1f,Color.parseColor("#EE5C42"),110);
+                sections.add(s1);
+                sections.add(s2);
+                sections.add(s3);
+                gaugeAirQuality.clearSections();
+                gaugeAirQuality.addSections(sections);
+
+                gaugeAirQuality.setMarksNumber(9);
+                ticks.add(0.2f);
+                ticks.add(0.4f);
+                ticks.add(0.6f);
+                ticks.add(0.8f);
+                gaugeAirQuality.setTicks(ticks);
+
+                gaugeAirQuality.speedTo(mq2);
+                break;
+            case 2:     // CO2
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,2500);
                 gaugeAirQuality.setUnit("Parts-per Million (ppm)");
@@ -309,7 +428,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 gaugeAirQuality.speedTo(co2);
                 break;
-            case 2:     // TVOC
+
+            case 3:     // TVOC
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,4000);
                 gaugeAirQuality.setUnit("Parts-per Billion (ppb)");
@@ -336,29 +456,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.setTicks(ticks);
 
                 gaugeAirQuality.speedTo(tvoc);
-                break;
-            case 3:     // MQ2
-                gaugeAirQuality.speedTo(0);
-                gaugeAirQuality.setMinMaxSpeed(0,600);
-                gaugeAirQuality.setUnit("Parts-per Billion (ppb)");
-
-                s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
-                s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),110);
-                s3 = new Section(.8f,1f,Color.parseColor("#EE5C42"),110);
-                sections.add(s1);
-                sections.add(s2);
-                sections.add(s3);
-                gaugeAirQuality.clearSections();
-                gaugeAirQuality.addSections(sections);
-
-                gaugeAirQuality.setMarksNumber(9);
-                ticks.add(0.2f);
-                ticks.add(0.4f);
-                ticks.add(0.6f);
-                ticks.add(0.8f);
-                gaugeAirQuality.setTicks(ticks);
-
-                gaugeAirQuality.speedTo(mq2);
                 break;
             case 4:     // Humidity
                 gaugeAirQuality.speedTo(0);
@@ -389,7 +486,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 ticks.add(0.8f);
                 ticks.add(0.9f);
                 gaugeAirQuality.setTicks(ticks);
-
 
                 gaugeAirQuality.speedTo(humidity);
                 break;
@@ -445,89 +541,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.speedTo(temperature);
                 break;
         }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0)
-    {
-
-    }
-
-    protected void onResume()
-    {
-        super.onResume();
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
-        boolean isPaired = false;
-        if(btAdapter!=null)
-        {
-            Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
-            for (BluetoothDevice device : pairedDevices)
-            {
-                if (device.getName().equals("SensAir"))
-                    isPaired = true;
-            }
-            if (!isPaired)
-            {
-                longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
-            }
-        }
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        MenuInflater inflater = getMenuInflater();  // inflates menu designed in /res/menu
-        inflater.inflate(R.menu.menu_main_activity,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        int id = item.getItemId();
-        if(id == R.id.infoButton)
-        {
-            Intent intent = new Intent(MainActivity.this, InfoActivity.class);
-            startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public Boolean checkBluetoothConnection()
-    {
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
-        if (btAdapter == null)
-        {
-            return false;
-        }
-
-        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
-        for(BluetoothDevice device : pairedDevices)
-        {
-            if(device.getName().equals("SensAir"))
-                return true;
-        }
-        return false;
-    }
-
-    public void print(String s)
-    {
-        System.out.println(s);
-    }
-
-
-    public void longToast(String toast_message)
-    {
-        Toast.makeText(this,toast_message,Toast.LENGTH_LONG).show();
-    }
-
-    public void shortToast(String toast_message)
-    {
-        Toast.makeText(this,toast_message,Toast.LENGTH_SHORT).show();
     }
 }

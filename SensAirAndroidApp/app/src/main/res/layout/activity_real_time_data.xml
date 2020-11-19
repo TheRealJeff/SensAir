@@ -6,4 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".RealTimeDataActivity">
 
+    <ListView
+        android:id="@+id/airQualityMetricList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:divider="#9A9797"
+        android:dividerHeight="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.widget.ListView;
 
 import java.util.Objects;
 
@@ -18,6 +19,9 @@ public class RealTimeDataActivity extends AppCompatActivity
     protected Thread thread;
     protected BluetoothService btService;
     protected boolean btIsBound = false;
+    protected RealTimeListAdapter listAdapter;
+    protected ListView listView;
+
 
     private float co2;
     private float tvoc;
@@ -33,10 +37,19 @@ public class RealTimeDataActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_real_time_data);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        uiInit();
     }
+
+    public void uiInit()
+    {
+        Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Choose an Air Quality Metric");
+
+        listAdapter = new RealTimeListAdapter(this);
+    -
+    }
+
 
     public void startBluetoothThreading()
     {
@@ -85,27 +98,20 @@ public class RealTimeDataActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStop()
-    {
-        super.onStop();
-        unbindService(connection);
-        btIsBound = false;
-    }
-
-    @Override
     protected void onStart()
     {
         super.onStart();
         Intent intent = new Intent(this, BluetoothService.class);
         bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
-        startService(intent);
+//        startService(intent);
     }
 
-    private final ServiceConnection connection = new ServiceConnection() {
+    private final ServiceConnection connection = new ServiceConnection()
+    {
 
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
+        public void onServiceConnected(ComponentName className, IBinder service)
+        {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
             btService = binder.getService();
