@@ -58,21 +58,13 @@ public class BluetoothService extends Service
     public void getData()
     {
         mBluetooth.SendMessage("1");
+        print("BLUETOOTH TRANSMITTING");
     }
 
     public void btInit()
     {
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
-        if (btAdapter == null)
-        {
-            print("ERROR: Phone does not support bluetooth. Bluetooth connection failed!");
-            return;
-        } else if (!btAdapter.isEnabled())
-        {
-//            startActivityForResult(btEnableIntent, REQUEST_ENABLE_BT);
-        }
 
         boolean isPaired = false;
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
@@ -126,6 +118,7 @@ public class BluetoothService extends Service
                     pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
                     altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
+                    print("BLUETOOTH RECEIVING");
                 }
             }
 

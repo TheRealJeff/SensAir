@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             public void onClick(View V)
             {
-                Intent intent = new Intent(MainActivity.this, RealTimeActivity.class);
+                Intent intent = new Intent(MainActivity.this, RealTimeDataActivity.class);
                 startActivity(intent);
             }
         });
@@ -255,18 +255,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
     {
+        setGaugeMetric(position);
+
+    }
+
+    public void setGaugeMetric(int position)
+    {
         Section s1,s2,s3,s4,s5;
         List<Section> sections = new ArrayList<>();
         ArrayList<Float> ticks = new ArrayList<>();
 
-        switch (position)
+
+        switch (position)           // handles different gauge selections
         {
             case 0:     // overall quality
                 //TODO Handle Overall choice and display meter values
-                gaugeAirQuality.speedTo(0);
-                gaugeAirQuality.setMinMaxSpeed(0,100);
+                gaugeAirQuality.speedTo(0);                     // reset gauge
+                gaugeAirQuality.setMinMaxSpeed(0,100);          // rescale gauge for each metric
 
-                s1 = new Section(0f,.33333f,Color.parseColor("#EE5C42"),110);
+                s1 = new Section(0f,.33333f,Color.parseColor("#EE5C42"),110);       // create according sections
                 s2 = new Section(.33333f,.66666f,Color.parseColor("#FFFF33"),110);
                 s3 = new Section(.66666f,1f,Color.parseColor("#00CD66"),110);
                 sections.add(s1);
@@ -275,11 +282,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
 
-                gaugeAirQuality.setMarksNumber(2);
+                gaugeAirQuality.setMarksNumber(2);      // set labels
                 gaugeAirQuality.setTickNumber(0);
 
                 break;
-            case 1:     // CO2          TODO for all: adjust sections so that danger zones are properly reflected
+            case 1:     // CO2
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,2500);
                 gaugeAirQuality.setUnit("Parts-per Million (ppm)");
@@ -294,10 +301,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.addSections(sections);
 
                 gaugeAirQuality.setMarksNumber(9);
-                    ticks.add(0.2f);
-                    ticks.add(0.4f);
-                    ticks.add(0.6f);
-                    ticks.add(0.8f);
+                ticks.add(0.2f);
+                ticks.add(0.4f);
+                ticks.add(0.6f);
+                ticks.add(0.8f);
                 gaugeAirQuality.setTicks(ticks);
 
                 gaugeAirQuality.speedTo(co2);
@@ -317,15 +324,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.addSections(sections);
 
                 gaugeAirQuality.setMarksNumber(9);
-                    ticks.add(0.1f);
-                    ticks.add(0.2f);
-                    ticks.add(0.3f);
-                    ticks.add(0.4f);
-                    ticks.add(0.5f);
-                    ticks.add(0.6f);
-                    ticks.add(0.7f);
-                    ticks.add(0.8f);
-                    ticks.add(0.9f);
+                ticks.add(0.1f);
+                ticks.add(0.2f);
+                ticks.add(0.3f);
+                ticks.add(0.4f);
+                ticks.add(0.5f);
+                ticks.add(0.6f);
+                ticks.add(0.7f);
+                ticks.add(0.8f);
+                ticks.add(0.9f);
                 gaugeAirQuality.setTicks(ticks);
 
                 gaugeAirQuality.speedTo(tvoc);
@@ -345,10 +352,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.addSections(sections);
 
                 gaugeAirQuality.setMarksNumber(9);
-                    ticks.add(0.2f);
-                    ticks.add(0.4f);
-                    ticks.add(0.6f);
-                    ticks.add(0.8f);
+                ticks.add(0.2f);
+                ticks.add(0.4f);
+                ticks.add(0.6f);
+                ticks.add(0.8f);
                 gaugeAirQuality.setTicks(ticks);
 
                 gaugeAirQuality.speedTo(mq2);
@@ -372,15 +379,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.addSections(sections);
 
                 gaugeAirQuality.setMarksNumber(9);
-                    ticks.add(0.1f);
-                    ticks.add(0.2f);
-                    ticks.add(0.3f);
-                    ticks.add(0.4f);
-                    ticks.add(0.5f);
-                    ticks.add(0.6f);
-                    ticks.add(0.7f);
-                    ticks.add(0.8f);
-                    ticks.add(0.9f);
+                ticks.add(0.1f);
+                ticks.add(0.2f);
+                ticks.add(0.3f);
+                ticks.add(0.4f);
+                ticks.add(0.5f);
+                ticks.add(0.6f);
+                ticks.add(0.7f);
+                ticks.add(0.8f);
+                ticks.add(0.9f);
                 gaugeAirQuality.setTicks(ticks);
 
 
@@ -401,11 +408,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.addSections(sections);
 
                 gaugeAirQuality.setMarksNumber(5);
-                    ticks.add(1/6f);
-                    ticks.add(2/6f);
-                    ticks.add(3/6f);
-                    ticks.add(4/6f);
-                    ticks.add(5/6f);
+                ticks.add(1/6f);
+                ticks.add(2/6f);
+                ticks.add(3/6f);
+                ticks.add(4/6f);
+                ticks.add(5/6f);
 
                 gaugeAirQuality.setTicks(ticks);
 
@@ -424,15 +431,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.addSections(sections);
 
                 gaugeAirQuality.setMarksNumber(9);
-                    ticks.add(0.1f);
-                    ticks.add(0.2f);
-                    ticks.add(0.3f);
-                    ticks.add(0.4f);
-                    ticks.add(0.5f);
-                    ticks.add(0.6f);
-                    ticks.add(0.7f);
-                    ticks.add(0.8f);
-                    ticks.add(0.9f);
+                ticks.add(0.1f);
+                ticks.add(0.2f);
+                ticks.add(0.3f);
+                ticks.add(0.4f);
+                ticks.add(0.5f);
+                ticks.add(0.6f);
+                ticks.add(0.7f);
+                ticks.add(0.8f);
+                ticks.add(0.9f);
                 gaugeAirQuality.setTicks(ticks);
 
                 gaugeAirQuality.speedTo(temperature);
