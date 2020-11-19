@@ -21,6 +21,7 @@ public class BluetoothService extends Service
     protected final IBinder binder = new LocalBinder();
 
     protected BluetoothHelper mBluetooth = new BluetoothHelper();
+    protected BluetoothDevice mBluetoothDevice;
     protected final String DEVICE_NAME = "SensAir";
     protected Thread thread;
 
@@ -43,8 +44,8 @@ public class BluetoothService extends Service
     @Override
     public void onCreate()
     {
-        connect();
         btInit();
+        connect();
     }
 
 
@@ -69,7 +70,10 @@ public class BluetoothService extends Service
         for(BluetoothDevice device : pairedDevices)
         {
             if(device.getName().equals("SensAir"))
+            {
+                mBluetoothDevice = device;
                 isPaired = true;
+            }
         }
         if(isPaired)
         {
@@ -87,7 +91,7 @@ public class BluetoothService extends Service
                 {
                     try
                     {
-                        Thread.sleep(500);
+                        Thread.sleep(10);
                     } catch (InterruptedException e)
                     {
                         e.printStackTrace();
@@ -101,7 +105,7 @@ public class BluetoothService extends Service
 
     public void connect()
     {
-        mBluetooth.Connect(DEVICE_NAME);
+        mBluetooth.Connect(mBluetoothDevice);
         mBluetooth.setBluetoothHelperListener(new BluetoothHelper.BluetoothHelperListener() {
             @Override
             public void onBluetoothHelperMessageReceived(BluetoothHelper bluetoothhelper, final String message)
@@ -116,6 +120,7 @@ public class BluetoothService extends Service
                     pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
                     altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
+                    print("Receiving data");
                 }
             }
 
@@ -128,7 +133,7 @@ public class BluetoothService extends Service
                 else
                 {
                     System.out.println("Disconnected");
-                    mBluetooth.Connect(DEVICE_NAME);
+                    mBluetooth.Connect(mBluetoothDevice);
                 }
             }
         });

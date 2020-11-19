@@ -77,7 +77,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         coChart.setPinchZoom(true);
 
         // set an alternative background color
-        coChart.setBackgroundColor(Color.LTGRAY);
+        coChart.setBackgroundColor(Color.BLACK);
 
         LineData data = new LineData();
         data.setValueTextColor(Color.WHITE);
@@ -103,7 +103,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         YAxis leftAxis =coChart.getAxisLeft();
         leftAxis.setTypeface(tfLight);
         leftAxis.setTextColor(Color.WHITE);
-        leftAxis.setAxisMaximum(300f);
+        leftAxis.setAxisMaximum(1000f);
         leftAxis.setAxisMinimum(0f);
         leftAxis.setDrawGridLines(true);
 
@@ -135,7 +135,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
             coChart.notifyDataSetChanged();
 
             // limit the number of visible entries
-            coChart.setVisibleXRangeMaximum(25);
+            coChart.setVisibleXRangeMaximum(200);
 //            coChart.setVisibleYRange(30, YAxis.AxisDependency.LEFT);
 
             // move to the latest entry
@@ -155,6 +155,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         set.setCircleColor(Color.WHITE);
         set.setLineWidth(2f);
         set.setCircleRadius(0f);
+        set.setDrawCircles(false);
         set.setFillAlpha(65);
         set.setFillColor(ColorTemplate.getHoloBlue());
         set.setHighLightColor(Color.rgb(244, 117, 117));
@@ -175,7 +176,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                 {
                     try
                     {
-                        Thread.sleep(100);
+                        Thread.sleep(10);
                     } catch (InterruptedException e)
                     {
                         e.printStackTrace();
@@ -187,7 +188,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                         {
                             if(btIsBound)
                             {
-                                co = btService.getMq2();
+                                co = btService.getCo2();
                                 addEntry();
                                 System.out.println("CO DATA THREAD");
                             }
@@ -227,7 +228,6 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
             thread.interrupt();
         }
     }
-
 
     private final ServiceConnection connection = new ServiceConnection()
     {
