@@ -13,7 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RealTimeDataActivity"></activity>
+        <activity android:name=".realtimeplotting.AltitudeDataActivity"></activity>
+        <activity android:name=".realtimeplotting.TemperatureDataActivity" />
+        <activity android:name=".realtimeplotting.PressureDataActivity" />
+        <activity android:name=".realtimeplotting.HumidityDataActivity" />
+        <activity android:name=".realtimeplotting.VolatileOrganicCompoundsActivity" />
+        <activity android:name=".realtimeplotting.CarbonDioxideDataActivity" />
+        <activity android:name=".realtimeplotting.CarbonMonoxideDataActivity" />
+        <activity android:name=".RealTimeDataActivity" />
 
         <service android:name=".BluetoothService" />
 
@@ -21,7 +28,7 @@
             android:name=".HistoryActivityListActivity"
             android:label="@string/title_historyactivity_list"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".HistoryActivityDetailActivity"
             android:label="@string/title_historyactivity_detail"

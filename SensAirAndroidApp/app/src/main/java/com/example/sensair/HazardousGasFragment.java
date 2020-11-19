@@ -17,7 +17,7 @@ import com.example.sensair.RealTimeActivity;
 public class HazardousGasFragment extends Fragment
 {
 
-    protected TextView co2Data,tvocData,mq2Data;
+    protected TextView coData,tvocData,mq2Data;
     protected Thread thread;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -36,7 +36,7 @@ public class HazardousGasFragment extends Fragment
 
     public void uiInit(View view)
     {
-        co2Data = view.findViewById(R.id.co2Data);
+        coData = view.findViewById(R.id.coData);
         tvocData = view.findViewById(R.id.tvocData);
         mq2Data = view.findViewById(R.id.mq2Data);
     }
@@ -64,7 +64,7 @@ public class HazardousGasFragment extends Fragment
                         {
                             if(isAdded())
                             {
-                                updateCo2(((RealTimeActivity) getActivity()).getCo2());
+                                updateco(((RealTimeActivity) getActivity()).getco());
                                 updateTvoc(((RealTimeActivity) getActivity()).getTvoc());
                                 updateMq2(((RealTimeActivity) getActivity()).getMq2());
                             }
@@ -85,9 +85,9 @@ public class HazardousGasFragment extends Fragment
         thread.interrupt();
     }
 
-    public void updateCo2(Float co2)
+    public void updateco(Float co)
     {
-        co2Data.setText(String.format("%.0f",co2));
+        coData.setText(String.format("%.0f",co));
     }
 
     public void updateTvoc(Float tvoc)

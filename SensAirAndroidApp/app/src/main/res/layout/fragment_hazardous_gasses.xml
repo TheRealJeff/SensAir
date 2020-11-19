@@ -7,7 +7,7 @@
     android:layout_height="fill_parent"
     tools:context=".HazardousGasFragment">
 
-<!--    CO2 DATA-->
+<!--    co DATA-->
 
     <TextView
         android:id="@+id/HumidityTitle"
@@ -76,7 +76,7 @@
         app:layout_constraintTop_toBottomOf="@+id/TemperatureTitle" />
 
     <TextView
-        android:id="@+id/co2Data"
+        android:id="@+id/coData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
@@ -95,7 +95,7 @@
         android:textColor="#000000"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/co2Data"
+        app:layout_constraintStart_toEndOf="@+id/coData"
         app:layout_constraintTop_toBottomOf="@+id/HumidityDivider" />
 
     <TextView

@@ -16,18 +16,13 @@ import java.util.ArrayList;
 
 public class RealTimeListAdapter extends ArrayAdapter<String>
 {
-    private ArrayList<String> metrics = new ArrayList<String>();
+    private ArrayList<String> metrics;
 
 
-    public RealTimeListAdapter(@NonNull Context context)
+    public RealTimeListAdapter(@NonNull Context context, ArrayList<String> metrics)
     {
         super(context, 0);
-        metrics.add("Carbon Monoxide (CO)");
-        metrics.add("Carbon Dioxide (CO2)");
-        metrics.add("Volatile Organic Compounds (VOC)");
-        metrics.add("Humidity");
-        metrics.add("Pressure");
-        metrics.add("Temperature");
+        this.metrics = metrics;
     }
 
     @NonNull
@@ -42,7 +37,6 @@ public class RealTimeListAdapter extends ArrayAdapter<String>
 
         TextView textViewMetric = listItem.findViewById(R.id.airQualityMetric);
         textViewMetric.setText(metric);
-
-        return super.getView(position, convertView, parent);
+        return listItem;
     }
 }

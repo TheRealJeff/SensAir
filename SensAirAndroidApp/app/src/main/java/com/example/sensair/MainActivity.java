@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected BluetoothService btService;
     protected boolean btIsBound = false;
 
-    private float co2;
+    private float co;
     private float tvoc;
     private float mq2;
     private float humidity;
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     {
                         if(btIsBound)
                         {
-                            co2 = btService.getCo2();
+                            co = btService.getCo2();
                             tvoc = btService.getTvoc();
                             mq2 = btService.getMq2();
                             humidity = btService.getHumidity();
@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             altitude = btService.getAltitude();
                             temperature = btService.getTemperature();
                             overallQualityScore = btService.getOverallQuality();
+                            System.out.println("MAIN ACTIVITY THREAD");
                         }
 
                         switch (spinner.getSelectedItemPosition())
@@ -194,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 gaugeAirQuality.speedTo(mq2);
                                 break;
                             case 2:     // CO
-                                gaugeAirQuality.speedTo(co2);
+                                gaugeAirQuality.speedTo(co);
                                 break;
                             case 3:     // TVOC
                                 gaugeAirQuality.speedTo(tvoc);
@@ -405,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 gaugeAirQuality.speedTo(mq2);
                 break;
-            case 2:     // CO2
+            case 2:     // co
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,2500);
                 gaugeAirQuality.setUnit("Parts-per Million (ppm)");
@@ -426,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 ticks.add(0.8f);
                 gaugeAirQuality.setTicks(ticks);
 
-                gaugeAirQuality.speedTo(co2);
+                gaugeAirQuality.speedTo(co);
                 break;
 
             case 3:     // TVOC

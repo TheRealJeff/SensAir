@@ -32,7 +32,7 @@ public class RealTimeActivity extends AppCompatActivity
     protected boolean btIsBound = false;
     public static Handler UIHandler;
 
-    private float co2;
+    private float co;
     private float tvoc;
     private float mq2;
     private float humidity;
@@ -98,7 +98,7 @@ public class RealTimeActivity extends AppCompatActivity
                         {
                             if(btIsBound)
                             {
-                                co2 = btService.getCo2();
+                                co = btService.getCo2();
                                 tvoc = btService.getTvoc();
                                 mq2 = btService.getMq2();
                                 humidity = btService.getHumidity();
@@ -182,9 +182,9 @@ public class RealTimeActivity extends AppCompatActivity
         System.out.println(message);
     }
 
-    public float getCo2()
+    public float getco()
     {
-        return co2;
+        return co;
     }
     public float getTvoc()
     {

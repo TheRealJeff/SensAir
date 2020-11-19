@@ -18,7 +18,7 @@ import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
 public class BluetoothService extends Service
 {
-    private final IBinder binder = new LocalBinder();
+    protected final IBinder binder = new LocalBinder();
 
     protected BluetoothHelper mBluetooth = new BluetoothHelper();
     protected final String DEVICE_NAME = "SensAir";
@@ -34,7 +34,7 @@ public class BluetoothService extends Service
 
     public class LocalBinder extends Binder
     {
-        BluetoothService getService()
+        public BluetoothService getService()
         {
             return BluetoothService.this;
         }
@@ -58,13 +58,11 @@ public class BluetoothService extends Service
     public void getData()
     {
         mBluetooth.SendMessage("1");
-        print("BLUETOOTH TRANSMITTING");
     }
 
     public void btInit()
     {
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 
         boolean isPaired = false;
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
@@ -111,14 +109,13 @@ public class BluetoothService extends Service
                 String[] data = message.split(",");
                 if (data.length == 7)
                 {
-                    co2 = Float.parseFloat(data[0].substring(0, data[0].length() - 1));
+                    co2= Float.parseFloat(data[0].substring(0, data[0].length() - 1));
                     tvoc = Float.parseFloat(data[1].substring(0, data[1].length() - 1));
                     mq2 = Float.parseFloat(data[2].substring(0, data[2].length() - 1));
                     humidity = Float.parseFloat(data[3].substring(0, data[3].length() - 1));
                     pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
                     altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
-                    print("BLUETOOTH RECEIVING" + "\t\tCO2: "+ co2);
                 }
             }
 
@@ -177,15 +174,15 @@ public class BluetoothService extends Service
     }
     public float getOverallQuality()
     {
-        float co2_weight = 0;
+        float co_weight = 0;
         float tvoc_weight = 0;
         float mq2_weight = 0;
 
-        if(co2<1000) co2_weight=1;
+        if(co2<1000) co_weight=1;
         if(tvoc<250) tvoc_weight=1;
         if(mq2<240) mq2_weight = 1;
 
-        float score = (co2_weight+tvoc_weight+mq2_weight)/3;
+        float score = (co_weight+tvoc_weight+mq2_weight)/3;
         score*=100f;
         return score;
     }
