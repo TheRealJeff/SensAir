@@ -6,20 +6,37 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.example.sensair.BluetoothService;
 import com.example.sensair.R;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.Objects;
 
-public class CarbonMonoxideDataActivity extends AppCompatActivity
+public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnChartValueSelectedListener
 {
+
+    private LineChart coChart;
 
     protected Thread thread;
     protected BluetoothService btService;
     protected boolean btIsBound = false;
+    protected Typeface tfLight = Typeface.DEFAULT;
 
     private float co;
 
@@ -29,6 +46,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carbon_monoxide_data);
         uiInit();
+        plottingInit();
         startBluetoothThreading();
     }
 
@@ -37,6 +55,113 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity
         Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Carbon Monoxide (CO)");
+    }
+
+    public void plottingInit()
+    {
+        coChart = findViewById(R.id.coChart);
+        coChart.setOnChartValueSelectedListener(this);
+
+        // enable description text
+        coChart.getDescription().setEnabled(true);
+
+        // enable touch gestures
+        coChart.setTouchEnabled(true);
+
+        // enable scaling and dragging
+        coChart.setDragEnabled(true);
+        coChart.setScaleEnabled(true);
+        coChart.setDrawGridBackground(false);
+
+        // if disabled, scaling can be done on x- and y-axis separately
+        coChart.setPinchZoom(true);
+
+        // set an alternative background color
+        coChart.setBackgroundColor(Color.LTGRAY);
+
+        LineData data = new LineData();
+        data.setValueTextColor(Color.WHITE);
+
+        // add empty data
+        coChart.setData(data);
+
+        // get the legend (only possible after setting data)
+        Legend l =coChart.getLegend();
+
+        // modify the legend ...
+        l.setForm(Legend.LegendForm.LINE);
+        l.setTypeface(tfLight);
+        l.setTextColor(Color.WHITE);
+
+        XAxis xl =coChart.getXAxis();
+        xl.setTypeface(tfLight);
+        xl.setTextColor(Color.WHITE);
+        xl.setDrawGridLines(false);
+        xl.setAvoidFirstLastClipping(true);
+        xl.setEnabled(true);
+
+        YAxis leftAxis =coChart.getAxisLeft();
+        leftAxis.setTypeface(tfLight);
+        leftAxis.setTextColor(Color.WHITE);
+        leftAxis.setAxisMaximum(300f);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setDrawGridLines(true);
+
+        YAxis rightAxis =coChart.getAxisRight();
+        rightAxis.setEnabled(false);
+    }
+
+    private void addEntry()
+    {
+
+        LineData data = coChart.getData();
+
+        if (data != null)
+        {
+
+            ILineDataSet set = data.getDataSetByIndex(0);
+            // set.addEntry(...); // can be called as well
+
+            if (set == null)
+            {
+                set = createSet();
+                data.addDataSet(set);
+            }
+
+            data.addEntry(new Entry(set.getEntryCount(), co), 0);
+            data.notifyDataChanged();
+
+            // let the chart know it's data has changed
+            coChart.notifyDataSetChanged();
+
+            // limit the number of visible entries
+            coChart.setVisibleXRangeMaximum(25);
+//            coChart.setVisibleYRange(30, YAxis.AxisDependency.LEFT);
+
+            // move to the latest entry
+            coChart.moveViewToX(data.getEntryCount());
+
+            // this automatically refreshes the chart (calls invalidate())
+            // chart.moveViewTo(data.getXValCount()-7, 55f,
+            // AxisDependency.LEFT);
+        }
+    }
+
+    private LineDataSet createSet()
+    {
+        LineDataSet set = new LineDataSet(null, "Dynamic Data");
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set.setColor(ColorTemplate.getHoloBlue());
+        set.setCircleColor(Color.WHITE);
+        set.setLineWidth(2f);
+        set.setCircleRadius(0f);
+        set.setFillAlpha(65);
+        set.setFillColor(ColorTemplate.getHoloBlue());
+        set.setHighLightColor(Color.rgb(244, 117, 117));
+        set.setValueTextColor(Color.WHITE);
+        set.setValueTextSize(9f);
+        set.setDrawValues(false);
+        return set;
     }
 
     public void startBluetoothThreading()
@@ -63,6 +188,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity
                             if(btIsBound)
                             {
                                 co = btService.getMq2();
+                                addEntry();
                                 System.out.println("CO DATA THREAD");
                             }
                         }
@@ -95,6 +221,11 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity
         super.onStop();
         unbindService(connection);
         btIsBound = false;
+
+        if(thread!=null)
+        {
+            thread.interrupt();
+        }
     }
 
 
@@ -114,4 +245,16 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity
             btIsBound = false;
         }
     };
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h)
+    {
+        Log.i("Entry selected", e.toString());
+    }
+
+    @Override
+    public void onNothingSelected()
+    {
+        Log.i("Nothing selected", "Nothing selected.");
+    }
 }

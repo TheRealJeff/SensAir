@@ -270,6 +270,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onStop();
         unbindService(connection);
         btIsBound = false;
+
+        if(thread!=null)
+        {
+            thread.interrupt();
+        }
     }
 
     @Override
@@ -402,6 +407,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 ticks.add(0.4f);
                 ticks.add(0.6f);
                 ticks.add(0.8f);
+
                 gaugeAirQuality.setTicks(ticks);
 
                 gaugeAirQuality.speedTo(mq2);

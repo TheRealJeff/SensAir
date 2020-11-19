@@ -63,7 +63,7 @@ public class AltitudeDataActivity extends AppCompatActivity
                             if(btIsBound)
                             {
                                 altitude = btService.getAltitude();
-                                System.out.println("TEMPERATURE DATA THREAD");
+                                System.out.println("ALTITUDE DATA THREAD");
                             }
                         }
                     });
@@ -95,6 +95,11 @@ public class AltitudeDataActivity extends AppCompatActivity
         super.onStop();
         unbindService(connection);
         btIsBound = false;
+
+        if(thread!=null)
+        {
+            thread.interrupt();
+        }
     }
 
 

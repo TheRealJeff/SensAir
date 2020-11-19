@@ -94,6 +94,11 @@ public class PressureDataActivity extends AppCompatActivity
         super.onStop();
         unbindService(connection);
         btIsBound = false;
+
+        if(thread!=null)
+        {
+            thread.interrupt();
+        }
     }
 
 

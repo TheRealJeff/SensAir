@@ -52,7 +52,6 @@ public class RealTimeDataActivity extends AppCompatActivity
         setContentView(R.layout.activity_real_time_data);
 
         uiInit();
-        startBluetoothThreading();
     }
 
     public void uiInit()
@@ -62,8 +61,8 @@ public class RealTimeDataActivity extends AppCompatActivity
         setTitle("Choose an Air Quality Metric");
 
         ArrayList<String> metrics = new ArrayList<String>();
-        metrics.add(CO2);
         metrics.add(MQ2);
+        metrics.add(CO2);
         metrics.add(TVOC);
         metrics.add(HUMIDITY);
         metrics.add(PRESSURE);
@@ -108,47 +107,13 @@ public class RealTimeDataActivity extends AppCompatActivity
                     case ALTITUDE:
                         intent = new Intent(RealTimeDataActivity.this, AltitudeDataActivity.class);
                         startActivity(intent);
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + metric);
+//                    default:
+//                        throw new IllegalStateException("Unexpected value: " + metric);
                 }
             }
         });
 
         listView.setAdapter(listAdapter);
-    }
-
-
-    public void startBluetoothThreading()
-    {
-        thread =new Thread()
-        {
-
-            @Override
-            public void run () {
-                while (!thread.isInterrupted())
-                {
-                    try
-                    {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            if(btIsBound)
-                            {
-                                System.out.println("REAL TIME THREAD");
-                            }
-                        }
-                    });
-                }
-            }
-        };
-        thread.start();
     }
 
     @Override
@@ -158,38 +123,4 @@ public class RealTimeDataActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-        Intent intent = new Intent(this, BluetoothService.class);
-        bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        super.onStop();
-        unbindService(connection);
-        btIsBound = false;
-    }
-
-
-    private final ServiceConnection connection = new ServiceConnection()
-    {
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service)
-        {
-            BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
-            btService = binder.getService();
-            btIsBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            btIsBound = false;
-        }
-    };
 }

@@ -8,6 +8,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.SubscriptSpan;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -39,7 +43,7 @@ public class CarbonDioxideDataActivity extends AppCompatActivity
     {
         Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("Carbon Dioxide (CO)");
+        setTitle("Carbon Dioxide (CO2)");
     }
 
 
@@ -99,6 +103,11 @@ public class CarbonDioxideDataActivity extends AppCompatActivity
         super.onStop();
         unbindService(connection);
         btIsBound = false;
+
+        if(thread!=null)
+        {
+            thread.interrupt();
+        }
     }
 
 

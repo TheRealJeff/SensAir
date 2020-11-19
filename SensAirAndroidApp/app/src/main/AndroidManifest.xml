@@ -39,15 +39,6 @@
                 android:value="com.example.sensair.HistoryActivityListActivity" />
         </activity>
         <activity
-            android:name=".RealTimeActivity"
-            android:label="@string/title_activity_real_time"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.sensair.RealTimeActivity" />
-        </activity>
-        <activity
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
             android:parentActivityName=".MainActivity">

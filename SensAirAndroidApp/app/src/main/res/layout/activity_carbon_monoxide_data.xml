@@ -6,4 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".realtimeplotting.CarbonMonoxideDataActivity">
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/coChart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

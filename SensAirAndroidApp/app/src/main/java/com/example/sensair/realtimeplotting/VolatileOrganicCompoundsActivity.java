@@ -95,6 +95,11 @@ public class VolatileOrganicCompoundsActivity extends AppCompatActivity
         super.onStop();
         unbindService(connection);
         btIsBound = false;
+
+        if(thread!=null)
+        {
+            thread.interrupt();
+        }
     }
 
 
