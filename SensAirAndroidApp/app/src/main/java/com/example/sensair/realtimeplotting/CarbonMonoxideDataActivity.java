@@ -8,12 +8,18 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.sensair.BluetoothService;
 import com.example.sensair.R;
+import com.github.anastr.speedviewlib.SpeedView;
+import com.github.anastr.speedviewlib.components.Section;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -26,12 +32,19 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnChartValueSelectedListener
 {
 
-    private LineChart coChart;
+    protected LineChart coChart;
+    protected Button freeze;
+    protected boolean frozen = false;
+    protected SpeedView gaugeCo;
+    protected float average,n;
+    protected TextView textViewAverage;
 
     protected Thread thread;
     protected BluetoothService btService;
@@ -47,6 +60,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         setContentView(R.layout.activity_carbon_monoxide_data);
         uiInit();
         plottingInit();
+        gaugeInit();
         startBluetoothThreading();
     }
 
@@ -55,15 +69,33 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Carbon Monoxide (CO)");
+
+        freeze = findViewById(R.id.coFreezeButton);
+        freeze.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(frozen)
+                {
+                    freeze.setText("Freeze");
+                    frozen = false;
+                }
+                else if(!frozen)
+                {
+                    freeze.setText("Continue");
+                    frozen = true;
+                }
+            }
+        });
+
+        textViewAverage = findViewById(R.id.coAverage);
     }
 
     public void plottingInit()
     {
         coChart = findViewById(R.id.coChart);
         coChart.setOnChartValueSelectedListener(this);
-
-        // enable description text
-        coChart.getDescription().setEnabled(true);
 
         // enable touch gestures
         coChart.setTouchEnabled(true);
@@ -77,10 +109,10 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         coChart.setPinchZoom(true);
 
         // set an alternative background color
-        coChart.setBackgroundColor(Color.BLACK);
+        coChart.setBackgroundColor(Color.TRANSPARENT);
 
         LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextColor(Color.BLACK);
 
         // add empty data
         coChart.setData(data);
@@ -91,24 +123,59 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         // modify the legend ...
         l.setForm(Legend.LegendForm.LINE);
         l.setTypeface(tfLight);
-        l.setTextColor(Color.WHITE);
+        l.setTextColor(Color.BLACK);
 
         XAxis xl =coChart.getXAxis();
         xl.setTypeface(tfLight);
-        xl.setTextColor(Color.WHITE);
+        xl.setTextColor(Color.BLACK);
         xl.setDrawGridLines(false);
         xl.setAvoidFirstLastClipping(true);
+        xl.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xl.setTextSize(12f);
         xl.setEnabled(true);
 
         YAxis leftAxis =coChart.getAxisLeft();
         leftAxis.setTypeface(tfLight);
-        leftAxis.setTextColor(Color.WHITE);
+        leftAxis.setTextColor(Color.BLACK);
         leftAxis.setAxisMaximum(1000f);
         leftAxis.setAxisMinimum(0f);
+        leftAxis.setTextSize(12f);
         leftAxis.setDrawGridLines(true);
 
         YAxis rightAxis =coChart.getAxisRight();
         rightAxis.setEnabled(false);
+
+        coChart.getDescription().setEnabled(false);
+        coChart.getLegend().setEnabled(false);
+    }
+
+    public void gaugeInit()
+    {
+        gaugeCo = (SpeedView) findViewById(R.id.gaugeCo);
+        gaugeCo.setMinMaxSpeed(0,600);
+        gaugeCo.setWithTremble(false);
+        gaugeCo.setUnit(" ppb");
+
+        Section s1,s2,s3;
+        ArrayList<Section> sections = new ArrayList<>();
+        ArrayList<Float> ticks = new ArrayList<>();
+
+        s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
+        s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),110);
+        s3 = new Section(.8f,1f,Color.parseColor("#EE5C42"),110);
+        sections.add(s1);
+        sections.add(s2);
+        sections.add(s3);
+        gaugeCo.clearSections();
+        gaugeCo.addSections(sections);
+
+        gaugeCo.setMarksNumber(9);
+        ticks.add(0.2f);
+        ticks.add(0.4f);
+        ticks.add(0.6f);
+        ticks.add(0.8f);
+
+        gaugeCo.setTicks(ticks);
     }
 
     private void addEntry()
@@ -120,41 +187,27 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         {
 
             ILineDataSet set = data.getDataSetByIndex(0);
-            // set.addEntry(...); // can be called as well
 
             if (set == null)
             {
                 set = createSet();
                 data.addDataSet(set);
             }
-
             data.addEntry(new Entry(set.getEntryCount(), co), 0);
             data.notifyDataChanged();
-
-            // let the chart know it's data has changed
             coChart.notifyDataSetChanged();
-
-            // limit the number of visible entries
-            coChart.setVisibleXRangeMaximum(200);
-//            coChart.setVisibleYRange(30, YAxis.AxisDependency.LEFT);
-
-            // move to the latest entry
+            coChart.setVisibleXRangeMaximum(250);
             coChart.moveViewToX(data.getEntryCount());
 
-            // this automatically refreshes the chart (calls invalidate())
-            // chart.moveViewTo(data.getXValCount()-7, 55f,
-            // AxisDependency.LEFT);
         }
     }
 
     private LineDataSet createSet()
     {
-        LineDataSet set = new LineDataSet(null, "Dynamic Data");
+        LineDataSet set = new LineDataSet(null,"");
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         set.setColor(ColorTemplate.getHoloBlue());
-        set.setCircleColor(Color.WHITE);
-        set.setLineWidth(2f);
-        set.setCircleRadius(0f);
+        set.setLineWidth(3f);
         set.setDrawCircles(false);
         set.setFillAlpha(65);
         set.setFillColor(ColorTemplate.getHoloBlue());
@@ -188,9 +241,17 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                         {
                             if(btIsBound)
                             {
-                                co = btService.getCo2();
-                                addEntry();
-                                System.out.println("CO DATA THREAD");
+                                if(!frozen)
+                                {
+                                    co = btService.getMq2();
+                                    addEntry();
+
+                                    n++;
+                                    average = average + ((co-average))/n;
+
+                                    textViewAverage.setText(String.format("%.0f",average)+" ppb");
+                                    gaugeCo.speedTo(co);
+                                }
                             }
                         }
                     });

@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
+import kotlin.jvm.functions.Function2;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void uiInit()
     {
         gaugeAirQuality = (SpeedView) findViewById(R.id.gaugeAirQuality);
-        gaugeInit();
+        gaugeAirQuality.setWithTremble(false);
 
         buttonRealTime = (ImageButton) findViewById(R.id.buttonRealTime);
         buttonHistory = (ImageButton) findViewById(R.id.buttonHistory);
@@ -109,12 +110,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-    }
-
-    public void gaugeInit()
-    {
-        // TODO set to user preference / default
-        gaugeAirQuality.setWithTremble(false);
     }
 
     public void dropDownInit()
@@ -168,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             altitude = btService.getAltitude();
                             temperature = btService.getTemperature();
                             overallQualityScore = btService.getOverallQuality();
-                            System.out.println("MAIN ACTIVITY THREAD");
                         }
 
                         switch (spinner.getSelectedItemPosition())
@@ -275,6 +269,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             thread.interrupt();
         }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        Intent intent = new Intent(this, BluetoothService.class);
+        bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
+        stopService(intent);
     }
 
     @Override
@@ -407,6 +410,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 ticks.add(0.4f);
                 ticks.add(0.6f);
                 ticks.add(0.8f);
+
 
                 gaugeAirQuality.setTicks(ticks);
 

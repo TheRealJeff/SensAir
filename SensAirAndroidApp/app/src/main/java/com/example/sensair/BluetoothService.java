@@ -24,6 +24,7 @@ public class BluetoothService extends Service
     protected BluetoothDevice mBluetoothDevice;
     protected final String DEVICE_NAME = "SensAir";
     protected Thread thread;
+    BluetoothAdapter btAdapter;
 
     private float co2;
     private float tvoc;
@@ -63,7 +64,7 @@ public class BluetoothService extends Service
 
     public void btInit()
     {
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         boolean isPaired = false;
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
@@ -96,7 +97,8 @@ public class BluetoothService extends Service
                     {
                         e.printStackTrace();
                     }
-                    getData();
+                    if(mBluetooth!=null)
+                        getData();
                 }
             }
         };
@@ -120,7 +122,6 @@ public class BluetoothService extends Service
                     pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
                     altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
-                    print("Receiving data");
                 }
             }
 
@@ -128,7 +129,7 @@ public class BluetoothService extends Service
             public void onBluetoothHelperConnectionStateChanged(BluetoothHelper bluetoothhelper, boolean isConnected) {
                 if (isConnected)
                 {
-                    mBluetooth.SendMessage("1");
+                    System.out.println("Connected");
                 }
                 else
                 {
