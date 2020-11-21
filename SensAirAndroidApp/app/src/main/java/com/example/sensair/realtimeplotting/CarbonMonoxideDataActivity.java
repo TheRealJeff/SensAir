@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sensair.BluetoothService;
 import com.example.sensair.R;
@@ -22,6 +23,7 @@ import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.Section;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -40,16 +42,16 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
 {
 
     protected LineChart coChart;
-    protected Button freeze;
+    protected Button freeze,log;
     protected boolean frozen = false;
     protected SpeedView gaugeCo;
     protected float average,n;
     protected TextView textViewAverage;
+    protected Typeface tfLight = Typeface.DEFAULT;
 
     protected Thread thread;
     protected BluetoothService btService;
     protected boolean btIsBound = false;
-    protected Typeface tfLight = Typeface.DEFAULT;
 
     private float co;
 
@@ -86,6 +88,16 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                     freeze.setText("Continue");
                     frozen = true;
                 }
+            }
+        });
+
+        log = findViewById(R.id.logButton);
+        log.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Toast.makeText(CarbonMonoxideDataActivity.this,"Saved!",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -134,10 +146,29 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         xl.setTextSize(12f);
         xl.setEnabled(true);
 
+        LimitLine middle = new LimitLine(240f,"Moderate");
+        middle.setLineColor(Color.YELLOW);
+        middle.setLineWidth(2f);
+        middle.enableDashedLine(10f, 10f, 0f);
+        middle.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        middle.setTextSize(11f);
+        middle.setTypeface(tfLight);
+
+        LimitLine upper = new LimitLine(480f,"Dangerous");
+        upper.setLineColor(Color.RED);
+        upper.setLineWidth(2f);
+        upper.enableDashedLine(10f, 10f, 0f);
+        upper.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        upper.setTextSize(11f);
+        upper.setTypeface(tfLight);
+
         YAxis leftAxis =coChart.getAxisLeft();
+        leftAxis.removeAllLimitLines();
+        leftAxis.addLimitLine(upper);
+        leftAxis.addLimitLine(middle);
         leftAxis.setTypeface(tfLight);
         leftAxis.setTextColor(Color.BLACK);
-        leftAxis.setAxisMaximum(1000f);
+        leftAxis.setAxisMaximum(600f);
         leftAxis.setAxisMinimum(0f);
         leftAxis.setTextSize(12f);
         leftAxis.setDrawGridLines(true);
@@ -152,17 +183,17 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     public void gaugeInit()
     {
         gaugeCo = (SpeedView) findViewById(R.id.gaugeCo);
-        gaugeCo.setMinMaxSpeed(0,600);
+        gaugeCo.setMinMaxSpeed(0,150);
         gaugeCo.setWithTremble(false);
-        gaugeCo.setUnit(" ppb");
+        gaugeCo.setUnit(" ppm");
 
         Section s1,s2,s3;
         ArrayList<Section> sections = new ArrayList<>();
         ArrayList<Float> ticks = new ArrayList<>();
 
-        s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
-        s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),110);
-        s3 = new Section(.8f,1f,Color.parseColor("#EE5C42"),110);
+        s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),80);
+        s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),80);
+        s3 = new Section(.8f,1f,Color.parseColor("#EE5C42"),80);
         sections.add(s1);
         sections.add(s2);
         sections.add(s3);
@@ -193,10 +224,10 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                 set = createSet();
                 data.addDataSet(set);
             }
-            data.addEntry(new Entry(set.getEntryCount(), co), 0);
+            data.addEntry(new Entry(set.getEntryCount()/100f, co), 0);
             data.notifyDataChanged();
             coChart.notifyDataSetChanged();
-            coChart.setVisibleXRangeMaximum(250);
+            coChart.setVisibleXRangeMaximum(3);
             coChart.moveViewToX(data.getEntryCount());
 
         }
@@ -249,7 +280,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                                     n++;
                                     average = average + ((co-average))/n;
 
-                                    textViewAverage.setText(String.format("%.0f",average)+" ppb");
+                                    textViewAverage.setText(String.format("%.0f",average)+" ppm");
                                     gaugeCo.speedTo(co);
                                 }
                             }

@@ -212,13 +212,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             thread.start();
 }
 
-    @Override
-    protected void onStop()
-    {
-        super.onStop();
-//        unbindService(connection);
-        btIsBound = false;
-    }
 
     @Override
     protected void onStart()
@@ -247,12 +240,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (!isPaired)
             {
                 longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
-            }
-            else
-            {
-//                Intent intent = new Intent(this, BluetoothService.class);
-//                bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
-//                startService(intent);
             }
         }
     }
@@ -393,8 +380,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case 1:     // CO
                 gaugeAirQuality.speedTo(0);
-                gaugeAirQuality.setMinMaxSpeed(0,600);
-                gaugeAirQuality.setUnit("Parts-per Billion (ppb)");
+                gaugeAirQuality.setMinMaxSpeed(0,125);
+                gaugeAirQuality.setUnit("Parts-per Million (ppm)");
 
                 s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
                 s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),110);
@@ -456,13 +443,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 gaugeAirQuality.setMarksNumber(9);
                 ticks.add(0.1f);
-                ticks.add(0.2f);
                 ticks.add(0.3f);
-                ticks.add(0.4f);
                 ticks.add(0.5f);
-                ticks.add(0.6f);
                 ticks.add(0.7f);
-                ticks.add(0.8f);
                 ticks.add(0.9f);
                 gaugeAirQuality.setTicks(ticks);
 

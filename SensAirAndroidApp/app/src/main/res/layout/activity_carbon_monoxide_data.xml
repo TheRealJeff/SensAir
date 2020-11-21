@@ -9,7 +9,7 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/coChart"
         android:layout_width="match_parent"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="15dp"
         android:layout_height="250dp"
         android:layout_marginTop="50dp"
         app:layout_constraintTop_toTopOf="parent" >
@@ -18,11 +18,12 @@
 
     <Button
         android:id="@+id/coFreezeButton"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="215dp"
+        android:layout_marginTop="212dp"
         android:text="Freeze"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.831"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/coChart" />
 
@@ -56,11 +57,12 @@
         android:id="@+id/coAverageTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="70dp"
         android:fontFamily="sans-serif-smallcaps"
         android:text="Session Average:"
         android:textAllCaps="true"
         android:textColor="#000000"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/gaugeCo"
@@ -73,7 +75,7 @@
         android:layout_marginTop="8dp"
         android:fontFamily="sans-serif-smallcaps"
         android:textColor="#000000"
-        android:textSize="30sp"
+        android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/gaugeCo"
@@ -83,7 +85,7 @@
         android:id="@+id/coChartTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="2dp"
         android:fontFamily="sans-serif-smallcaps"
         android:text="CO vs. Elapsed Time"
         android:textColor="#000000"
@@ -97,13 +99,14 @@
         android:id="@+id/coUnit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="390dp"
         android:fontFamily="sans-serif"
         android:rotation="-90"
-        android:text="ppb"
+        android:text="ppm"
         android:textColor="#000000"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/coChart"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/coChart"
         app:layout_constraintTop_toTopOf="@+id/coChart" />
 
     <TextView
@@ -111,10 +114,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
-        android:text="ms (elapsed)"
+        android:text="s (elapsed)"
         android:textColor="#000000"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coChart" />
+
+    <Button
+        android:id="@+id/logButton"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="215dp"
+        android:text="Log"
+        app:layout_constraintEnd_toStartOf="@+id/coFreezeButton"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/coChart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

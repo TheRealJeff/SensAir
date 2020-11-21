@@ -41,7 +41,7 @@ void setup()
 void loop()
 {
   ccs811.readAlgorithmResults();    // read results from CSS811
-                                    // for each datapoint, we write it to bluetooth then print in serial
+                  
   int co2 = ccs811.getCO2();                      // co2                    ppm
   int tvoc = ccs811.getTVOC();                    // TVOC                   ppb
   int mq2_reading = analogRead(MQ2_PIN);          // MQ2                    ppb
@@ -74,7 +74,7 @@ void loop()
 //      Serial.print("CO2:\t\t");
 //      Serial.print(co2);
 //      Serial.println(" ppm");
-//    
+    
 //      Serial.print("TVOC:\t\t");
 //      Serial.print(tvoc);
 //      Serial.println(" ppb");

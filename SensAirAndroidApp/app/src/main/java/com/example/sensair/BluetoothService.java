@@ -5,6 +5,7 @@ import android.app.Application;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
@@ -115,7 +116,7 @@ public class BluetoothService extends Service
                 String[] data = message.split(",");
                 if (data.length == 7)
                 {
-                    co2= Float.parseFloat(data[0].substring(0, data[0].length() - 1));
+                    co2 = Float.parseFloat(data[0].substring(0, data[0].length() - 1));
                     tvoc = Float.parseFloat(data[1].substring(0, data[1].length() - 1));
                     mq2 = Float.parseFloat(data[2].substring(0, data[2].length() - 1));
                     humidity = Float.parseFloat(data[3].substring(0, data[3].length() - 1));
@@ -134,11 +135,22 @@ public class BluetoothService extends Service
                 else
                 {
                     System.out.println("Disconnected");
+                    BluetoothRestarter btRestart = new BluetoothRestarter();
+                    btRestart.restart();
+                    print("Bluetooth Restarted");
+                    try
+                    {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
                     mBluetooth.Connect(mBluetoothDevice);
                 }
             }
         });
     }
+
 
     public void disconnect()
     {

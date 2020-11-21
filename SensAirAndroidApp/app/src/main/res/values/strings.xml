@@ -23,4 +23,6 @@
     <string name="title_activity_real_time_quality">RealTimeQualityActivity</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+    <string name="session_avg"><u>Session Average:</u></string>
+
 </resources>

@@ -6,4 +6,118 @@
     android:layout_height="match_parent"
     tools:context=".realtimeplotting.HumidityDataActivity">
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/humidityChart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="15dp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="10dp">
+
+    </com.github.mikephil.charting.charts.LineChart>
+
+    <Button
+        android:id="@+id/humidityFreezeButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="215dp"
+        android:text="Freeze"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/humidityChart" />
+
+    <com.github.anastr.speedviewlib.SpeedView
+        android:id="@+id/gaugeHumidity"
+        android:layout_width="215dp"
+        android:layout_height="174dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/humidityChart"
+        app:sv_centerCircleColor="#0000"
+        app:sv_endDegree="405"
+        app:sv_indicator="HalfLineIndicator"
+        app:sv_markColor="#535353"
+        app:sv_maxSpeed="2000"
+        app:sv_minSpeed="0"
+        app:sv_sectionStyle="BUTT"
+        app:sv_speedTextSize="15sp"
+        app:sv_speedometerWidth="35dp"
+        app:sv_startDegree="135"
+        app:sv_textSize="12dp"
+        app:sv_tickPadding="10dp"
+        app:sv_tickTextFormat="INTEGER"
+        app:sv_unit=""
+        app:sv_unitTextSize="15sp"
+        app:sv_unitUnderSpeedText="false" />
+
+    <TextView
+        android:id="@+id/HumidityAverageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Session Average:"
+        android:textAllCaps="true"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/gaugeHumidity"
+        app:layout_constraintTop_toBottomOf="@+id/humidityChart" />
+
+    <TextView
+        android:id="@+id/humidityAverage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:textColor="#000000"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/gaugeHumidity"
+        app:layout_constraintTop_toBottomOf="@+id/HumidityAverageTitle" />
+
+    <TextView
+        android:id="@+id/humidityChartTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Humidity vs. Elapsed Time"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/humidityChart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/humidityUnit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="370dp"
+        android:fontFamily="sans-serif"
+        android:gravity="fill_vertical"
+        android:rotation="-90"
+        android:text="% Humidity"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/humidityChart"
+        app:layout_constraintEnd_toEndOf="@+id/humidityChart"
+        app:layout_constraintTop_toBottomOf="@+id/humidityChartTitle" />
+
+    <TextView
+        android:id="@+id/timeUnit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="s (elapsed)"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/humidityChart" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
