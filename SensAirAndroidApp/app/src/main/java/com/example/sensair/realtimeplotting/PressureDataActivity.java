@@ -46,8 +46,7 @@ public class PressureDataActivity extends AppCompatActivity implements OnChartVa
     protected Typeface tfLight = Typeface.DEFAULT;
     
     protected Thread thread;
-    protected BluetoothService btService;
-    protected boolean btIsBound = false;
+    protected BluetoothService btService = new BluetoothService();
 
     private float pressure;
 
@@ -259,17 +258,14 @@ public class PressureDataActivity extends AppCompatActivity implements OnChartVa
                         {
                             if(!frozen)
                             {
-                                if (btIsBound)
-                                {
-                                    pressure = btService.getPressure();
-                                    addEntry();
+                                pressure = btService.getPressure();
+                                addEntry();
 
-                                    n++;
-                                    average = average + ((pressure - average)) / n;
+                                n++;
+                                average = average + ((pressure - average)) / n;
 
-                                    textViewAverage.setText(String.format("%.0f", average/1000f) + " KPa");
-                                    gaugePressure.speedTo(pressure/1000f);
-                                }
+                                textViewAverage.setText(String.format("%.0f", average/1000f) + " KPa");
+                                gaugePressure.speedTo(pressure/1000f);
                             }
                         }
                     });
@@ -290,41 +286,22 @@ public class PressureDataActivity extends AppCompatActivity implements OnChartVa
     protected void onStart()
     {
         super.onStart();
-        Intent intent = new Intent(this, BluetoothService.class);
-        bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
+        if(thread!=null&&!thread.isAlive())
+        {
+            thread.start();
+        }
     }
 
     @Override
-    protected void onPause()
+    protected void onStop()
     {
-        super.onPause();
         super.onStop();
-        unbindService(connection);
-        btIsBound = false;
-
         if(thread!=null)
         {
             thread.interrupt();
         }
     }
 
-
-    private final ServiceConnection connection = new ServiceConnection()
-    {
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service)
-        {
-            BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
-            btService = binder.getService();
-            btIsBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            btIsBound = false;
-        }
-    };
 
     @Override
     public void onValueSelected(Entry e, Highlight h)

@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
 {
 
     protected LineChart coChart;
-    protected Button freeze,log;
+    protected ImageButton imageButtonFreeze,imageButtonSave;
     protected boolean frozen = false;
     protected SpeedView gaugeCo;
     protected float average,n;
@@ -50,8 +51,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     protected Typeface tfLight = Typeface.DEFAULT;
 
     protected Thread thread;
-    protected BluetoothService btService;
-    protected boolean btIsBound = false;
+    protected BluetoothService btService = new BluetoothService();
 
     private float co;
 
@@ -60,6 +60,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carbon_monoxide_data);
+
         uiInit();
         plottingInit();
         gaugeInit();
@@ -72,36 +73,40 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Carbon Monoxide (CO)");
 
-        freeze = findViewById(R.id.coFreezeButton);
-        freeze.setOnClickListener(new View.OnClickListener()
+        textViewAverage = findViewById(R.id.coAverage);
+
+        imageButtonFreeze = findViewById(R.id.coFreezeButton);
+        imageButtonFreeze.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 if(frozen)
                 {
-                    freeze.setText("Freeze");
                     frozen = false;
+                    imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
+                    imageButtonSave.setVisibility(View.INVISIBLE);
                 }
                 else if(!frozen)
                 {
-                    freeze.setText("Continue");
                     frozen = true;
+                    imageButtonFreeze.setImageResource(R.drawable.ic_play_arrow_black_18dp);
+                    imageButtonSave.setVisibility(View.VISIBLE);
                 }
             }
         });
 
-        log = findViewById(R.id.logButton);
-        log.setOnClickListener(new View.OnClickListener()
+        imageButtonSave = findViewById(R.id.logButton);
+        imageButtonSave.setVisibility(View.INVISIBLE);
+        imageButtonSave.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                // TODO save to database
                 Toast.makeText(CarbonMonoxideDataActivity.this,"Saved!",Toast.LENGTH_SHORT).show();
             }
         });
-
-        textViewAverage = findViewById(R.id.coAverage);
     }
 
     public void plottingInit()
@@ -270,8 +275,6 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                         @Override
                         public void run()
                         {
-                            if(btIsBound)
-                            {
                                 if(!frozen)
                                 {
                                     co = btService.getMq2();
@@ -283,7 +286,6 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                                     textViewAverage.setText(String.format("%.0f",average)+" ppm");
                                     gaugeCo.speedTo(co);
                                 }
-                            }
                         }
                     });
                 }
@@ -303,40 +305,21 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     protected void onStart()
     {
         super.onStart();
-        Intent intent = new Intent(this, BluetoothService.class);
-        bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
+        if(thread!=null&&!thread.isAlive())
+        {
+            thread.start();
+        }
     }
 
     @Override
-    protected void onPause()
+    protected void onStop()
     {
-        super.onPause();
         super.onStop();
-        unbindService(connection);
-        btIsBound = false;
-
         if(thread!=null)
         {
             thread.interrupt();
         }
     }
-
-    private final ServiceConnection connection = new ServiceConnection()
-    {
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service)
-        {
-            BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
-            btService = binder.getService();
-            btIsBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            btIsBound = false;
-        }
-    };
 
     @Override
     public void onValueSelected(Entry e, Highlight h)

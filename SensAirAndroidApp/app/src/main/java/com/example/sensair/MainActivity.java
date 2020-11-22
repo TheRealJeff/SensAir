@@ -2,6 +2,8 @@ package com.example.sensair;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
@@ -62,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         uiInit();
         dropDownInit();
         setTitle("Live Air Quality");
+        btService = new BluetoothService();
+        Intent serviceIntent = new Intent(this, BluetoothService.class);
+        startService(serviceIntent);
 
         if(checkBluetoothConnection())
         {
@@ -153,17 +158,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void run()
                     {
-                        if(btIsBound)
-                        {
-                            co = btService.getCo2();
-                            tvoc = btService.getTvoc();
-                            mq2 = btService.getMq2();
-                            humidity = btService.getHumidity();
-                            pressure = btService.getPressure();
-                            altitude = btService.getAltitude();
-                            temperature = btService.getTemperature();
-                            overallQualityScore = btService.getOverallQuality();
-                        }
+                        co = btService.getCo2();
+                        tvoc = btService.getTvoc();
+                        mq2 = btService.getMq2();
+                        humidity = btService.getHumidity();
+                        pressure = btService.getPressure();
+                        altitude = btService.getAltitude();
+                        temperature = btService.getTemperature();
+                        overallQualityScore = btService.getOverallQuality();
+
 
                         switch (spinner.getSelectedItemPosition())
                         {
@@ -212,60 +215,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             thread.start();
 }
 
-
     @Override
     protected void onStart()
     {
         super.onStart();
-        Intent intent = new Intent(this, BluetoothService.class);
-        bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
-        startService(intent);
-    }
-
-    protected void onResume()
-    {
-        super.onResume();
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
-        boolean isPaired = false;
-        if(btAdapter!=null)
+        if(thread!=null&&!thread.isAlive())
         {
-            Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
-            for (BluetoothDevice device : pairedDevices)
-            {
-                if (device.getName().equals("SensAir"))
-                    isPaired = true;
-            }
-            if (!isPaired)
-            {
-                longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
-            }
+            thread.start();
         }
     }
 
     @Override
-    protected void onPause()
+    protected void onStop()
     {
-        super.onPause();
         super.onStop();
-        unbindService(connection);
-        btIsBound = false;
-
         if(thread!=null)
         {
             thread.interrupt();
         }
     }
 
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        Intent intent = new Intent(this, BluetoothService.class);
-        bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
-        stopService(intent);
-    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)

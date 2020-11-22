@@ -2,6 +2,10 @@ package com.example.sensair;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -9,31 +13,34 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.HandlerThread;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import java.util.Set;
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
 public class BluetoothService extends Service
 {
+    public static final String CHANNEL_ID = "ForegroundServiceChannel";
+
     protected final IBinder binder = new LocalBinder();
 
     protected BluetoothHelper mBluetooth = new BluetoothHelper();
     protected BluetoothDevice mBluetoothDevice;
-    protected final String DEVICE_NAME = "SensAir";
     protected Thread thread;
     BluetoothAdapter btAdapter;
 
-    private float co2;
-    private float tvoc;
-    private float mq2;
-    private float humidity;
-    private float pressure;
-    private float altitude;
-    private float temperature;
+    private static float co2;
+    private static float tvoc;
+    private static float mq2;
+    private static float humidity;
+    private static float pressure;
+    private static float altitude;
+    private static float temperature;
 
     public class LocalBinder extends Binder
     {
@@ -43,11 +50,38 @@ public class BluetoothService extends Service
         }
     }
 
+
     @Override
     public void onCreate()
     {
         btInit();
         connect();
+//        startBluetoothThreading();
+    }
+
+//    , int flags, int startId --> Potential
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+//        String input = intent.getStringExtra("inputExtra");
+//        createNotificationChannel();
+//        Intent notificationIntent = new Intent(this, MainActivity.class);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+//                0, notificationIntent, 0);
+//        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                .setContentTitle("Foreground Service")
+//                .setContentText(input)
+//                .setSmallIcon(R.drawable.ic_cloud_queue_black_18dp)
+//                .setContentIntent(pendingIntent)
+//                .build();
+
+        startBluetoothThreading();
+//        startForeground(1,"Bluetooth");
+        //do heavy work on a background thread
+        //stopSelf();
+
+
+        return START_STICKY;
     }
 
 
@@ -55,31 +89,34 @@ public class BluetoothService extends Service
     @Override
     public IBinder onBind(Intent intent)
     {
-        return binder;
+//        try
+//        {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        return binder;
+        return null;
     }
 
     public void getData()
     {
         mBluetooth.SendMessage("1");
+        print("Sending Data");
     }
 
     public void btInit()
     {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        boolean isPaired = false;
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         for(BluetoothDevice device : pairedDevices)
         {
             if(device.getName().equals("SensAir"))
             {
                 mBluetoothDevice = device;
-                isPaired = true;
             }
-        }
-        if(isPaired)
-        {
-            startBluetoothThreading();
         }
     }
 
@@ -134,23 +171,23 @@ public class BluetoothService extends Service
                 }
                 else
                 {
-                    System.out.println("Disconnected");
-                    BluetoothRestarter btRestart = new BluetoothRestarter();
-                    btRestart.restart();
-                    print("Bluetooth Restarted");
-                    try
-                    {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
                     mBluetooth.Connect(mBluetoothDevice);
                 }
             }
         });
     }
 
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Foreground Service Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
 
     public void disconnect()
     {

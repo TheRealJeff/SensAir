@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@+id/pressureChart"
         app:sv_centerCircleColor="#0000"
         app:sv_endDegree="405"
-        app:sv_indicator="HalfLineIndicator"
+        app:sv_indicator="NeedleIndicator"
         app:sv_markColor="#535353"
         app:sv_maxSpeed="2000"
         app:sv_minSpeed="0"
