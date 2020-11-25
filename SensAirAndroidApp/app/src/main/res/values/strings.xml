@@ -9,11 +9,15 @@
     <!-- Messages Preferences -->
     <string name="user_name">Name</string>
     <string name="reply_title">Meter Preference</string>
+    <string name="altitude_setting_title">Custom Altitude Threshold</string>
+    <string name="altitude_setting_summary">Set a custom altitude threshold that will cause a notification</string>
+    <string name="temperature_setting_title">Custom Temperature Thresholds</string>
+    <string name="temperature_setting_summary">Set custom temperature thresholds that cause a notification</string>
 
     <!-- Sync Preferences -->
-    <string name="allow_notifications">Allow critical air quality alerts</string>
+    <string name="allow_notifications">Critical Air Quality Alerts</string>
     <string name="allow_notifications_description">Notifies you when Air Quality is dangerously harmful.</string>
-    <string name="data_setting_title">Allow data collection</string>
+    <string name="data_setting_title">Data Collection</string>
     <string name="data_setting_description">Allows SensAir to collect data about your air quality.</string>
     <string name="title_activity_real_time">Real Time Air Quality</string>
     <string name="title_hazardous_gasses">Hazardous Gasses</string>
@@ -23,4 +27,8 @@
     <string name="title_activity_real_time_quality">RealTimeQualityActivity</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+    <string name="data_setting_altitude_title">Critical Altitude Alerts</string>
+    <string name="data_setting_altitude_description">Notifies you when the altitude is above the set threshold</string>
+    <string name="data_setting_temperature_title">Critical Temperature Alerts</string>
+    <string name="data_setting_temperature_description">Notifies you when the temperature is above or below the set thresholds</string>
 </resources>

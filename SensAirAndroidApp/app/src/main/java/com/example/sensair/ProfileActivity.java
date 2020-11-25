@@ -1,11 +1,15 @@
 package com.example.sensair;
 
 import android.os.Bundle;
+import android.text.InputType;
+import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
+import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -31,6 +35,23 @@ public class ProfileActivity extends AppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+            EditTextPreference editTextPreferenceAltitude = findPreference("altitude");
+            editTextPreferenceAltitude.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
+                @Override
+                public void onBindEditText(@NonNull EditText editText) {
+                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                }
+            });
+
+            EditTextPreference editTextPreferenceTemperature = findPreference("temperature");
+            editTextPreferenceTemperature.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
+                @Override
+                public void onBindEditText(@NonNull EditText editText) {
+                    editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
+                }
+            });
+
         }
     }
 
