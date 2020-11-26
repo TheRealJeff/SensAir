@@ -327,6 +327,7 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
                 } catch (InterruptedException e)
                 {
                     e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
                 runOnUiThread(new Runnable()
                 {

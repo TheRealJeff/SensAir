@@ -240,8 +240,7 @@ public class PressureDataActivity extends AppCompatActivity implements OnChartVa
                 set = createSet();
                 data.addDataSet(set);
             }
-            data.addEntry(new Entry(set.getEntryCount()/200f, pressure/1000), 0);
-            System.out.println("PRESSURE DATA ADDED");
+            data.addEntry(new Entry(set.getEntryCount()/100f, pressure/1000), 0);
             data.notifyDataChanged();
             pressureChart.notifyDataSetChanged();
             pressureChart.setVisibleXRangeMaximum(6);
