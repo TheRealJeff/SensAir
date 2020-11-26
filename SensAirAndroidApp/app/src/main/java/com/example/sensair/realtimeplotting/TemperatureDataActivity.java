@@ -13,7 +13,9 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sensair.BluetoothService;
 import com.example.sensair.R;
@@ -21,6 +23,7 @@ import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.Section;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -37,6 +40,7 @@ import java.util.Objects;
 public class TemperatureDataActivity extends AppCompatActivity implements OnChartValueSelectedListener
 {
     protected LineChart temperatureChart;
+    protected ImageButton imageButtonFreeze,imageButtonSave;
     protected Button freeze;
     protected boolean frozen = false;
     protected SpeedView gaugeTemperature;
@@ -44,10 +48,10 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
 
-    protected Thread thread;
+    protected BtThread thread;
     protected BluetoothService btService = new BluetoothService();
 
-    private float temperature;
+    private float temperature,selected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -66,20 +70,45 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Temperature");
 
-        freeze = findViewById(R.id.temperatureFreezeButton);
-        freeze.setOnClickListener(new View.OnClickListener()
+        imageButtonFreeze = findViewById(R.id.temperatureFreezeButton);
+        imageButtonFreeze.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if (frozen)
+                if(frozen)
                 {
-                    freeze.setText("Freeze");
                     frozen = false;
-                } else if (!frozen)
+                    imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
+                    temperatureChart.clearValues();
+                    temperatureChart.notifyDataSetChanged();
+                    thread = new BtThread();
+                    thread.start();
+
+                }
+                else if(!frozen)
                 {
-                    freeze.setText("Continue");
                     frozen = true;
+                    imageButtonFreeze.setImageResource(R.drawable.ic_play_arrow_black_18dp);
+                    thread.interrupt();
+                }
+            }
+        });
+
+        imageButtonSave = findViewById(R.id.logButton);
+        imageButtonSave.setOnClickListener(new  View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // TODO save to database
+                if(selected==0)
+                {
+                    Toast.makeText(TemperatureDataActivity.this,"No Value Selected: Select a data point on graph first",Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    Toast.makeText(TemperatureDataActivity.this, String.format("%.0f", selected) + " degrees Celsius saved!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -90,6 +119,10 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
     {
         temperatureChart = findViewById(R.id.temperatureChart);
         temperatureChart.setOnChartValueSelectedListener(this);
+
+        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
+        mv.setChartView(temperatureChart); // For bounds control
+        temperatureChart.setMarker(mv); // Set the marker to the chart
 
         // enable touch gestures
         temperatureChart.setTouchEnabled(true);
@@ -128,11 +161,30 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
         xl.setTextSize(12f);
         xl.setEnabled(true);
 
-        YAxis leftAxis =temperatureChart.getAxisLeft();
+        LimitLine middle = new LimitLine(-50f,"Dangerous (Below)");
+        middle.setLineColor(Color.RED);
+        middle.setLineWidth(2f);
+        middle.enableDashedLine(10f, 10f, 0f);
+        middle.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        middle.setTextSize(11f);
+        middle.setTypeface(tfLight);
+
+        LimitLine upper = new LimitLine(50f,"Dangerous (Above)");
+        upper.setLineColor(Color.RED);
+        upper.setLineWidth(2f);
+        upper.enableDashedLine(10f, 10f, 0f);
+        upper.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        upper.setTextSize(11f);
+        upper.setTypeface(tfLight);
+
+        YAxis leftAxis = temperatureChart.getAxisLeft();
+        leftAxis.removeAllLimitLines();
+        leftAxis.addLimitLine(middle);
+        leftAxis.addLimitLine(upper);
         leftAxis.setTypeface(tfLight);
         leftAxis.setTextColor(Color.BLACK);
-        leftAxis.setAxisMaximum(40f);
-        leftAxis.setAxisMinimum(-40f);
+        leftAxis.setAxisMaximum(60f);
+        leftAxis.setAxisMinimum(-60f);
         leftAxis.setTextSize(12f);
         leftAxis.setDrawGridLines(true);
 
@@ -194,7 +246,7 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
             data.addEntry(new Entry(set.getEntryCount()/100f, temperature), 0);
             data.notifyDataChanged();
             temperatureChart.notifyDataSetChanged();
-            temperatureChart.setVisibleXRangeMaximum(3);
+            temperatureChart.setVisibleXRangeMaximum(6);
             temperatureChart.moveViewToX(data.getEntryCount());
 
         }
@@ -218,41 +270,7 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
 
     public void startBluetoothThreading()
     {
-        thread =new Thread()
-        {
-
-            @Override
-            public void run () {
-                while (!thread.isInterrupted())
-                {
-                    try
-                    {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            if(!frozen)
-                            {
-                                temperature = btService.getTemperature();
-                                addEntry();
-
-                                n++;
-                                average = average + ((temperature - average)) / n;
-
-                                textViewAverage.setText(String.format("%.0f", average) + " C");
-                                gaugeTemperature.speedTo(temperature);
-                            }
-                        }
-                    });
-                }
-            }
-        };
+        thread = new BtThread();
         thread.start();
     }
 
@@ -288,11 +306,47 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
     public void onValueSelected(Entry e, Highlight h)
     {
         Log.i("Entry selected", e.toString());
+        selected = e.getY();
     }
 
     @Override
     public void onNothingSelected()
     {
         Log.i("Nothing selected", "Nothing selected.");
+    }
+
+    public class BtThread extends Thread
+    {
+        public void run()
+        {
+            while (!thread.isInterrupted())
+            {
+                try
+                {
+                    Thread.sleep(10);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if(!frozen)
+                        {
+                            temperature = btService.getTemperature();
+                            addEntry();
+
+                            n++;
+                            average = average + ((temperature - average)) / n;
+
+                            textViewAverage.setText(String.format("%.0f", average) + " C");
+                            gaugeTemperature.speedTo(temperature);
+                        }
+                    }
+                });
+            }
+        }
     }
 }

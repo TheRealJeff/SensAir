@@ -29,8 +29,8 @@ public class BluetoothService extends Service
 
     protected BluetoothHelper mBluetooth = new BluetoothHelper();
     protected BluetoothDevice mBluetoothDevice;
+    protected static boolean supportsBluetooth;
     protected Thread thread;
-    protected boolean hasBluetooth;
     BluetoothAdapter btAdapter;
 
     private static float co2;
@@ -53,15 +53,12 @@ public class BluetoothService extends Service
     @Override
     public void onCreate()
     {
-        bluetoothCheck();
-        if(hasBluetooth)
-        {
-            btInit();
+        supportsBluetooth = btInit();
+        if(supportsBluetooth)
             connect();
-        }
     }
 
-
+    //    , int flags, int startId --> Potential
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
@@ -76,11 +73,8 @@ public class BluetoothService extends Service
 //                .setSmallIcon(R.drawable.ic_cloud_queue_black_18dp)
 //                .setContentIntent(pendingIntent)
 //                .build();
-        if(hasBluetooth)
-        {
+        if(supportsBluetooth)
             startBluetoothThreading();
-        }
-
 //        startForeground(1,"Bluetooth");
         //do heavy work on a background thread
         //stopSelf();
@@ -102,18 +96,20 @@ public class BluetoothService extends Service
         mBluetooth.SendMessage("1");
     }
 
-    public void btInit()
+    public boolean btInit()
     {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         for(BluetoothDevice device : pairedDevices)
         {
-            if(device.getName().equals("SensAir"))
+            if (device.getName().equals("SensAir"))
             {
                 mBluetoothDevice = device;
+                return true;
             }
         }
+        return false;
     }
 
     public void startBluetoothThreading()
@@ -126,7 +122,7 @@ public class BluetoothService extends Service
                 {
                     try
                     {
-                        Thread.sleep(10);
+                        Thread.sleep(1);
                     } catch (InterruptedException e)
                     {
                         e.printStackTrace();
@@ -161,11 +157,7 @@ public class BluetoothService extends Service
 
             @Override
             public void onBluetoothHelperConnectionStateChanged(BluetoothHelper bluetoothhelper, boolean isConnected) {
-                if (isConnected)
-                {
-                    System.out.println("Connected");
-                }
-                else
+                if (!isConnected)
                 {
                     mBluetooth.Connect(mBluetoothDevice);
                 }
@@ -173,8 +165,10 @@ public class BluetoothService extends Service
         });
     }
 
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    private void createNotificationChannel()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
                     "Foreground Service Channel",
@@ -188,12 +182,6 @@ public class BluetoothService extends Service
     public void disconnect()
     {
         mBluetooth.Disconnect(true);
-    }
-
-    public void bluetoothCheck()
-    {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        hasBluetooth = bluetoothAdapter == null;
     }
 
     public void print(String s)

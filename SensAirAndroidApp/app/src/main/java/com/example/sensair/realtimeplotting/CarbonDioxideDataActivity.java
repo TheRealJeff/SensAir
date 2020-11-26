@@ -18,8 +18,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sensair.BluetoothService;
 import com.example.sensair.R;
@@ -44,14 +46,14 @@ import java.util.Objects;
 public class CarbonDioxideDataActivity extends AppCompatActivity implements OnChartValueSelectedListener
 {
     protected LineChart co2Chart;
-    protected Button freeze;
+    protected ImageButton imageButtonFreeze,imageButtonSave;
     protected boolean frozen = false;
     protected SpeedView gaugeCo2;
     protected float average,n;
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
 
-    protected Thread thread;
+    protected BtThread thread;
     protected BluetoothService btService = new BluetoothService();
 
     protected static float selected;
@@ -75,30 +77,59 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Carbon Dioxide (CO2)");
 
-        freeze = findViewById(R.id.co2FreezeButton);
-        freeze.setOnClickListener(new View.OnClickListener()
+        textViewAverage = findViewById(R.id.co2Average);
+
+        imageButtonFreeze = findViewById(R.id.co2FreezeButton);
+        imageButtonFreeze.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if (frozen)
+                if(frozen)
                 {
-                    freeze.setText("Freeze");
                     frozen = false;
-                } else if (!frozen)
+                    imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
+                    co2Chart.clearValues();
+                    co2Chart.notifyDataSetChanged();
+                    thread = new BtThread();
+                    thread.start();
+                }
+                else if(!frozen)
                 {
-                    freeze.setText("Continue");
                     frozen = true;
+                    imageButtonFreeze.setImageResource(R.drawable.ic_play_arrow_black_18dp);
+                    thread.interrupt();
                 }
             }
         });
-        textViewAverage = findViewById(R.id.co2Average);
+
+        imageButtonSave = findViewById(R.id.logButton);
+        imageButtonSave.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // TODO save to database
+                if(selected==0)
+                {
+                    Toast.makeText(CarbonDioxideDataActivity.this,"No Value Selected: Select a data point on graph first",Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    Toast.makeText(CarbonDioxideDataActivity.this, String.format("%.0f", selected) + " ppm CO2 saved!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public void plottingInit()
     {
         co2Chart = findViewById(R.id.co2Chart);
         co2Chart.setOnChartValueSelectedListener(this);
+
+        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
+        mv.setChartView(co2Chart); // For bounds control
+        co2Chart.setMarker(mv); // Set the marker to the chart
 
         // enable touch gestures
         co2Chart.setTouchEnabled(true);
@@ -173,7 +204,7 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
 
     public void gaugeInit()
     {
-        gaugeCo2 = (SpeedView) findViewById(R.id.gaugeCo2);
+        gaugeCo2 = findViewById(R.id.gaugeCo2);
         gaugeCo2.setMinMaxSpeed(0,2000);
         gaugeCo2.setWithTremble(false);
         gaugeCo2.setUnit(" ppm");
@@ -217,7 +248,7 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
             data.addEntry(new Entry(set.getEntryCount()/100f, co2), 0);
             data.notifyDataChanged();
             co2Chart.notifyDataSetChanged();
-            co2Chart.setVisibleXRangeMaximum(3);
+            co2Chart.setVisibleXRangeMaximum(6);
             co2Chart.moveViewToX(data.getEntryCount());
 
         }
@@ -242,41 +273,7 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
 
     public void startBluetoothThreading()
     {
-        thread =new Thread()
-        {
-
-            @Override
-            public void run () {
-                while (!thread.isInterrupted())
-                {
-                    try
-                    {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            if(!frozen)
-                            {
-                                co2 = btService.getCo2();
-                                addEntry();
-
-                                n++;
-                                average = average + ((co2 - average)) / n;
-
-                                textViewAverage.setText(String.format("%.0f", average) + " ppm");
-                                gaugeCo2.speedTo(co2);
-                            }
-                        }
-                    });
-                }
-            }
-        };
+        thread = new BtThread();
         thread.start();
     }
 
@@ -321,4 +318,39 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
         Log.i("Nothing selected", "Nothing selected.");
     }
 
+    public class BtThread extends Thread
+    {
+        public void run()
+        {
+            while (!thread.isInterrupted())
+            {
+                try
+                {
+                    Thread.sleep(10);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
+                }
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if(!frozen)
+                        {
+                            co2 = btService.getCo2();
+                            addEntry();
+
+                            n++;
+                            average = average + ((co2 - average)) / n;
+
+                            textViewAverage.setText(String.format("%.0f", average) + " ppm");
+                            gaugeCo2.speedTo(co2);
+                        }
+                    }
+                });
+            }
+        }
+    }
 }

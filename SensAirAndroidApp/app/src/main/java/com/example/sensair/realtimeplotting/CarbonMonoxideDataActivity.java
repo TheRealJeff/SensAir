@@ -50,7 +50,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
 
-    protected Thread thread;
+    protected BtThread thread;
     protected BluetoothService btService = new BluetoothService();
 
     private float co,selected;
@@ -60,7 +60,6 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carbon_monoxide_data);
-
         uiInit();
         plottingInit();
         gaugeInit();
@@ -85,19 +84,22 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                 {
                     frozen = false;
                     imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
-                    imageButtonSave.setVisibility(View.INVISIBLE);
+                    coChart.clearValues();
+                    coChart.getData().clearValues();
+                    coChart.notifyDataSetChanged();
+                    thread.interrupt();
                 }
                 else if(!frozen)
                 {
                     frozen = true;
                     imageButtonFreeze.setImageResource(R.drawable.ic_play_arrow_black_18dp);
-                    imageButtonSave.setVisibility(View.VISIBLE);
+                    thread = new BtThread();
+                    thread.start();
                 }
             }
         });
 
         imageButtonSave = findViewById(R.id.logButton);
-        imageButtonSave.setVisibility(View.INVISIBLE);
         imageButtonSave.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -120,6 +122,10 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     {
         coChart = findViewById(R.id.coChart);
         coChart.setOnChartValueSelectedListener(this);
+
+        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
+        mv.setChartView(coChart); // For bounds control
+        coChart.setMarker(mv); // Set the marker to the chart
 
         // enable touch gestures
         coChart.setTouchEnabled(true);
@@ -158,7 +164,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         xl.setTextSize(12f);
         xl.setEnabled(true);
 
-        LimitLine middle = new LimitLine(240f,"Moderate");
+        LimitLine middle = new LimitLine(60f,"Moderate");
         middle.setLineColor(Color.YELLOW);
         middle.setLineWidth(2f);
         middle.enableDashedLine(10f, 10f, 0f);
@@ -166,7 +172,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         middle.setTextSize(11f);
         middle.setTypeface(tfLight);
 
-        LimitLine upper = new LimitLine(480f,"Dangerous");
+        LimitLine upper = new LimitLine(120f,"Dangerous");
         upper.setLineColor(Color.RED);
         upper.setLineWidth(2f);
         upper.enableDashedLine(10f, 10f, 0f);
@@ -180,7 +186,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         leftAxis.addLimitLine(middle);
         leftAxis.setTypeface(tfLight);
         leftAxis.setTextColor(Color.BLACK);
-        leftAxis.setAxisMaximum(600f);
+        leftAxis.setAxisMaximum(150f);
         leftAxis.setAxisMinimum(0f);
         leftAxis.setTextSize(12f);
         leftAxis.setDrawGridLines(true);
@@ -194,7 +200,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
 
     public void gaugeInit()
     {
-        gaugeCo = (SpeedView) findViewById(R.id.gaugeCo);
+        gaugeCo = findViewById(R.id.gaugeCo);
         gaugeCo.setMinMaxSpeed(0,150);
         gaugeCo.setWithTremble(false);
         gaugeCo.setUnit(" ppm");
@@ -239,7 +245,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
             data.addEntry(new Entry(set.getEntryCount()/100f, co), 0);
             data.notifyDataChanged();
             coChart.notifyDataSetChanged();
-            coChart.setVisibleXRangeMaximum(3);
+            coChart.setVisibleXRangeMaximum(6);
             coChart.moveViewToX(data.getEntryCount());
 
         }
@@ -263,41 +269,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
 
     public void startBluetoothThreading()
     {
-        thread =new Thread()
-        {
-
-            @Override
-            public void run () {
-                while (!thread.isInterrupted())
-                {
-                    try
-                    {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                                if(!frozen)
-                                {
-                                    co = btService.getMq2();
-                                    addEntry();
-
-                                    n++;
-                                    average = average + ((co-average))/n;
-
-                                    textViewAverage.setText(String.format("%.0f",average)+" ppm");
-                                    gaugeCo.speedTo(co);
-                                }
-                        }
-                    });
-                }
-            }
-        };
+        thread = new BtThread();
         thread.start();
     }
 
@@ -340,4 +312,41 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     {
         Log.i("Nothing selected", "Nothing selected.");
     }
+
+    public class BtThread extends Thread
+    {
+        public void run()
+        {
+            while (!thread.isInterrupted())
+            {
+                try
+                {
+                    Thread.sleep(10);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
+                }
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if(!frozen)
+                        {
+                            co = btService.getMq2();
+                            addEntry();
+
+                            n++;
+                            average = average + ((co-average))/n;
+
+                            textViewAverage.setText(String.format("%.0f",average)+" ppm");
+                            gaugeCo.speedTo(co);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
 }

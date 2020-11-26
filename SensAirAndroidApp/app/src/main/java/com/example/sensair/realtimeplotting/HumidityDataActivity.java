@@ -13,7 +13,9 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sensair.BluetoothService;
 import com.example.sensair.R;
@@ -37,17 +39,17 @@ import java.util.Objects;
 public class HumidityDataActivity extends AppCompatActivity implements OnChartValueSelectedListener
 {
     protected LineChart humidityChart;
-    protected Button freeze;
+    protected ImageButton imageButtonFreeze,imageButtonSave;
     protected boolean frozen = false;
     protected SpeedView gaugeHumidity;
     protected float average,n;
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
 
-    protected Thread thread;
+    protected BtThread thread;
     protected BluetoothService btService = new BluetoothService();
 
-    private float humidity;
+    private float humidity,selected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -66,20 +68,44 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Humidity");
 
-        freeze = findViewById(R.id.humidityFreezeButton);
-        freeze.setOnClickListener(new View.OnClickListener()
+        imageButtonFreeze = findViewById(R.id.humidityFreezeButton);
+        imageButtonFreeze.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if (frozen)
+                if(frozen)
                 {
-                    freeze.setText("Freeze");
                     frozen = false;
-                } else if (!frozen)
+                    imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
+                    humidityChart.clearValues();
+                    humidityChart.notifyDataSetChanged();
+                    thread.interrupt();
+                }
+                else if(!frozen)
                 {
-                    freeze.setText("Continue");
                     frozen = true;
+                    imageButtonFreeze.setImageResource(R.drawable.ic_play_arrow_black_18dp);
+                    thread = new BtThread();
+                    thread.start();
+                }
+            }
+        });
+
+        imageButtonSave = findViewById(R.id.logButton);
+        imageButtonSave.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // TODO save to database
+                if(selected==0)
+                {
+                    Toast.makeText(HumidityDataActivity.this,"No Value Selected: Select a data point on graph first",Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    Toast.makeText(HumidityDataActivity.this, String.format("%.0f", selected) + " % Humidity saved!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -90,6 +116,10 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
     {
         humidityChart = findViewById(R.id.humidityChart);
         humidityChart.setOnChartValueSelectedListener(this);
+
+        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
+        mv.setChartView(humidityChart); // For bounds control
+        humidityChart.setMarker(mv); // Set the marker to the chart
 
         // enable touch gestures
         humidityChart.setTouchEnabled(true);
@@ -198,7 +228,7 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
             data.addEntry(new Entry(set.getEntryCount()/100f, humidity), 0);
             data.notifyDataChanged();
             humidityChart.notifyDataSetChanged();
-            humidityChart.setVisibleXRangeMaximum(3);
+            humidityChart.setVisibleXRangeMaximum(6);
             humidityChart.moveViewToX(data.getEntryCount());
 
         }
@@ -222,41 +252,7 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
 
     public void startBluetoothThreading()
     {
-        thread =new Thread()
-        {
-
-            @Override
-            public void run () {
-                while (!thread.isInterrupted())
-                {
-                    try
-                    {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            if(!frozen)
-                            {
-                                humidity = btService.getHumidity();
-                                addEntry();
-
-                                n++;
-                                average = average + ((humidity - average)) / n;
-
-                                textViewAverage.setText(String.format("%.0f", average) + " %");
-                                gaugeHumidity.speedTo(humidity);
-                            }
-                        }
-                    });
-                }
-            }
-        };
+        thread = new BtThread();
         thread.start();
     }
 
@@ -271,10 +267,6 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
     protected void onStart()
     {
         super.onStart();
-        if(thread!=null&&!thread.isAlive())
-        {
-            thread.start();
-        }
     }
 
     @Override
@@ -291,11 +283,48 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
     public void onValueSelected(Entry e, Highlight h)
     {
         Log.i("Entry selected", e.toString());
+        selected = e.getY();
     }
 
     @Override
     public void onNothingSelected()
     {
         Log.i("Nothing selected", "Nothing selected.");
+    }
+
+    public class BtThread extends Thread
+    {
+        public void run()
+        {
+            while (!thread.isInterrupted())
+            {
+                try
+                {
+                    Thread.sleep(10);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
+                }
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if(!frozen)
+                        {
+                            humidity = btService.getHumidity();
+                            addEntry();
+
+                            n++;
+                            average = average + ((humidity - average)) / n;
+
+                            textViewAverage.setText(String.format("%.0f", average) + " %");
+                            gaugeHumidity.speedTo(humidity);
+                        }
+                    }
+                });
+            }
+        }
     }
 }

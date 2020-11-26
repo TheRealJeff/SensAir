@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected BluetoothService btService;
     protected boolean btIsBound = false;
 
-    private float co;
+    private float co2;
     private float tvoc;
     private float mq2;
     private float humidity;
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent serviceIntent = new Intent(this, BluetoothService.class);
         startService(serviceIntent);
 
-        if(checkBluetoothConnection())
+        if(btService.btInit())
         {
             longToast("Successfully connected to the SensAir Device!");
             startBluetoothThreading();
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             {
                 try
                 {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException e)
                 {
                     e.printStackTrace();
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void run()
                     {
-                        co = btService.getCo2();
+                        co2= btService.getCo2();
                         tvoc = btService.getTvoc();
                         mq2 = btService.getMq2();
                         humidity = btService.getHumidity();
@@ -166,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         altitude = btService.getAltitude();
                         temperature = btService.getTemperature();
                         overallQualityScore = btService.getOverallQuality();
-
 
                         switch (spinner.getSelectedItemPosition())
                         {
@@ -192,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 gaugeAirQuality.speedTo(mq2);
                                 break;
                             case 2:     // CO
-                                gaugeAirQuality.speedTo(co);
+                                gaugeAirQuality.speedTo(co2);
                                 break;
                             case 3:     // TVOC
                                 gaugeAirQuality.speedTo(tvoc);
@@ -291,25 +290,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     };
 
-    public Boolean checkBluetoothConnection()
-    {
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
-        if (btAdapter == null)
-        {
-            return false;
-        }
-
-        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
-        for(BluetoothDevice device : pairedDevices)
-        {
-            if(device.getName().equals("SensAir"))
-                return true;
-        }
-        return false;
-    }
-
     public void print(String s)
     {
         System.out.println(s);
@@ -399,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 ticks.add(0.8f);
                 gaugeAirQuality.setTicks(ticks);
 
-                gaugeAirQuality.speedTo(co);
+                gaugeAirQuality.speedTo(co2);
                 break;
 
             case 3:     // TVOC

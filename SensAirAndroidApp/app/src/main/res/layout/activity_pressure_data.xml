@@ -17,15 +17,18 @@
 
     </com.github.mikephil.charting.charts.LineChart>
 
-    <Button
+    <ImageButton
         android:id="@+id/pressureFreezeButton"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="215dp"
-        android:text="Freeze"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="190dp"
+        android:background="?android:selectableItemBackground"
+        android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.831"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pressureChart" />
+        app:layout_constraintTop_toBottomOf="@+id/pressureChart"
+        app:srcCompat="@drawable/ic_pause_black_18dp" />
 
     <com.github.anastr.speedviewlib.SpeedView
         android:id="@+id/gaugePressure"
@@ -118,6 +121,18 @@
         android:textColor="#000000"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pressureChart" />
+
+    <ImageButton
+        android:id="@+id/logButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="190dp"
+        android:background="?android:selectableItemBackground"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/ic_save_black_18dp"
+        app:layout_constraintEnd_toStartOf="@+id/pressureFreezeButton"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pressureChart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
