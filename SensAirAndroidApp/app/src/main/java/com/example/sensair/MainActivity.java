@@ -235,6 +235,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        btService.disconnect();
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)

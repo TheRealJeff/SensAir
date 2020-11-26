@@ -27,11 +27,10 @@ public class BluetoothService extends Service
 {
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
 
-    protected final IBinder binder = new LocalBinder();
-
     protected BluetoothHelper mBluetooth = new BluetoothHelper();
     protected BluetoothDevice mBluetoothDevice;
     protected Thread thread;
+    protected boolean hasBluetooth;
     BluetoothAdapter btAdapter;
 
     private static float co2;
@@ -54,12 +53,15 @@ public class BluetoothService extends Service
     @Override
     public void onCreate()
     {
-        btInit();
-        connect();
-//        startBluetoothThreading();
+        bluetoothCheck();
+        if(hasBluetooth)
+        {
+            btInit();
+            connect();
+        }
     }
 
-//    , int flags, int startId --> Potential
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
@@ -74,8 +76,11 @@ public class BluetoothService extends Service
 //                .setSmallIcon(R.drawable.ic_cloud_queue_black_18dp)
 //                .setContentIntent(pendingIntent)
 //                .build();
+        if(hasBluetooth)
+        {
+            startBluetoothThreading();
+        }
 
-        startBluetoothThreading();
 //        startForeground(1,"Bluetooth");
         //do heavy work on a background thread
         //stopSelf();
@@ -89,21 +94,12 @@ public class BluetoothService extends Service
     @Override
     public IBinder onBind(Intent intent)
     {
-//        try
-//        {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e)
-//        {
-//            e.printStackTrace();
-//        }
-//        return binder;
         return null;
     }
 
     public void getData()
     {
         mBluetooth.SendMessage("1");
-        print("Sending Data");
     }
 
     public void btInit()
@@ -192,6 +188,12 @@ public class BluetoothService extends Service
     public void disconnect()
     {
         mBluetooth.Disconnect(true);
+    }
+
+    public void bluetoothCheck()
+    {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        hasBluetooth = bluetoothAdapter == null;
     }
 
     public void print(String s)

@@ -52,8 +52,9 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
     protected Typeface tfLight = Typeface.DEFAULT;
 
     protected Thread thread;
-    protected BluetoothService btService;
-    protected boolean btIsBound = false;
+    protected BluetoothService btService = new BluetoothService();
+
+    protected static float selected;
 
     private float co2;
 
@@ -262,17 +263,14 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
                         {
                             if(!frozen)
                             {
-                                if (btIsBound)
-                                {
-                                    co2 = btService.getCo2();
-                                    addEntry();
+                                co2 = btService.getCo2();
+                                addEntry();
 
-                                    n++;
-                                    average = average + ((co2 - average)) / n;
+                                n++;
+                                average = average + ((co2 - average)) / n;
 
-                                    textViewAverage.setText(String.format("%.0f", average) + " ppm");
-                                    gaugeCo2.speedTo(co2);
-                                }
+                                textViewAverage.setText(String.format("%.0f", average) + " ppm");
+                                gaugeCo2.speedTo(co2);
                             }
                         }
                     });
@@ -293,18 +291,16 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
     protected void onStart()
     {
         super.onStart();
-        Intent intent = new Intent(this, BluetoothService.class);
-        bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
+        if(thread!=null&&!thread.isAlive())
+        {
+            thread.start();
+        }
     }
 
     @Override
-    protected void onPause()
+    protected void onStop()
     {
-        super.onPause();
         super.onStop();
-        unbindService(connection);
-        btIsBound = false;
-
         if(thread!=null)
         {
             thread.interrupt();
@@ -312,27 +308,11 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
     }
 
 
-    private final ServiceConnection connection = new ServiceConnection()
-    {
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service)
-        {
-            BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
-            btService = binder.getService();
-            btIsBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            btIsBound = false;
-        }
-    };
-
     @Override
     public void onValueSelected(Entry e, Highlight h)
     {
         Log.i("Entry selected", e.toString());
+        selected = e.getY();
     }
 
     @Override

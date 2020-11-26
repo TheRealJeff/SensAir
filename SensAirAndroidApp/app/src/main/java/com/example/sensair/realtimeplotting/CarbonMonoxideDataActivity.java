@@ -53,7 +53,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     protected Thread thread;
     protected BluetoothService btService = new BluetoothService();
 
-    private float co;
+    private float co,selected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -104,7 +104,14 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
             public void onClick(View v)
             {
                 // TODO save to database
-                Toast.makeText(CarbonMonoxideDataActivity.this,"Saved!",Toast.LENGTH_SHORT).show();
+                if(selected==0)
+                {
+                    Toast.makeText(CarbonMonoxideDataActivity.this,"No Value Selected: Select a data point on graph first",Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    Toast.makeText(CarbonMonoxideDataActivity.this, String.format("%.0f", selected) + " ppm CO saved!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -325,6 +332,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     public void onValueSelected(Entry e, Highlight h)
     {
         Log.i("Entry selected", e.toString());
+        selected = e.getY();
     }
 
     @Override
