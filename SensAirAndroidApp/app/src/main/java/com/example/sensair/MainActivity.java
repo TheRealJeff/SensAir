@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             public void onClick(View V)
             {
-                Intent intent = new Intent(MainActivity.this, HistoryActivityListActivity.class);
+                Intent intent = new Intent(MainActivity.this, RealTimeDataActivity.class);
                 startActivity(intent);
             }
         });

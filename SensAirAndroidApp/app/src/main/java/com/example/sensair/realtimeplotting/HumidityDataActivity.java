@@ -78,16 +78,16 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
                 {
                     frozen = false;
                     imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
-                    humidityChart.clearValues();
-                    humidityChart.notifyDataSetChanged();
-                    thread.interrupt();
+                    humidityChart.clear();
+                    plottingInit();
+                    thread = new BtThread();
+                    thread.start();
                 }
                 else if(!frozen)
                 {
                     frozen = true;
                     imageButtonFreeze.setImageResource(R.drawable.ic_play_arrow_black_18dp);
-                    thread = new BtThread();
-                    thread.start();
+                    thread.interrupt();
                 }
             }
         });
@@ -283,7 +283,10 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
     public void onValueSelected(Entry e, Highlight h)
     {
         Log.i("Entry selected", e.toString());
-        selected = e.getY();
+        if(humidityChart.getData()!=null)
+        {
+            selected = e.getY();
+        }
     }
 
     @Override

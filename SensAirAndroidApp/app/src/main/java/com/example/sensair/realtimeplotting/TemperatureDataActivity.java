@@ -80,11 +80,10 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
                 {
                     frozen = false;
                     imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
-                    temperatureChart.clearValues();
-                    temperatureChart.notifyDataSetChanged();
+                    temperatureChart.clear();
+                    plottingInit();
                     thread = new BtThread();
                     thread.start();
-
                 }
                 else if(!frozen)
                 {

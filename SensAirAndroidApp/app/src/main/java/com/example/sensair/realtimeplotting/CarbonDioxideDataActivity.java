@@ -89,8 +89,8 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
                 {
                     frozen = false;
                     imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
-                    co2Chart.clearValues();
-                    co2Chart.notifyDataSetChanged();
+                    co2Chart.clear();
+                    plottingInit();
                     thread = new BtThread();
                     thread.start();
                 }

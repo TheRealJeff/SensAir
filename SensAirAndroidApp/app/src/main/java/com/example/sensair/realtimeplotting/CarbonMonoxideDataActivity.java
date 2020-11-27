@@ -84,9 +84,8 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                 {
                     frozen = false;
                     imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
-                    coChart.clearValues();
-                    coChart.getData().clearValues();
-                    coChart.notifyDataSetChanged();
+                    coChart.clear();
+                    plottingInit();
                     thread.interrupt();
                 }
                 else if(!frozen)

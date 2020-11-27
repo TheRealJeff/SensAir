@@ -26,26 +26,9 @@
         <service android:name=".BluetoothService" />
 
         <activity
-            android:name=".HistoryActivityListActivity"
-            android:label="@string/title_historyactivity_list"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".HistoryActivityDetailActivity"
-            android:label="@string/title_historyactivity_detail"
-            android:parentActivityName=".HistoryActivityListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.sensair.HistoryActivityListActivity" />
-        </activity>
-        <activity
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
             android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.sensair.HistoryActivityListActivity" />
         </activity>
         <activity
             android:name=".InfoActivity"

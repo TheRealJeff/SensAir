@@ -79,17 +79,16 @@ public class VolatileOrganicCompoundsActivity extends AppCompatActivity implemen
                 {
                     frozen = false;
                     imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
-                    vocChart.clearValues();
-                    vocChart.getData().clearValues();
-                    vocChart.notifyDataSetChanged();
-                    thread.interrupt();
+                    vocChart.clear();
+                    plottingInit();
+                    thread = new BtThread();
+                    thread.start();
                 }
                 else if(!frozen)
                 {
                     frozen = true;
                     imageButtonFreeze.setImageResource(R.drawable.ic_play_arrow_black_18dp);
-                    thread = new BtThread();
-                    thread.start();
+                    thread.interrupt();
                 }
             }
         });
@@ -107,7 +106,7 @@ public class VolatileOrganicCompoundsActivity extends AppCompatActivity implemen
                 }
                 else
                 {
-                    Toast.makeText(VolatileOrganicCompoundsActivity.this, String.format("%.0f", selected) + " ppm VOC saved!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VolatileOrganicCompoundsActivity.this, String.format("%.0f", selected) + " ppb VOC saved!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

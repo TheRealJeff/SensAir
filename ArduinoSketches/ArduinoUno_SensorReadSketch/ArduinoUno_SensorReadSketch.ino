@@ -47,7 +47,7 @@ void loop()
   int mq2_reading = analogRead(MQ2_PIN);          // MQ2                    ppb
   float humidity = bme280.readFloatHumidity();    // BME280 humidity        %
   float pressure = bme280.readFloatPressure();    // BME280 pressure        Pascals
-  float temp = bme280.readTempC()-5;                // BME280 temp            Celsius
+  float temp = bme280.readTempC()-6;                // BME280 temp            Celsius
 
   String co2_str = String(co2)+"C,";
   String tvoc_str = String(tvoc)+"t,";
@@ -71,6 +71,7 @@ void loop()
     btSerial.print(temp_str);
     btSerial.print('\n');
   }
+  
 //      Serial.print("CO2:\t\t");
 //      Serial.print(co2);
 //      Serial.println(" ppm");

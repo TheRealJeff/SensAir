@@ -79,8 +79,8 @@ public class PressureDataActivity extends AppCompatActivity implements OnChartVa
                 {
                     frozen = false;
                     imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
-                    pressureChart.clearValues();
-                    pressureChart.notifyDataSetChanged();
+                    pressureChart.clear();
+                    plottingInit();
                     thread = new BtThread();
                     thread.start();
 
