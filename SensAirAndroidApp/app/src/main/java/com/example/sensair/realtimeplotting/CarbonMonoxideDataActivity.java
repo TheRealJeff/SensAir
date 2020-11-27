@@ -185,7 +185,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         leftAxis.addLimitLine(middle);
         leftAxis.setTypeface(tfLight);
         leftAxis.setTextColor(Color.BLACK);
-        leftAxis.setAxisMaximum(150f);
+        leftAxis.setAxisMaximum(600f);
         leftAxis.setAxisMinimum(0f);
         leftAxis.setTextSize(12f);
         leftAxis.setDrawGridLines(true);

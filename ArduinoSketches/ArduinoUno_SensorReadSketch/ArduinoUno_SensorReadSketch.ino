@@ -13,7 +13,6 @@ SoftwareSerial btSerial(HC05_RX,HC05_TX);    //  RX,TX
 CCS811 ccs811(CCS811_ADDR);
 BME280 bme280;
 const float local_pressure = 101690;
-float alt;
 
 void setup()
 {
@@ -21,7 +20,6 @@ void setup()
   btSerial.begin(9600);  //Baud Rate for AT-command Mode.  
   Serial.println("|---------- Set Up ----------|"); 
   
-//  while(!Serial){;}
   Wire.begin(); //  Inialize I2C 
   Wire.setClock(400000);
 
@@ -33,7 +31,6 @@ void setup()
     Serial.print("BME280 error. Please check wiring.");
 
   bme280.setReferencePressure(local_pressure);
-  alt = bme280.readFloatAltitudeMeters();
   
   delay(10);
 }
@@ -47,7 +44,8 @@ void loop()
   int mq2_reading = analogRead(MQ2_PIN);          // MQ2                    ppb
   float humidity = bme280.readFloatHumidity();    // BME280 humidity        %
   float pressure = bme280.readFloatPressure();    // BME280 pressure        Pascals
-  float temp = bme280.readTempC()-6;                // BME280 temp            Celsius
+  float temp = bme280.readTempC()-6;              // BME280 temp            Celsius
+  float alt = bme280.readFloatAltitudeMeters();
 
   String co2_str = String(co2)+"C,";
   String tvoc_str = String(tvoc)+"t,";
@@ -75,7 +73,7 @@ void loop()
 //      Serial.print("CO2:\t\t");
 //      Serial.print(co2);
 //      Serial.println(" ppm");
-    
+//    
 //      Serial.print("TVOC:\t\t");
 //      Serial.print(tvoc);
 //      Serial.println(" ppb");

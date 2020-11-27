@@ -62,23 +62,20 @@ public class BluetoothService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-//        String input = intent.getStringExtra("inputExtra");
-//        createNotificationChannel();
-//        Intent notificationIntent = new Intent(this, MainActivity.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-//                0, notificationIntent, 0);
-//        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-//                .setContentTitle("Foreground Service")
-//                .setContentText(input)
-//                .setSmallIcon(R.drawable.ic_cloud_queue_black_18dp)
-//                .setContentIntent(pendingIntent)
-//                .build();
+        String input = intent.getStringExtra("inputExtra");
+        createNotificationChannel();
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Foreground Service")
+                .setContentText(input)
+                .setSmallIcon(R.drawable.ic_cloud_queue_black_18dp)
+                .setContentIntent(pendingIntent)
+                .build();
+
         if(supportsBluetooth)
             startBluetoothThreading();
-//        startForeground(1,"Bluetooth");
-        //do heavy work on a background thread
-        //stopSelf();
-
 
         return START_STICKY;
     }
@@ -152,6 +149,7 @@ public class BluetoothService extends Service
                     pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
                     altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
+                    print("Reading Data");
                 }
             }
 
