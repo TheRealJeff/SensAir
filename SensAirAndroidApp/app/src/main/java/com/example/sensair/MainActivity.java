@@ -2,11 +2,9 @@ package com.example.sensair;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-<<<<<<< HEAD
 import androidx.preference.PreferenceManager;
-=======
+
 import androidx.core.content.ContextCompat;
->>>>>>> 5caed0b2775f2993a4d0fe06fc8f698029451805
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -496,7 +494,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
         }
     }
-<<<<<<< HEAD
 
     @Override
     public void onNothingSelected(AdapterView<?> arg0)
@@ -582,6 +579,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     {
         Toast.makeText(this,toast_message,Toast.LENGTH_SHORT).show();
     }
-=======
->>>>>>> 5caed0b2775f2993a4d0fe06fc8f698029451805
+
 }

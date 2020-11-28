@@ -29,7 +29,8 @@
     <string name="title_activity_real_time_quality">RealTimeQualityActivity</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
-<<<<<<< HEAD
+    <string name="session_avg"><u>Session Average:</u></string>
+
     <string name="data_setting_altitude_title">Critical Altitude Alerts</string>
     <string name="data_setting_altitude_description">Notifies you when the altitude is above the set threshold</string>
     <string name="data_setting_temperature_title">Critical Temperature Alert</string>
@@ -44,8 +45,5 @@
     <string name="altitude_setting_threshold">SettingAltitudeThreshold</string>
     <string name="pressure_setting_threshold">SettingPressureThreshold</string>
     <string name="temperature_setting_threshold">SettingTemperatureThreshold</string>
-=======
-    <string name="session_avg"><u>Session Average:</u></string>
 
->>>>>>> 5caed0b2775f2993a4d0fe06fc8f698029451805
 </resources>
