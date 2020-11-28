@@ -6,8 +6,8 @@
 ***
 ### List of Pollutants 
 
-#### **Carbon Dioxide (CO2)**
- measured in parts per million (ppm), is harmful from a range of greater than 2000 ppm. CO2 is the combination of carbon with two oxygen atoms. It is also what we breathe out.  
+#### **Carbon Dioxide (co)**
+ measured in parts per million (ppm), is harmful from a range of greater than 2000 ppm. co is the combination of carbon with two oxygen atoms. It is also what we breathe out.  
 * __Sources__
     * Indoor breathing
     * Space heater using fossil fuels
@@ -26,7 +26,7 @@
     * Coma
     * Death
 
-| CO2 Level (ppm)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	| Level of Concern                                                                                                                                         	|
+| co Level (ppm)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	| Level of Concern                                                                                                                                         	|
 |-----------------	|----------------------------------------------------------------------------------------------------------------------------------------------------------	|
 | 250-400         	| Normal background concentration in outdoor ambient air                                                                                                   	|
 | 400-1000        	| Concentrations typical of occupied indoor spaces with good air exchange                                                                                  	|
