@@ -11,8 +11,10 @@
     <string name="reply_title">Meter Preference</string>
     <string name="altitude_setting_title">Custom Altitude Threshold</string>
     <string name="altitude_setting_summary">Set a custom altitude threshold that will cause a notification</string>
-    <string name="temperature_setting_title">Custom Temperature Thresholds</string>
-    <string name="temperature_setting_summary">Set custom temperature thresholds that cause a notification</string>
+    <string name="temperature_setting_title">Custom Temperature Threshold</string>
+    <string name="temperature_setting_summary">Set custom temperature threshold that cause a notification</string>
+    <string name="pressure_setting_title">Custom Pressure Threshold</string>
+    <string name="pressure_setting_summary">Set custom pressure threshold that cause a notification</string>
 
     <!-- Sync Preferences -->
     <string name="allow_notifications">Critical Air Quality Alerts</string>
@@ -29,6 +31,16 @@
     <string name="tab_text_2">Tab 2</string>
     <string name="data_setting_altitude_title">Critical Altitude Alerts</string>
     <string name="data_setting_altitude_description">Notifies you when the altitude is above the set threshold</string>
-    <string name="data_setting_temperature_title">Critical Temperature Alerts</string>
-    <string name="data_setting_temperature_description">Notifies you when the temperature is above or below the set thresholds</string>
+    <string name="data_setting_temperature_title">Critical Temperature Alert</string>
+    <string name="data_setting_temperature_description">Notifies you when the temperature is above or below the set threshold</string>
+    <string name="data_setting_pressure_title">Critical Pressure Alerts</string>
+    <string name="data_setting_pressure_description">Notifies you when the pressure is above the set threshold</string>
+
+    <!-- root preferences Key Strings -->
+    <string name="altitude_setting_state">SettingAltitudeState</string>
+    <string name="pressure_setting_state">SettingPressureState</string>
+    <string name="temperature_setting_state">SettingTemperatureState</string>
+    <string name="altitude_setting_threshold">SettingAltitudeThreshold</string>
+    <string name="pressure_setting_threshold">SettingPressureThreshold</string>
+    <string name="temperature_setting_threshold">SettingTemperatureThreshold</string>
 </resources>

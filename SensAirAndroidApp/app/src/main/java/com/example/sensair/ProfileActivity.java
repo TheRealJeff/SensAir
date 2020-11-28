@@ -1,7 +1,12 @@
 package com.example.sensair;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -11,12 +16,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+import androidx.preference.PreferenceViewHolder;
+import androidx.preference.SwitchPreference;
 
 public class ProfileActivity extends AppCompatActivity {
+
+    protected SharedPreferences preferences;
+    protected String TAG = "profileActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         setContentView(R.layout.activity_profile);
         if (savedInstanceState == null) {
@@ -29,14 +41,36 @@ public class ProfileActivity extends AppCompatActivity {
 //        NavUtils.navigateUpFromSameTask(this);
 
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        //preferences.getAll();
+
+        boolean altitudeState = preferences.getBoolean("SettingAltitudeState", false);
+        Log.d(TAG, String.valueOf(altitudeState));
+        String altitudeThreshold = preferences.getString("SettingAltitudeThreshold", null);
+        Log.d(TAG, altitudeThreshold);
+
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
+
+        protected EditTextPreference editTextPreferenceAltitude;
+        protected EditTextPreference editTextPreferencePressure;
+        protected EditTextPreference editTextPreferenceTemperature;
+        protected SwitchPreference switchPreferenceAltitude;
+
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
-            EditTextPreference editTextPreferenceAltitude = findPreference("altitude");
+            editTextPreferenceAltitude = findPreference(getString(R.string.altitude_setting_threshold));
             editTextPreferenceAltitude.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
                 @Override
                 public void onBindEditText(@NonNull EditText editText) {
@@ -44,7 +78,15 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
 
-            EditTextPreference editTextPreferenceTemperature = findPreference("temperature");
+            editTextPreferencePressure = findPreference(getString(R.string.pressure_setting_threshold));
+            editTextPreferencePressure.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
+                @Override
+                public void onBindEditText(@NonNull EditText editText) {
+                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                }
+            });
+
+            editTextPreferenceTemperature = findPreference(getString(R.string.temperature_setting_threshold));
             editTextPreferenceTemperature.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
                 @Override
                 public void onBindEditText(@NonNull EditText editText) {
@@ -52,8 +94,12 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
 
+
+
         }
+
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {

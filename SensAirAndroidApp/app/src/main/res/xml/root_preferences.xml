@@ -13,14 +13,21 @@
             app:title="@string/reply_title" />
         <EditTextPreference
             android:id="@+id/editTextPreferenceAltitudeThreshold"
-            android:key="altitude"
+            android:key="@string/altitude_setting_threshold"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/altitude_setting_title"
             app:summary="@string/altitude_setting_summary" />
         <EditTextPreference
+            android:id="@+id/editTextPreferencePressureThreshold"
+            android:key="@string/pressure_setting_threshold"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pressure_setting_title"
+            app:summary="@string/pressure_setting_summary" />
+        <EditTextPreference
             android:id="@+id/editTextPreferenceTemperatureSetting"
-            android:key="temperature"
+            android:key="@string/temperature_setting_threshold"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/temperature_setting_title"
@@ -32,7 +39,7 @@
 
         <SwitchPreferenceCompat
             android:id="@+id/switchCriticalAirQualityAlerts"
-            app:key="Notifications"
+            app:key="AirQualityAlerts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:summary="@string/allow_notifications_description"
@@ -40,7 +47,7 @@
 
         <SwitchPreferenceCompat
             android:id="@+id/switchAllowDataCollection"
-            app:key="attachment"
+            app:key="AllowDataCollection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:summary="@string/data_setting_description"
@@ -49,14 +56,21 @@
             android:id="@+id/switchCriticalAltitudeAlerts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:key="attachment"
+            app:key="@string/altitude_setting_state"
             app:summary="@string/data_setting_altitude_description"
             app:title="@string/data_setting_altitude_title" />
+        <SwitchPreferenceCompat
+            android:id="@+id/switchCriticalPressureAlerts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:key="@string/pressure_setting_state"
+            app:summary="@string/data_setting_pressure_description"
+            app:title="@string/data_setting_pressure_title" />
         <SwitchPreferenceCompat
             android:id="@+id/switchCriticalTempAlerts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:key="attachment"
+            app:key="@string/temperature_setting_state"
             app:summary="@string/data_setting_temperature_description"
             app:title="@string/data_setting_temperature_title" />
 

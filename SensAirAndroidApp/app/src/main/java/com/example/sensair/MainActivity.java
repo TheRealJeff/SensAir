@@ -2,12 +2,15 @@ package com.example.sensair;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -466,6 +469,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
             }
         }
+
 
     }
 
