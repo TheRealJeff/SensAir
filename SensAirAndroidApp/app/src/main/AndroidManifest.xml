@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".realtimeplotting.AltitudeDataActivity"></activity>
+        <activity android:name=".realtimeplotting.LoggedDataActivity"></activity>
+        <activity android:name=".realtimeplotting.AltitudeDataActivity" />
         <activity android:name=".realtimeplotting.TemperatureDataActivity" />
         <activity android:name=".realtimeplotting.PressureDataActivity" />
         <activity android:name=".realtimeplotting.HumidityDataActivity" />
@@ -28,8 +29,7 @@
         <activity
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
-            android:parentActivityName=".MainActivity">
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".InfoActivity"
             android:parentActivityName=".MainActivity" />

@@ -2,18 +2,11 @@ package com.example.sensair.realtimeplotting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,13 +28,11 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnChartValueSelectedListener
 {
-
     protected LineChart coChart;
     protected ImageButton imageButtonFreeze,imageButtonSave;
     protected boolean frozen = false;
@@ -49,6 +40,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     protected float average,n;
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
+    protected LogDbHelper logDbHelper = new LogDbHelper(this);
 
     protected BtThread thread;
     protected BluetoothService btService = new BluetoothService();
@@ -105,14 +97,9 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
             public void onClick(View v)
             {
                 // TODO save to database
-                if(selected==0)
-                {
-                    Toast.makeText(CarbonMonoxideDataActivity.this,"No Value Selected: Select a data point on graph first",Toast.LENGTH_LONG).show();
-                }
-                else
-                {
-                    Toast.makeText(CarbonMonoxideDataActivity.this, String.format("%.0f", selected) + " ppm CO saved!", Toast.LENGTH_SHORT).show();
-                }
+                LogDataModel logDataModel = new LogDataModel("0","MQ2",Float.toHexString(co));
+                logDbHelper.insertLogData(logDataModel);
+                Toast.makeText(CarbonMonoxideDataActivity.this, String.format("%.0f", selected) + " ppm CO saved!", Toast.LENGTH_SHORT).show();
             }
         });
     }

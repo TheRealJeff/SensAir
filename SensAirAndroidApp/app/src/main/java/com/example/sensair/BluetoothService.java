@@ -84,7 +84,7 @@ public class BluetoothService extends Service
             connect();
     }
 
-    //    , int flags, int startId --> Potential
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
@@ -122,6 +122,9 @@ public class BluetoothService extends Service
     public boolean btInit()
     {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if(btAdapter==null)
+            return false;
 
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         for(BluetoothDevice device : pairedDevices)

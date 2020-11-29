@@ -84,8 +84,7 @@ public class AltitudeDataActivity extends AppCompatActivity
     protected void onStart()
     {
         super.onStart();
-        Intent intent = new Intent(this, BluetoothService.class);
-        bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
+
     }
 
     @Override
@@ -93,8 +92,6 @@ public class AltitudeDataActivity extends AppCompatActivity
     {
         super.onPause();
         super.onStop();
-        unbindService(connection);
-        btIsBound = false;
 
         if(thread!=null)
         {
@@ -102,21 +99,4 @@ public class AltitudeDataActivity extends AppCompatActivity
         }
     }
 
-
-    private final ServiceConnection connection = new ServiceConnection()
-    {
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service)
-        {
-            BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
-            btService = binder.getService();
-            btIsBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            btIsBound = false;
-        }
-    };
 }

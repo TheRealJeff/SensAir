@@ -27,15 +27,9 @@ import java.util.Objects;
 
 public class RealTimeDataActivity extends AppCompatActivity
 {
-
-    protected Thread thread;
-    protected BluetoothService btService;
-    protected boolean btIsBound = false;
     protected ArrayAdapter listAdapter;
     protected ListView listView;
     final protected ArrayList<String> metrics = new ArrayList<String>();
-
-
 
     private final String CO2="Carbon Dioxide (CO2)";
     private final  String TVOC="Volatile Organic Compounds (VOC)";

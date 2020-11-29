@@ -25,6 +25,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.example.sensair.realtimeplotting.LoggedDataActivity;
 import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.Section;
 import com.github.anastr.speedviewlib.components.Style;
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent serviceIntent = new Intent(this, BluetoothService.class);
         startService(serviceIntent);
 
-        if(btService.btInit())
+        if(btService.btInit()&& BluetoothService.supportsBluetooth)
         {
             longToast("Successfully connected to the SensAir Device!");
             startBluetoothThreading();
@@ -84,12 +86,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void uiInit()
     {
-        gaugeAirQuality = (SpeedView) findViewById(R.id.gaugeAirQuality);
+        gaugeAirQuality = findViewById(R.id.gaugeAirQuality);
         gaugeAirQuality.setWithTremble(false);
 
-        buttonRealTime = (ImageButton) findViewById(R.id.buttonRealTime);
-        buttonHistory = (ImageButton) findViewById(R.id.buttonHistory);
-        buttonProfile = (ImageButton) findViewById(R.id.buttonProfile);
+        buttonRealTime = findViewById(R.id.buttonRealTime);
+        buttonHistory = findViewById(R.id.buttonHistory);
+        buttonProfile = findViewById(R.id.buttonProfile);
 
         buttonRealTime.setOnClickListener(new View.OnClickListener()
         {
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             public void onClick(View V)
             {
-                Intent intent = new Intent(MainActivity.this, RealTimeDataActivity.class);
+                Intent intent = new Intent(MainActivity.this, LoggedDataActivity.class);
                 startActivity(intent);
             }
         });
@@ -275,23 +277,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private final ServiceConnection connection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service)
-        {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
-            btService = binder.getService();
-            btIsBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            btIsBound = false;
-        }
-    };
 
     public void print(String s)
     {
