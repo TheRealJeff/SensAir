@@ -1,33 +1,81 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="@string/user_settings">
 
-        <EditTextPreference
-            app:key="Name"
-            app:title="@string/user_name"
-            app:useSimpleSummaryProvider="true" />
-
         <ListPreference
+            android:id="@+id/listPreferenceMeterDisplayPreference"
             app:defaultValue="reply"
             app:entries="@array/gauge_option_entries"
             app:entryValues="@array/gauge_option_values"
             app:key="reply"
-            app:title="@string/reply_title"
-            app:summary="Set what measurement is displayed on the Home Page meter." />
+            app:summary="Set what measurement is displayed on the Home Page meter."
+            app:title="@string/reply_title" />
+        <EditTextPreference
+            android:id="@+id/editTextPreferenceAltitudeThreshold"
+            android:key="@string/altitude_setting_threshold"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/altitude_setting_title"
+            app:summary="@string/altitude_setting_summary" />
+        <EditTextPreference
+            android:id="@+id/editTextPreferencePressureThreshold"
+            android:key="@string/pressure_setting_threshold"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pressure_setting_title"
+            app:summary="@string/pressure_setting_summary" />
+        <EditTextPreference
+            android:id="@+id/editTextPreferenceTemperatureSetting"
+            android:key="@string/temperature_setting_threshold"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/temperature_setting_title"
+            app:summary="@string/temperature_setting_summary" />
 
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/app_settings">
 
         <SwitchPreferenceCompat
-            app:key="Notifications"
-            app:title="@string/allow_notifications"
-            app:summary="@string/allow_notifications_description"/>
+            android:id="@+id/switchCriticalAirQualityAlerts"
+            app:key="AirQualityAlerts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:summary="@string/allow_notifications_description"
+            app:title="@string/allow_notifications" />
 
         <SwitchPreferenceCompat
-            app:key="attachment"
-            app:title="@string/data_setting_title"
-            app:summary="@string/data_setting_description"/>
+            android:id="@+id/switchAllowDataCollection"
+            app:key="AllowDataCollection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:summary="@string/data_setting_description"
+            app:title="@string/data_setting_title" />
+        <SwitchPreferenceCompat
+            android:id="@+id/switchCriticalAltitudeAlerts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:defaultValue="false"
+            app:key="@string/altitude_setting_state"
+            app:summary="@string/data_setting_altitude_description"
+            app:title="@string/data_setting_altitude_title" />
+        <SwitchPreferenceCompat
+            android:id="@+id/switchCriticalPressureAlerts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:defaultValue="false"
+            app:key="@string/pressure_setting_state"
+            app:summary="@string/data_setting_pressure_description"
+            app:title="@string/data_setting_pressure_title" />
+        <SwitchPreferenceCompat
+            android:id="@+id/switchCriticalTempAlerts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:defaultValue="false"
+            app:key="@string/temperature_setting_state"
+            app:summary="@string/data_setting_temperature_description"
+            app:title="@string/data_setting_temperature_title" />
 
     </PreferenceCategory>
 

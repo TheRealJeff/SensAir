@@ -2,6 +2,8 @@ package com.example.sensair;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
 import androidx.core.content.ContextCompat;
 
 import android.bluetooth.BluetoothAdapter;
@@ -10,6 +12,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -476,4 +479,49 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
         }
     }
+
+    protected void onResume()
+    {
+        super.onResume();
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+        boolean isPaired = false;
+        if(btAdapter!=null)
+        {
+            Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+            for (BluetoothDevice device : pairedDevices)
+            {
+                if (device.getName().equals("SensAir"))
+                    isPaired = true;
+            }
+            if (!isPaired)
+            {
+                longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
+            }
+        }
+
+
+    }
+
+   public Boolean checkBluetoothConnection()
+    {
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+        if (btAdapter == null)
+        {
+            return false;
+        }
+
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+        for(BluetoothDevice device : pairedDevices)
+        {
+            if(device.getName().equals("SensAir"))
+                return true;
+        }
+        return false;
+    }
+
+
 }
