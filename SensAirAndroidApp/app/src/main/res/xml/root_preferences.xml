@@ -56,6 +56,7 @@
             android:id="@+id/switchCriticalAltitudeAlerts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:defaultValue="false"
             app:key="@string/altitude_setting_state"
             app:summary="@string/data_setting_altitude_description"
             app:title="@string/data_setting_altitude_title" />
@@ -63,6 +64,7 @@
             android:id="@+id/switchCriticalPressureAlerts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:defaultValue="false"
             app:key="@string/pressure_setting_state"
             app:summary="@string/data_setting_pressure_description"
             app:title="@string/data_setting_pressure_title" />
@@ -70,6 +72,7 @@
             android:id="@+id/switchCriticalTempAlerts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:defaultValue="false"
             app:key="@string/temperature_setting_state"
             app:summary="@string/data_setting_temperature_description"
             app:title="@string/data_setting_temperature_title" />

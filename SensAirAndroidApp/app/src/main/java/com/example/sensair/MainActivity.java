@@ -495,12 +495,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0)
-    {
-
-    }
-
     protected void onResume()
     {
         super.onResume();
@@ -525,27 +519,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        MenuInflater inflater = getMenuInflater();  // inflates menu designed in /res/menu
-        inflater.inflate(R.menu.menu_main_activity,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        int id = item.getItemId();
-        if(id == R.id.infoButton)
-        {
-            Intent intent = new Intent(MainActivity.this, InfoActivity.class);
-            startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public Boolean checkBluetoothConnection()
+   public Boolean checkBluetoothConnection()
     {
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -564,20 +538,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return false;
     }
 
-    public void print(String s)
-    {
-        System.out.println(s);
-    }
-
-
-    public void longToast(String toast_message)
-    {
-        Toast.makeText(this,toast_message,Toast.LENGTH_LONG).show();
-    }
-
-    public void shortToast(String toast_message)
-    {
-        Toast.makeText(this,toast_message,Toast.LENGTH_SHORT).show();
-    }
 
 }

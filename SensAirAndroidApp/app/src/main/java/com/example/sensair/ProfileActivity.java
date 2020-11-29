@@ -1,6 +1,11 @@
 package com.example.sensair;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -14,6 +19,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -24,6 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     protected SharedPreferences preferences;
     protected String TAG = "profileActivity";
+    //public static final String CHANNEL_ID = "ForegroundServiceChannel";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +56,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        /*
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         //preferences.getAll();
@@ -57,14 +66,56 @@ public class ProfileActivity extends AppCompatActivity {
         String altitudeThreshold = preferences.getString("SettingAltitudeThreshold", null);
         Log.d(TAG, altitudeThreshold);
 
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        createNotificationChannel();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification_warning)
+                .setContentTitle("Warning! CO2 Levels are Significant")
+                .setContentText("Hello")
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+        notificationManagerCompat.notify(1, builder.build());
+
+
+
+
+         */
+
+
     }
+
+    /*
+    private void createNotificationChannel()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Foreground Service Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
+
+     */
+
+
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
 
         protected EditTextPreference editTextPreferenceAltitude;
         protected EditTextPreference editTextPreferencePressure;
         protected EditTextPreference editTextPreferenceTemperature;
-        protected SwitchPreference switchPreferenceAltitude;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {

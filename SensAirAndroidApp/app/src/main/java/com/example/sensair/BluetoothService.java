@@ -12,13 +12,18 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Build;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
 
 import java.util.Set;
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
@@ -32,6 +37,8 @@ public class BluetoothService extends Service
     protected static boolean supportsBluetooth;
     protected Thread thread;
     BluetoothAdapter btAdapter;
+    protected String TAG = "BTService";
+
 
     private static float co2;
     private static float tvoc;
@@ -40,6 +47,25 @@ public class BluetoothService extends Service
     private static float pressure;
     private static float altitude;
     private static float temperature;
+
+    protected SharedPreferences preferences;
+    protected boolean altitudeState;
+    protected boolean pressureState;
+    protected boolean temperatureState;
+    protected boolean criticalAlertsState;
+    protected String altitudeThreshold;
+    protected String pressureThreshold;
+    protected String temperatureThreshold;
+
+    private static final int co2NotificationIDDefault = 1;
+    private static final int mq2NotificationIDDefault = 2;
+    private static final int tvocNotificationIDDefault = 3;
+    private static final int altitudeNotificationIDDefault = 4;
+    private static final int temperatureNotificationIDDefault = 5;
+    private static final int pressureNotificationIDDefault = 6;
+    private static final int co2NotificationIDDanger = 7;
+    private static final int mq2NotificationIDDanger = 8;
+    private static final int tvocNotificationIDDanger = 9;
 
     public class LocalBinder extends Binder
     {
@@ -150,6 +176,8 @@ public class BluetoothService extends Service
                     altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
                     print("Reading Data");
+
+                    valueCheck(co2, tvoc, mq2, humidity, pressure, altitude, temperature);
                 }
             }
 
@@ -175,6 +203,203 @@ public class BluetoothService extends Service
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
         }
+    }
+
+    public void valueCheck(float co2, float tvoc, float mq2, float humidity, float pressure, float altitude, float temperature){
+
+        Log.d(TAG, "checking values");
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        altitudeState = preferences.getBoolean("SettingAltitudeState", false);
+        pressureState = preferences.getBoolean("SettingPressureState", false);
+        temperatureState = preferences.getBoolean("SettingTemperatureState", false);
+        criticalAlertsState = preferences.getBoolean("AirQualityAlerts", false);
+
+        if(altitudeState == true) {
+            altitudeThreshold = preferences.getString("SettingAltitudeThreshold", null);
+        }
+        if(pressureState == true){
+            pressureThreshold = preferences.getString("SettingPressureThreshold", null);
+        }
+        if(temperatureState == true){
+            temperatureThreshold = preferences.getString("StringTemperatureThreshold", null);
+        }
+        //TODO makes custom messages with expandable notifications
+        if (criticalAlertsState == true) {
+
+            if (co2 >= 1000 && co2 < 2000) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! CO2 Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(co2NotificationIDDefault, builder.build());
+            } else if (co2 >= 2000) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_danger)
+                        .setContentTitle("Warning! CO2 Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(co2NotificationIDDanger, builder.build());
+            }
+
+            if (tvoc >= 400 && tvoc < 2000) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! TVOC Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(tvocNotificationIDDefault, builder.build());
+            } else if (tvoc >= 2000) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_danger)
+                        .setContentTitle("Warning! TVOC Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(tvocNotificationIDDanger, builder.build());
+            }
+
+            if (mq2 >= 50 && mq2 < 100) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! CO Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(mq2NotificationIDDefault, builder.build());
+            } else if (mq2 >= 100) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_danger)
+                        .setContentTitle("Warning! CO Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(mq2NotificationIDDanger, builder.build());
+            }
+        }
+
+        if(pressureState == true) {
+            if( pressure >= Integer.parseInt(pressureThreshold)) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! Pressure Threshold Reached")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(pressureNotificationIDDefault, builder.build());
+            }
+        }
+
+        if (altitudeState == true) {
+            if (altitude >= Integer.parseInt(altitudeThreshold)){
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! Altitude Threshold Reached")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(altitudeNotificationIDDefault, builder.build());
+            }
+        }
+        //TODO modify for negative temp values
+        if (temperatureState == true) {
+            if (temperature >= Integer.parseInt(temperatureThreshold)){
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! Temperature Threshold Reached")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(temperatureNotificationIDDefault, builder.build());
+            }
+        }
+
     }
 
     public void disconnect()
