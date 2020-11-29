@@ -16,15 +16,17 @@ import java.util.List;
 
 import static com.example.sensair.DBConfig.COLUMN_CO2;
 import static com.example.sensair.DBConfig.COLUMN_DATE;
-import static com.example.sensair.DBConfig.COLUMN_KEY;
 import static com.example.sensair.DBConfig.COLUMN_OVERALL;
 import static com.example.sensair.DBConfig.COLUMN_TVOC;
 import static com.example.sensair.DBConfig.COLUMN_COMBUST_GAS;
 import static com.example.sensair.DBConfig.COLUMN_HUMIDITY;
 import static com.example.sensair.DBConfig.COLUMN_PRESSURE;
 import static com.example.sensair.DBConfig.COLUMN_TEMPERATURE;
-import static com.example.sensair.DBConfig.DATABASE_NAME;
-import static com.example.sensair.DBConfig.TABLE_AIRDATA;
+import static com.example.sensair.DBConfig.NAME_DATABASE;
+import static com.example.sensair.DBConfig.TABLE_AIRSETS;
+import static com.example.sensair.DBConfig.COLUMN_LATITUDE;
+import static com.example.sensair.DBConfig.COLUMN_LONGITUDE;
+
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -36,7 +38,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context){
 
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, NAME_DATABASE, null, DATABASE_VERSION);
 
         this.context = context;
 
@@ -47,8 +49,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String CREATE_AIRDATA_QUERY = " CREATE TABLE "  + TABLE_AIRDATA + "(" +
-                COLUMN_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT,  " +
+    String CREATE_AIRDATA_QUERY = " CREATE TABLE "  + TABLE_AIRSETS + "(" +
                 COLUMN_DATE + " TEXT NOT NULL, " +
                 COLUMN_OVERALL + " TEXT NOT NULL, " +
                 COLUMN_CO2 + " TEXT NOT NULL, " +
@@ -56,7 +57,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_COMBUST_GAS + " TEXT NOT NULL, " +
                 COLUMN_HUMIDITY + " TEXT NOT NULL, " +
                 COLUMN_PRESSURE + " TEXT NOT NULL, " +
+                COLUMN_LATITUDE + " TEXT NOT NULL, " +
+                COLUMN_LONGITUDE + " TEXT NOT NULL, " +
                 COLUMN_TEMPERATURE + " TEXT NOT NULL)";
+
+
 
         Log.d(TAG, CREATE_AIRDATA_QUERY);
 
@@ -80,7 +85,6 @@ public class DBHelper extends SQLiteOpenHelper {
         long id = -1;
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_KEY, airData.getKey());
         contentValues.put(COLUMN_DATE, airData.getDATE());
         contentValues.put(COLUMN_OVERALL, airData.getOVERALL());
         contentValues.put(COLUMN_CO2, airData.getCO2());
@@ -88,11 +92,17 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_COMBUST_GAS, airData.getGAS());
         contentValues.put(COLUMN_HUMIDITY, airData.getHUMIDITY());
         contentValues.put(COLUMN_PRESSURE, airData.getPRESSURE());
+        String Lat = String.valueOf(airData.getLattidude());
+        String Longe = String.valueOf(airData.getLongitude());
+        Log.i("Adding" , Lat );
+        Log.i( "Adding" , Longe );
+        contentValues.put(COLUMN_LATITUDE, String.valueOf(airData.getLattidude()));
+        contentValues.put(COLUMN_LONGITUDE, String.valueOf(airData.getLongitude()));
+
         contentValues.put(COLUMN_TEMPERATURE, airData.getTEMP());
 
-
         try{
-            id = db.insertOrThrow(TABLE_AIRDATA, null, contentValues);
+            id = db.insertOrThrow(TABLE_AIRSETS, null, contentValues);
             Log.d(TAG, "successfully inserted AirQaulity Data");
         } catch(SQLException e){
             Toast.makeText(context, "operation failed:" + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -112,25 +122,38 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
 
         try{
-            cursor = db.query(TABLE_AIRDATA, null, null,
-                    null, null,null,null);
+
+            cursor = db.query(TABLE_AIRSETS, null, null, null, null, null, null);
 
             if(cursor != null) {
                 cursor.moveToFirst();
 
                 do {
-                    int id = cursor.getInt(cursor.getColumnIndex(COLUMN_KEY));
                     String date = cursor.getString(cursor.getColumnIndex(COLUMN_DATE));
+                    Log.i("insert", "date");
                     String overall = cursor.getString(cursor.getColumnIndex(COLUMN_OVERALL));
+                    Log.i("insert", "overall");
                     String CO2 = cursor.getString(cursor.getColumnIndex(COLUMN_CO2));
+                    Log.i("insert", "co2");
                     String TVOC = cursor.getString(cursor.getColumnIndex(COLUMN_TVOC));
+                    Log.i("insert", "tvoc");
                     String gas = cursor.getString(cursor.getColumnIndex(COLUMN_COMBUST_GAS));
+                    Log.i("insert", "gas");
                     String humidity = cursor.getString(cursor.getColumnIndex(COLUMN_HUMIDITY));
+                    Log.i("insert", "humidity");
                     String pressure = cursor.getString(cursor.getColumnIndex(COLUMN_PRESSURE));
+                    Log.i("insert", "pressure");
                     String temperature = cursor.getString(cursor.getColumnIndex(COLUMN_TEMPERATURE));
+                    Log.i("insert", "temperature");
+                    String latitude = cursor.getString(cursor.getColumnIndex(COLUMN_LATITUDE));
+                    Double lat = Double.valueOf(latitude);
+                    Log.i("insert", "latitude");
+                    String longitude = cursor.getString(cursor.getColumnIndex(COLUMN_LONGITUDE));
+                    Double longe = Double.valueOf(longitude);
+                    Log.i("insert", "longitude");
 
-
-                    airDataList.add(new AirData(date, overall, CO2, TVOC, gas, humidity, pressure, temperature));
+                    airDataList.add(new AirData(date,overall, CO2, TVOC, gas, humidity, pressure, temperature, lat, longe));
+                    Log.i("Data", "returing data");
                 } while (cursor.moveToNext());
             }
         }
@@ -144,9 +167,9 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return airDataList;
     }
-    public boolean deleteItem(String ID){
+    public boolean deleteItem(String Date){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        return db.delete(TABLE_AIRDATA, COLUMN_KEY + "=" + ID, null) > 0;
+        return db.delete(TABLE_AIRSETS, COLUMN_DATE + "=" + Date, null) > 0;
     }
 }

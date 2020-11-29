@@ -1,11 +1,27 @@
 package com.example.sensair;
 
+
 import androidx.annotation.Nullable;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+
 import android.bluetooth.BluetoothAdapter;
+
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
+
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,10 +32,9 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.github.anastr.speedviewlib.SpeedView;
-import com.github.anastr.speedviewlib.components.Section;
-import com.github.anastr.speedviewlib.components.Style;
 
-import java.text.SimpleDateFormat;
+
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,11 +42,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import android.Manifest;
+
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
-{
 
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,LocationListener
+{
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     protected SpeedView gaugeAirQuality;
     protected ImageButton buttonRealTime, buttonHistory, buttonProfile;
     protected static final int REQUEST_ENABLE_BT = 1;
@@ -52,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     DBHelper AirDB ;
     List<AirData> airDataList ;
     static String key;
-
+    LocationManager locationManager;
+    String provider;
 
 
     @Override
@@ -158,24 +177,43 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         AirDB = new DBHelper(getApplicationContext());
         airDataList = AirDB.getAllData();
+        Log.i("Location Info", "got data!");
 
-        key = null;
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        provider = locationManager.getBestProvider(new Criteria(), false);
+        checkLocationPermission();
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        if (location != null) {
+
+            Log.i("Location Info", "Location achieved!");
+
+        } else {
+
+            Log.i("Location Info", "No location :(");
+
+        }
         if(airDataList.size() == 0){
-            int fubar = new Random().nextInt(1000);
-            key = String.valueOf(fubar);
-            AirData airData = new AirData(key, "get", "good", "kid", "kid", "kid", "kid", "kid");
+            Log.i("myapp" , "size is zero");
+            Double latt = location.getLatitude();
+            Double longe = location.getLongitude();
+            Log.i("latlong", latt + " " + longe );
+            AirData airData = new AirData("get", "good", "kid", "kid", "kid", "kid", "kid", latt, longe );
             AirDB.insertAirData(airData);
-       }
-
-        for(int i = 0; i < (airDataList.size()) ; i++){
-            if(key != airDataList.get(i).getKey()) {
-                int fubar = new Random().nextInt(1000);
-                key = String.valueOf(fubar);
-                AirData airData = new AirData(key, "get", "good", "kid", "kid", "kid", "kid", "kid");
+        }
+        else{
+            AirData temp = airDataList.get(airDataList.size()-1);
+            Double latt = location.getLatitude();
+            Double longe = location.getLongitude();
+            Log.i("latlong", latt + " " + longe );
+            AirData airData = new AirData("get", "good", "kid", "kid", "kid", "kid", "kid", latt, longe);
+            if(temp.getHour() != airData.getHour()) {
                 AirDB.insertAirData(airData);
-                break;
+                Log.i("myapp", "adding to air data");
             }
         }
+
     }
 
     public void getData()
@@ -361,6 +399,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onPause()
     {
         super.onPause();
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            locationManager.removeUpdates(this);
+        }
         //TODO Check if still connected
 
 //            String msg = "Oops! Lost connection to the SensAir. Please pair device in Settings.";
@@ -371,6 +415,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onResume()
     {
         super.onResume();
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            locationManager.requestLocationUpdates(provider, 400, 1, this);
+        }
     }
 
     @Override
@@ -410,6 +460,108 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        Double lat = location.getLatitude();
+        Double lng = location.getLongitude();
+
+        Log.i("Location info: Lat", lat.toString());
+        Log.i("Location info: Lng", lng.toString());
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    public void getLocation(View view) {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        onLocationChanged(location);
+
+
+    }
+
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        //Request location updates:
+                        locationManager.requestLocationUpdates(provider, 400, 1, this);
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+
+        }
+    }
+
 
 
 }
