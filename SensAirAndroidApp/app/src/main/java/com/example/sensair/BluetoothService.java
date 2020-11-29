@@ -41,15 +41,7 @@ public class BluetoothService extends Service
     private static float altitude;
     private static float temperature;
 
-    public class LocalBinder extends Binder
-    {
-        public BluetoothService getService()
-        {
-            return BluetoothService.this;
-        }
-    }
-
-
+    
     @Override
     public void onCreate()
     {
@@ -58,7 +50,7 @@ public class BluetoothService extends Service
             connect();
     }
 
-    //    , int flags, int startId --> Potential
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
@@ -96,6 +88,9 @@ public class BluetoothService extends Service
     public boolean btInit()
     {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if(btAdapter==null)
+            return false;
 
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         for(BluetoothDevice device : pairedDevices)

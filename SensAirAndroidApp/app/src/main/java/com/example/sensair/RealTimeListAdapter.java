@@ -18,7 +18,6 @@ public class RealTimeListAdapter extends ArrayAdapter<String>
 {
     private ArrayList<String> metrics;
 
-
     public RealTimeListAdapter(@NonNull Context context, ArrayList<String> metrics)
     {
         super(context, 0);
