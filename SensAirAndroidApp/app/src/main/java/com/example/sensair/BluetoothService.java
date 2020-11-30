@@ -25,6 +25,13 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
+import com.example.sensair.realtimeplotting.AltitudeDataActivity;
+import com.example.sensair.realtimeplotting.CarbonDioxideDataActivity;
+import com.example.sensair.realtimeplotting.CarbonMonoxideDataActivity;
+import com.example.sensair.realtimeplotting.PressureDataActivity;
+import com.example.sensair.realtimeplotting.TemperatureDataActivity;
+import com.example.sensair.realtimeplotting.VolatileOrganicCompoundsActivity;
+
 import java.util.Set;
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
@@ -232,7 +239,7 @@ public class BluetoothService extends Service
         if (criticalAlertsState == true) {
 
             if (co2 >= 1000 && co2 < 2000) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, CarbonDioxideDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -249,7 +256,7 @@ public class BluetoothService extends Service
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                 notificationManagerCompat.notify(co2NotificationIDDefault, builder.build());
             } else if (co2 >= 2000) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, CarbonDioxideDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -268,7 +275,7 @@ public class BluetoothService extends Service
             }
 
             if (tvoc >= 400 && tvoc < 2000) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, VolatileOrganicCompoundsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -285,7 +292,7 @@ public class BluetoothService extends Service
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                 notificationManagerCompat.notify(tvocNotificationIDDefault, builder.build());
             } else if (tvoc >= 2000) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, VolatileOrganicCompoundsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -304,7 +311,7 @@ public class BluetoothService extends Service
             }
 
             if (mq2 >= 50 && mq2 < 100) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, CarbonMonoxideDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -321,7 +328,7 @@ public class BluetoothService extends Service
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                 notificationManagerCompat.notify(mq2NotificationIDDefault, builder.build());
             } else if (mq2 >= 100) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, CarbonMonoxideDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -342,7 +349,7 @@ public class BluetoothService extends Service
 
         if(pressureState == true) {
             if( pressure >= Integer.parseInt(pressureThreshold)) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, PressureDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -363,7 +370,7 @@ public class BluetoothService extends Service
 
         if (altitudeState == true) {
             if (altitude >= Integer.parseInt(altitudeThreshold)){
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, AltitudeDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -381,25 +388,47 @@ public class BluetoothService extends Service
                 notificationManagerCompat.notify(altitudeNotificationIDDefault, builder.build());
             }
         }
-        //TODO modify for negative temp values
+
         if (temperatureState == true) {
-            if (temperature >= Integer.parseInt(temperatureThreshold)){
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            if (Integer.parseInt(temperatureThreshold) > 0) {
+                if (temperature >= Integer.parseInt(temperatureThreshold)) {
+                    Intent intent = new Intent(this, TemperatureDataActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-                createNotificationChannel();
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_notification_warning)
-                        .setContentTitle("Warning! Temperature Threshold Reached")
-                        .setContentText("Hello")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setContentIntent(pendingIntent)
-                        .setAutoCancel(true);
+                    createNotificationChannel();
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_notification_warning)
+                            .setContentTitle("Warning! Temperature Threshold Reached")
+                            .setContentText("Hello")
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true);
 
-                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-                notificationManagerCompat.notify(temperatureNotificationIDDefault, builder.build());
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                    notificationManagerCompat.notify(temperatureNotificationIDDefault, builder.build());
+                }
+            }
+            else if(Integer.parseInt(temperatureThreshold) < 0){
+                if (temperature <= Integer.parseInt(temperatureThreshold)) {
+                    Intent intent = new Intent(this, TemperatureDataActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                    createNotificationChannel();
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_notification_warning)
+                            .setContentTitle("Warning! Temperature Threshold Reached")
+                            .setContentText("Hello")
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true);
+
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                    notificationManagerCompat.notify(temperatureNotificationIDDefault, builder.build());
+                }
             }
         }
 

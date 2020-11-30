@@ -46,13 +46,6 @@
             app:title="@string/allow_notifications" />
 
         <SwitchPreferenceCompat
-            android:id="@+id/switchAllowDataCollection"
-            app:key="AllowDataCollection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:summary="@string/data_setting_description"
-            app:title="@string/data_setting_title" />
-        <SwitchPreferenceCompat
             android:id="@+id/switchCriticalAltitudeAlerts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
