@@ -12,6 +12,14 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Read the API key from ./secure.properties into R.string.maps_api_key
+        def secureProps = new Properties()
+        if (file("../secure.properties").exists()) {
+            file("../secure.properties")?.withInputStream { secureProps.load(it) }
+        }
+        resValue "string", "maps_api_key", (secureProps.getProperty("MAPS_API_KEY") ?: "")
+
     }
 
     buildTypes {
@@ -34,8 +42,12 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.github.mukeshsolanki:MarkdownView-Android:1.0.1'
     implementation 'eu.basicairdata:bluetoothhelper:1.0.5'
+    implementation 'com.google.android.gms:play-services:11.0.4'
+    implementation group: 'com.pubnub', name: 'pubnub-gson', version: '4.12.0'
     implementation 'androidx.navigation:navigation-fragment:2.2.2'
     implementation 'androidx.navigation:navigation-ui:2.2.2'
+    implementation 'com.google.android.gms:play-services-maps:9.8.0'
+    implementation 'com.google.android.gms:play-services-location:9.8.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

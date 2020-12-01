@@ -13,7 +13,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/gen_Date"
+                android:id="@+id/Date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Date"
@@ -21,7 +21,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
             <TextView
-                android:id="@+id/gen_overall"
+                android:id="@+id/overall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
@@ -32,19 +32,19 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/gen_CO2"
+                android:id="@+id/CO2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/gen_TVOC"
+                android:id="@+id/TVOC"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/gen_gas"
+                android:id="@+id/gas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
@@ -55,19 +55,19 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/gen_Humidity"
+                android:id="@+id/Humidity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/gen_Pressure"
+                android:id="@+id/Pressure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/gen_Temperature"
+                android:id="@+id/Temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
