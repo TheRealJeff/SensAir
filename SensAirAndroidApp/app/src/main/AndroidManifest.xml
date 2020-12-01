@@ -4,7 +4,10 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COURSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -14,21 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service android:name="com.example.sensair.BluetoothService"/>
-        <activity
-            android:name=".HistoryActivityListActivity"
-            android:label="@string/title_historyactivity_list"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity
-            android:name=".HistoryActivityDetailActivity"
-            android:label="@string/title_historyactivity_detail"
-            android:parentActivityName=".HistoryActivityListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.sensair.HistoryActivityListActivity" />
-        </activity>
         <activity
             android:name=".RealTimeActivity"
             android:label="@string/title_activity_real_time"
@@ -44,7 +32,17 @@
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.sensair.HistoryActivityListActivity" />
+                android:value="com.example.sensair.HistoryActivity" />
+        </activity>
+        <activity
+            android:name=".HistoryActivity"
+            android:label="History"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity
+            android:name=".HistoryDetailActivity"
+            android:label="HistoryDetail"
+            android:parentActivityName=".HistoryActivity">
         </activity>
         <activity
             android:name=".InfoActivity"
@@ -56,6 +54,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAbZKn3cPA7D2QFBLwlmZloZxUsHTvrIvY"/>
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+        <service
+            android:name=".MainActivity"
+            android:foregroundServiceType="location"  >
+        <!-- Any inner elements would go here. -->
+    </service>
+
+</application>
 
         <meta-data
             android:name="preloaded_fonts"
