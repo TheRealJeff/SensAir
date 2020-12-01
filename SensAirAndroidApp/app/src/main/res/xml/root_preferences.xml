@@ -5,10 +5,10 @@
 
         <ListPreference
             android:id="@+id/listPreferenceMeterDisplayPreference"
-            app:defaultValue="reply"
+            app:defaultValue="0"
             app:entries="@array/gauge_option_entries"
             app:entryValues="@array/gauge_option_values"
-            app:key="reply"
+            app:key="meter"
             app:summary="Set what measurement is displayed on the Home Page meter."
             app:title="@string/reply_title" />
         <EditTextPreference

@@ -31,7 +31,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnChartValueSelectedListener
+public class SmokeIndexDataActivity extends AppCompatActivity implements OnChartValueSelectedListener
 {
     protected LineChart coChart;
     protected ImageButton imageButtonFreeze,imageButtonSave;
@@ -51,7 +51,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_carbon_monoxide_data);
+        setContentView(R.layout.activity_smoke_index_data);
         uiInit();
         plottingInit();
         gaugeInit();
@@ -62,7 +62,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     {
         Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("Carbon Monoxide (CO)");
+        setTitle("Smoke Index");
 
         textViewAverage = findViewById(R.id.coAverage);
 
@@ -80,7 +80,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                     plottingInit();
                     thread.interrupt();
                 }
-                else if(!frozen)
+                else
                 {
                     frozen = true;
                     imageButtonFreeze.setImageResource(R.drawable.ic_play_arrow_black_18dp);
@@ -96,10 +96,13 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
             @Override
             public void onClick(View v)
             {
-                // TODO save to database
-                LogDataModel logDataModel = new LogDataModel("0","MQ2",Float.toHexString(co));
-                logDbHelper.insertLogData(logDataModel);
-                Toast.makeText(CarbonMonoxideDataActivity.this, String.format("%.0f", selected) + " ppm CO saved!", Toast.LENGTH_SHORT).show();
+                if(selected==0)
+                    Toast.makeText(SmokeIndexDataActivity.this, "No Value Selected!", Toast.LENGTH_SHORT).show();
+                else
+                {
+                    logDbHelper.insertLogData(new LogDataModel("-1", "Smoke Index", String.format("%.0f", selected), ""));
+                    Toast.makeText(SmokeIndexDataActivity.this, "Smoke Level of " + String.format("%.0f", selected) + " saved!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -150,15 +153,8 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         xl.setTextSize(12f);
         xl.setEnabled(true);
 
-        LimitLine middle = new LimitLine(60f,"Moderate");
-        middle.setLineColor(Color.YELLOW);
-        middle.setLineWidth(2f);
-        middle.enableDashedLine(10f, 10f, 0f);
-        middle.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-        middle.setTextSize(11f);
-        middle.setTypeface(tfLight);
 
-        LimitLine upper = new LimitLine(120f,"Dangerous");
+        LimitLine upper = new LimitLine(300f,"Dangerous");
         upper.setLineColor(Color.RED);
         upper.setLineWidth(2f);
         upper.enableDashedLine(10f, 10f, 0f);
@@ -169,7 +165,6 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
         YAxis leftAxis =coChart.getAxisLeft();
         leftAxis.removeAllLimitLines();
         leftAxis.addLimitLine(upper);
-        leftAxis.addLimitLine(middle);
         leftAxis.setTypeface(tfLight);
         leftAxis.setTextColor(Color.BLACK);
         leftAxis.setAxisMaximum(600f);
@@ -187,28 +182,25 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
     public void gaugeInit()
     {
         gaugeCo = findViewById(R.id.gaugeCo);
-        gaugeCo.setMinMaxSpeed(0,150);
+        gaugeCo.setMinMaxSpeed(0,600);
         gaugeCo.setWithTremble(false);
-        gaugeCo.setUnit(" ppm");
+        gaugeCo.setUnit("");
 
-        Section s1,s2,s3;
+        Section s1,s2;
         ArrayList<Section> sections = new ArrayList<>();
         ArrayList<Float> ticks = new ArrayList<>();
 
-        s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),80);
-        s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),80);
-        s3 = new Section(.8f,1f,Color.parseColor("#EE5C42"),80);
+        s1 = new Section(0f,.5f,Color.parseColor("#00CD66"),80);
+        s2 = new Section(.5f,1f,Color.parseColor("#EE5C42"),80);
         sections.add(s1);
         sections.add(s2);
-        sections.add(s3);
         gaugeCo.clearSections();
         gaugeCo.addSections(sections);
 
-        gaugeCo.setMarksNumber(9);
-        ticks.add(0.2f);
-        ticks.add(0.4f);
-        ticks.add(0.6f);
-        ticks.add(0.8f);
+        gaugeCo.setMarksNumber(3);
+        ticks.add(0.25f);
+        ticks.add(0.5f);
+        ticks.add(0.75f);
 
         gaugeCo.setTicks(ticks);
     }
@@ -326,7 +318,7 @@ public class CarbonMonoxideDataActivity extends AppCompatActivity implements OnC
                             n++;
                             average = average + ((co-average))/n;
 
-                            textViewAverage.setText(String.format("%.0f",average)+" ppm");
+                            textViewAverage.setText(String.format("%.0f",average));
                             gaugeCo.speedTo(co);
                         }
                     }

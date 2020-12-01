@@ -47,7 +47,6 @@ public class BluetoothService extends Service
     private static float pressure;
     private static float altitude;
     private static float temperature;
-
     
     protected SharedPreferences preferences;
     protected boolean altitudeState;
@@ -179,7 +178,6 @@ public class BluetoothService extends Service
                     pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
                     altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
-                    print("Reading Data");
 
                     valueCheck(co2, tvoc, mq2, humidity, pressure, altitude, temperature);
                 }
@@ -211,8 +209,6 @@ public class BluetoothService extends Service
 
     public void valueCheck(float co2, float tvoc, float mq2, float humidity, float pressure, float altitude, float temperature){
 
-        Log.d(TAG, "checking values");
-
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         altitudeState = preferences.getBoolean("SettingAltitudeState", false);
@@ -220,17 +216,17 @@ public class BluetoothService extends Service
         temperatureState = preferences.getBoolean("SettingTemperatureState", false);
         criticalAlertsState = preferences.getBoolean("AirQualityAlerts", false);
 
-        if(altitudeState == true) {
+        if(altitudeState) {
             altitudeThreshold = preferences.getString("SettingAltitudeThreshold", null);
         }
-        if(pressureState == true){
+        if(pressureState){
             pressureThreshold = preferences.getString("SettingPressureThreshold", null);
         }
-        if(temperatureState == true){
-            temperatureThreshold = preferences.getString("StringTemperatureThreshold", null);
+        if(temperatureState){
+            temperatureThreshold = preferences.getString("SettingTemperatureThreshold", null);
         }
         //TODO makes custom messages with expandable notifications
-        if (criticalAlertsState == true) {
+        if (criticalAlertsState) {
 
             if (co2 >= 1000 && co2 < 2000) {
                 Intent intent = new Intent(this, MainActivity.class);
@@ -321,7 +317,7 @@ public class BluetoothService extends Service
 
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                 notificationManagerCompat.notify(mq2NotificationIDDefault, builder.build());
-            } else if (mq2 >= 100) {
+            } else if (mq2 >= 1000) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);

@@ -15,13 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".realtimeplotting.LoggedDataActivity"></activity>
-        <activity android:name=".realtimeplotting.AltitudeDataActivity" />
         <activity android:name=".realtimeplotting.TemperatureDataActivity" />
         <activity android:name=".realtimeplotting.PressureDataActivity" />
         <activity android:name=".realtimeplotting.HumidityDataActivity" />
         <activity android:name=".realtimeplotting.VolatileOrganicCompoundsActivity" />
         <activity android:name=".realtimeplotting.CarbonDioxideDataActivity" />
-        <activity android:name=".realtimeplotting.CarbonMonoxideDataActivity" />
+        <activity android:name=".realtimeplotting.SmokeIndexDataActivity" />
         <activity android:name=".RealTimeDataActivity" />
 
         <service android:name=".BluetoothService" />

@@ -2,10 +2,12 @@ package com.example.sensair;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.ListPreference;
 import androidx.preference.PreferenceManager;
 
 import androidx.core.content.ContextCompat;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected Thread thread;
     protected Spinner spinner;
     protected BluetoothService btService;
-    protected boolean btIsBound = false;
+    protected SharedPreferences sharedPreferences;
 
     private float co2;
     private float tvoc;
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent serviceIntent = new Intent(this, BluetoothService.class);
         startService(serviceIntent);
 
-        if(btService.btInit()&& BluetoothService.supportsBluetooth)
+        if(btService.btInit())
         {
             longToast("Successfully connected to the SensAir Device!");
             startBluetoothThreading();
@@ -128,8 +130,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         assert spinner != null;
         spinner.setOnItemSelectedListener(this);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String defaultMetric = sharedPreferences.getString("meter","0");
+
         categories.add("Overall Air Quality");
-        categories.add("Carbon Monoxide");
+        categories.add("Smoke Index");
         categories.add("Carbon Dioxide");
         categories.add("Volatile Organic Compounds");
         categories.add("Humidity");
@@ -139,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
         dataAdapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(dataAdapter);
-        spinner.setSelection(0);
+        spinner.setSelection(Integer.parseInt(defaultMetric));
     }
 
     public void startBluetoothThreading()
@@ -323,23 +328,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case 1:     // CO
                 gaugeAirQuality.speedTo(0);
-                gaugeAirQuality.setMinMaxSpeed(0,125);
-                gaugeAirQuality.setUnit("Parts-per Million (ppm)");
+                gaugeAirQuality.setMinMaxSpeed(0,600);
+                gaugeAirQuality.setUnit("");
 
-                s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
-                s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),110);
-                s3 = new Section(.8f,1f,Color.parseColor("#EE5C42"),110);
+                s1 = new Section(0f,.5f,Color.parseColor("#00CD66"),110);
+                s2 = new Section(.5f,1f,Color.parseColor("#EE5C42"),110);
                 sections.add(s1);
                 sections.add(s2);
-                sections.add(s3);
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
 
-                gaugeAirQuality.setMarksNumber(9);
-                ticks.add(0.2f);
-                ticks.add(0.4f);
-                ticks.add(0.6f);
-                ticks.add(0.8f);
+                gaugeAirQuality.setMarksNumber(3);
+                ticks.add(0.25f);
+                ticks.add(0.5f);
+                ticks.add(0.75f);
 
 
                 gaugeAirQuality.setTicks(ticks);
@@ -500,28 +502,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
             }
         }
-
-
+        setGauge();
     }
 
-   public Boolean checkBluetoothConnection()
+    public void setGauge()
     {
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String defaultMetric = sharedPreferences.getString("meter","0");
 
-        if (btAdapter == null)
-        {
-            return false;
-        }
-
-        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
-        for(BluetoothDevice device : pairedDevices)
-        {
-            if(device.getName().equals("SensAir"))
-                return true;
-        }
-        return false;
+        spinner.setSelection(Integer.parseInt(defaultMetric));
     }
-
 
 }

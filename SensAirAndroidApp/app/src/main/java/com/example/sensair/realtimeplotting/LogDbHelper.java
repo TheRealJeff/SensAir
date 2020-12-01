@@ -12,29 +12,29 @@ import java.util.List;
 
 public class LogDbHelper extends SQLiteOpenHelper
 {
-    private Context context;
     public static final String DB_NAME = "logged-db";
     public static final int DB_VERSION = 1;
     public static final String TABLE_LOGGED_DATA = "loggedData" ;
     public static final String COLUMN_KEY = "key" ;
     public static final String COLUMN_DATE = "date";
     public static final String COLUMN_DATA_TYPE = "data_type";
+    public static final String COLUMN_DATA_UNIT = "data_unit";
     public static final String COLUMN_DATA_VALUE = "data_value";
 
     public LogDbHelper(Context context)
     {
         super(context,DB_NAME,null,DB_VERSION);
-        this.context = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
-        String CREATE_LOGDATA_QUERY = " CREATE TABLE "  + TABLE_LOGGED_DATA + "( " +
+        String CREATE_LOGDATA_QUERY = " CREATE TABLE "  + TABLE_LOGGED_DATA + "(" +
                 COLUMN_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_DATE + " TEXT NOT NULL, " +
                 COLUMN_DATA_TYPE + " TEXT NOT NULL, " +
-                COLUMN_DATA_VALUE + " TEXT NOT NULL)";
+                COLUMN_DATA_VALUE + " TEXT NOT NULL, " +
+                COLUMN_DATA_UNIT+ " TEXT NOT NULL)";
 
         sqLiteDatabase.execSQL(CREATE_LOGDATA_QUERY);
     }
@@ -47,21 +47,21 @@ public class LogDbHelper extends SQLiteOpenHelper
 
     public long insertLogData(LogDataModel logDataModel)
     {
-        if(logDataModel == null) return -1;
+        if(logDataModel == null)
+            return -1;
 
         SQLiteDatabase db = this.getWritableDatabase();
         long id = -1;
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_KEY, logDataModel.getKEY());
         contentValues.put(COLUMN_DATE, logDataModel.getDATE());
         contentValues.put(COLUMN_DATA_TYPE, logDataModel.getTYPE());
         contentValues.put(COLUMN_DATA_VALUE, logDataModel.getVALUE());
+        contentValues.put(COLUMN_DATA_UNIT, logDataModel.getUNIT());
 
         try
         {
             id = db.insertOrThrow(TABLE_LOGGED_DATA, null, contentValues);
-            System.out.println("------------------- SAVED DATA TO SQL -------------------");
         } catch(SQLException e)
         {
             e.printStackTrace();
@@ -72,11 +72,11 @@ public class LogDbHelper extends SQLiteOpenHelper
         return id;
     }
 
-    public List<LogDataModel> getAllData()
+    public ArrayList<LogDataModel> getAllData()
     {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        List<LogDataModel> airDataList = new ArrayList<>();
+        ArrayList<LogDataModel> airDataList = new ArrayList<>();
 
         Cursor cursor = null;
 
@@ -94,8 +94,9 @@ public class LogDbHelper extends SQLiteOpenHelper
                     String date = cursor.getString(cursor.getColumnIndex(COLUMN_DATE));
                     String type = cursor.getString(cursor.getColumnIndex(COLUMN_DATA_TYPE));
                     String value = cursor.getString(cursor.getColumnIndex(COLUMN_DATA_VALUE));
+                    String unit = cursor.getString(cursor.getColumnIndex(COLUMN_DATA_UNIT));
 
-                    airDataList.add(new LogDataModel(key, date, type, value));
+                    airDataList.add(new LogDataModel(key, date, type, value, unit));
                 } while (cursor.moveToNext());
             }
         }
@@ -115,9 +116,10 @@ public class LogDbHelper extends SQLiteOpenHelper
     }
 
 
-    public boolean deleteItem(String ID)
+    public boolean deleteItem(LogDataModel datum)
     {
         SQLiteDatabase db = this.getReadableDatabase();
+        String ID = datum.getKEY();
 
         return db.delete(TABLE_LOGGED_DATA, COLUMN_KEY + "=" + ID, null) > 0;
     }

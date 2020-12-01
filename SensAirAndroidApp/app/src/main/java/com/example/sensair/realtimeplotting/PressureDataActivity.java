@@ -46,6 +46,7 @@ public class PressureDataActivity extends AppCompatActivity implements OnChartVa
     protected float average,n;
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
+    protected LogDbHelper logDbHelper = new LogDbHelper(this);
     
     protected BtThread thread;
     protected BluetoothService btService = new BluetoothService();
@@ -100,14 +101,12 @@ public class PressureDataActivity extends AppCompatActivity implements OnChartVa
             @Override
             public void onClick(View v)
             {
-                // TODO save to database
                 if(selected==0)
-                {
-                    Toast.makeText(PressureDataActivity.this,"No Value Selected: Select a data point on graph first",Toast.LENGTH_LONG).show();
-                }
+                    Toast.makeText(PressureDataActivity.this, "No Value Selected!", Toast.LENGTH_SHORT).show();
                 else
                 {
-                    Toast.makeText(PressureDataActivity.this, String.format("%.0f", selected) + " ppm CO saved!", Toast.LENGTH_SHORT).show();
+                    logDbHelper.insertLogData(new LogDataModel("-1", "Pressure", String.format("%.0f", selected), "KPa"));
+                    Toast.makeText(PressureDataActivity.this, String.format("%.0f", selected) + " KPA saved!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

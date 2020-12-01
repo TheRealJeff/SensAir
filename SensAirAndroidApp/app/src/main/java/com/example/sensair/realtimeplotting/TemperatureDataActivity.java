@@ -47,6 +47,7 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
     protected float average,n;
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
+    protected LogDbHelper logDbHelper = new LogDbHelper(this);
 
     protected BtThread thread;
     protected BluetoothService btService = new BluetoothService();
@@ -100,14 +101,12 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
             @Override
             public void onClick(View v)
             {
-                // TODO save to database
                 if(selected==0)
-                {
-                    Toast.makeText(TemperatureDataActivity.this,"No Value Selected: Select a data point on graph first",Toast.LENGTH_LONG).show();
-                }
+                    Toast.makeText(TemperatureDataActivity.this, "No Value Selected!", Toast.LENGTH_SHORT).show();
                 else
                 {
-                    Toast.makeText(TemperatureDataActivity.this, String.format("%.0f", selected) + " degrees Celsius saved!", Toast.LENGTH_SHORT).show();
+                    logDbHelper.insertLogData(new LogDataModel("-1", "Temperature", String.format("%.0f", selected), "C"));
+                    Toast.makeText(TemperatureDataActivity.this, String.format("%.0f", selected) + " Degrees C saved!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
