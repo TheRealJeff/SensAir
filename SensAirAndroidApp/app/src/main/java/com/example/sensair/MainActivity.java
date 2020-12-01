@@ -22,6 +22,14 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,6 +51,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import android.Manifest;
+import java.util.Set;
 
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
@@ -52,12 +61,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     protected SpeedView gaugeAirQuality;
     protected ImageButton buttonRealTime, buttonHistory, buttonProfile;
-    protected static final int REQUEST_ENABLE_BT = 1;
     protected List<String> categories = new ArrayList<>();
-    protected BluetoothHelper mBluetooth = new BluetoothHelper();
-    private final String DEVICE_NAME = "SensAir";
-    private Thread thread;
-    Spinner spinner;
+    protected Thread thread;
+    protected Spinner spinner;
+    protected BluetoothService btService;
+    protected boolean btIsBound = false;
 
     private float co2;
     private float tvoc;
@@ -66,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private float pressure;
     private float altitude;
     private float temperature;
+    private float overallQualityScore;
 
     DBHelper AirDB ;
     List<AirData> airDataList ;
@@ -80,9 +89,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        btInit();
         uiInit();
         dropDownInit();
+        setTitle("Live Air Quality");
 
 
         mBluetooth.Connect(DEVICE_NAME);
@@ -227,16 +236,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 
         if (btAdapter == null)
+        if(checkBluetoothConnection())
         {
-            String msg = "ERROR: Phone does not support bluetooth. Bluetooth connection failed!";
-            Toast.makeText(this, msg, Toast.LENGTH_LONG);
-            return;
-        } else if (!btAdapter.isEnabled())
-        {
-            startActivityForResult(btEnableIntent, REQUEST_ENABLE_BT);
+            longToast("Successfully connected to the SensAir Device!");
+            startBluetoothThreading();
         }
-        //TODO HANDLE SUCCESSFUL DEVICE CONNECTION
-
+        else
+        {
+            longToast("Failed to connect to the SensAir Device. Please check Bluetooth Settings and try again.");
+        }
     }
 
     public void uiInit()
@@ -268,7 +276,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         buttonProfile.setOnClickListener(new View.OnClickListener()
         {
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
             }
@@ -289,101 +298,317 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setOnItemSelectedListener(this);
 
         categories.add("Overall Air Quality");
-        categories.add("CO2");
+        categories.add("Carbon Dioxide");
         categories.add("TVOC");
-        categories.add("Combustible Gas");
+        categories.add("Carbon Monoxide");
         categories.add("Humidity");
         categories.add("Pressure");
         categories.add("Temperature");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
-        dataAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        dataAdapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(dataAdapter);
         spinner.setSelection(0);
     }
 
+    public void startBluetoothThreading()
+    {
+        thread =new Thread()
+        {
+
+            @Override
+            public void run () {
+            while (!thread.isInterrupted())
+            {
+                try
+                {
+                    Thread.sleep(100);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if(btIsBound)
+                        {
+                            co2 = btService.getCo2();
+                            tvoc = btService.getTvoc();
+                            mq2 = btService.getMq2();
+                            humidity = btService.getHumidity();
+                            pressure = btService.getPressure();
+                            altitude = btService.getAltitude();
+                            temperature = btService.getTemperature();
+                            overallQualityScore = btService.getOverallQuality();
+                        }
+
+                        switch (spinner.getSelectedItemPosition())
+                        {
+                            case 0:     // overall quality
+                                //TODO Handle Overall choice and display meter values
+                                if(overallQualityScore/100==1.0f)
+                                {
+                                    gaugeAirQuality.speedTo(80f);
+                                    gaugeAirQuality.setUnit("Excellent Air Quality Index!");
+                                }
+                                else if(overallQualityScore/100<=1f&&overallQualityScore/100>=0.66666f)
+                                {
+                                    gaugeAirQuality.speedTo(50f);
+                                    gaugeAirQuality.setUnit("Excellent Air Quality Index!");
+                                }
+                                else if(overallQualityScore/100<=0.66666f&&overallQualityScore/100>=0f)
+                                {
+                                    gaugeAirQuality.speedTo(20f);
+                                    gaugeAirQuality.setUnit("Excellent Air Quality Index!");
+                                }
+                                break;
+                            case 1:     // CO2          TODO for all: adjust sections so that danger zones are properly reflected
+                                gaugeAirQuality.speedTo(co2);
+                                break;
+                            case 2:     // TVOC
+                                gaugeAirQuality.speedTo(tvoc);
+                                break;
+                            case 3:     // MQ2
+                                gaugeAirQuality.speedTo(mq2);
+                                break;
+                            case 4:     // Humidity
+                                gaugeAirQuality.speedTo(humidity);
+                                break;
+                            case 5:     // Pressure
+                                gaugeAirQuality.speedTo(pressure / 1000);
+                                break;
+                            case 6:     // Temperature
+                                gaugeAirQuality.speedTo(temperature);
+                                break;
+                        }
+                    }
+                });
+            }
+        }
+    };
+            thread.start();
+}
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        unbindService(connection);
+        btIsBound = false;
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        Intent intent = new Intent(this, BluetoothService.class);
+        bindService(intent, connection, Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_AUTO_CREATE);
+        startService(intent);
+    }
+
+    private final ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
+            btService = binder.getService();
+            btIsBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            btIsBound = false;
+        }
+    };
+
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
     {
-//        Section section_1;
-//        Section section_2;
-//        Section section_3;
+        Section s1,s2,s3,s4,s5;
+        List<Section> sections = new ArrayList<>();
+        ArrayList<Float> ticks = new ArrayList<>();
 
         switch (position)
         {
             case 0:     // overall quality
                 //TODO Handle Overall choice and display meter values
-//                sections = gaugeAirQuality.getSections();
-//                sections.removeAll(sections);
-//                gaugeAirQuality.makeSections(3, 0, Style.BUTT);
-//                ArrayList<Section> sections = gaugeAirQuality.getSections();
-//
-//                section_1 = sections.get(0);
-//                section_2 = sections.get(1);
-//                section_3 = sections.get(2);
-//
-//                section_1.setColor(Color.rgb(250, 67, 67));
-//                section_2.setColor(Color.rgb(255, 255, 102));
-//                section_3.setColor(Color.rgb(90, 245, 110));
+                gaugeAirQuality.speedTo(0);
+                gaugeAirQuality.setMinMaxSpeed(0,100);
+
+                s1 = new Section(0f,.33333f,Color.parseColor("#EE5C42"),110);
+                s2 = new Section(.33333f,.66666f,Color.parseColor("#FFFF33"),110);
+                s3 = new Section(.66666f,1f,Color.parseColor("#00CD66"),110);
+                sections.add(s1);
+                sections.add(s2);
+                sections.add(s3);
+                gaugeAirQuality.clearSections();
+                gaugeAirQuality.addSections(sections);
+
+                gaugeAirQuality.setMarksNumber(2);
+                gaugeAirQuality.setTickNumber(0);
+
                 break;
             case 1:     // CO2          TODO for all: adjust sections so that danger zones are properly reflected
-//                sections = gaugeAirQuality.getSections();
-//                sections.removeAll(sections);
-//                gaugeAirQuality.makeSections(3, 0, Style.BUTT);
-//                sections = gaugeAirQuality.getSections();
-//                section_1 = sections.get(0);
-//                section_2 = sections.get(1);
-//                section_3 = sections.get(2);
-//
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,2500);
-//
-//                section_1.setColor(Color.rgb(90, 245, 110));
-//                section_2.setColor(Color.rgb(255, 255, 102));
-//                section_3.setColor(Color.rgb(250, 67, 67));
-//                    section_1.setStartOffset(0);
-//                    section_1.get((float)(1000/2500));
-//                    section_2.setStartEndOffset((float).4004,(float).8);
-//                    section_3.setStartEndOffset((float).8004,1);
+                gaugeAirQuality.setUnit("Parts-per Million (ppm)");
 
+                s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
+                s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),110);
+                s3 = new Section(.8f,1f,Color.parseColor("#EE5C42"),110);
+                sections.add(s1);
+                sections.add(s2);
+                sections.add(s3);
+                gaugeAirQuality.clearSections();
+                gaugeAirQuality.addSections(sections);
 
-                getData();
-                gaugeAirQuality.setUnit(" PPM");
+                gaugeAirQuality.setMarksNumber(9);
+                    ticks.add(0.2f);
+                    ticks.add(0.4f);
+                    ticks.add(0.6f);
+                    ticks.add(0.8f);
+                gaugeAirQuality.setTicks(ticks);
+
                 gaugeAirQuality.speedTo(co2);
                 break;
             case 2:     // TVOC
-                getData();
                 gaugeAirQuality.speedTo(0);
-                gaugeAirQuality.setMinMaxSpeed(0,600);
-                gaugeAirQuality.setUnit(" PPB");
+                gaugeAirQuality.setMinMaxSpeed(0,4000);
+                gaugeAirQuality.setUnit("Parts-per Billion (ppb)");
+
+                s1 = new Section(0f,.1f,Color.parseColor("#00CD66"),110);
+                s2 = new Section(.1f,.5f,Color.parseColor("#FFFF33"),110);
+                s3 = new Section(.5f,1f,Color.parseColor("#EE5C42"),110);
+                sections.add(s1);
+                sections.add(s2);
+                sections.add(s3);
+                gaugeAirQuality.clearSections();
+                gaugeAirQuality.addSections(sections);
+
+                gaugeAirQuality.setMarksNumber(9);
+                    ticks.add(0.1f);
+                    ticks.add(0.2f);
+                    ticks.add(0.3f);
+                    ticks.add(0.4f);
+                    ticks.add(0.5f);
+                    ticks.add(0.6f);
+                    ticks.add(0.7f);
+                    ticks.add(0.8f);
+                    ticks.add(0.9f);
+                gaugeAirQuality.setTicks(ticks);
+
                 gaugeAirQuality.speedTo(tvoc);
                 break;
             case 3:     // MQ2
-                getData();
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,600);
-                gaugeAirQuality.setUnit(" PPB");
+                gaugeAirQuality.setUnit("Parts-per Billion (ppb)");
+
+                s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
+                s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),110);
+                s3 = new Section(.8f,1f,Color.parseColor("#EE5C42"),110);
+                sections.add(s1);
+                sections.add(s2);
+                sections.add(s3);
+                gaugeAirQuality.clearSections();
+                gaugeAirQuality.addSections(sections);
+
+                gaugeAirQuality.setMarksNumber(9);
+                    ticks.add(0.2f);
+                    ticks.add(0.4f);
+                    ticks.add(0.6f);
+                    ticks.add(0.8f);
+                gaugeAirQuality.setTicks(ticks);
+
                 gaugeAirQuality.speedTo(mq2);
                 break;
             case 4:     // Humidity
-                getData();
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,100);
-                gaugeAirQuality.setUnit(" %");
+                gaugeAirQuality.setUnit("Percent Humidity (%)");
+
+                s1 = new Section(0f,.2f,Color.parseColor("#BFEFFF"),110);
+                s2 = new Section(.2f,.4f,Color.parseColor("#B0E2FF"),110);
+                s3 = new Section(.4f,.6f,Color.parseColor("#7EC0EE"),110);
+                s4 = new Section(.6f,.8f,Color.parseColor("#499DF5"),110);
+                s5 = new Section(.8f,1f,Color.parseColor("#0276FD"),110);
+                sections.add(s1);
+                sections.add(s2);
+                sections.add(s3);
+                sections.add(s4);
+                sections.add(s5);
+                gaugeAirQuality.clearSections();
+                gaugeAirQuality.addSections(sections);
+
+                gaugeAirQuality.setMarksNumber(9);
+                    ticks.add(0.1f);
+                    ticks.add(0.2f);
+                    ticks.add(0.3f);
+                    ticks.add(0.4f);
+                    ticks.add(0.5f);
+                    ticks.add(0.6f);
+                    ticks.add(0.7f);
+                    ticks.add(0.8f);
+                    ticks.add(0.9f);
+                gaugeAirQuality.setTicks(ticks);
+
+
                 gaugeAirQuality.speedTo(humidity);
                 break;
             case 5:     // Pressure
-                getData();
                 gaugeAirQuality.speedTo(0);
-                gaugeAirQuality.setMinMaxSpeed(0,150);
-                gaugeAirQuality.setUnit(" KPa");
+                gaugeAirQuality.setMinMaxSpeed(0,300);
+                gaugeAirQuality.setUnit("Kilopascals (kPa)");
+
+                s1 = new Section(0f,.021f,Color.parseColor("#EE5C42"),110);
+                s2 = new Section(.021f,.83333f,Color.parseColor("#00CD66"),110);
+                s3 = new Section(.83333f,1f,Color.parseColor("#EE5C42"),110);
+                sections.add(s1);
+                sections.add(s2);
+                sections.add(s3);
+                gaugeAirQuality.clearSections();
+                gaugeAirQuality.addSections(sections);
+
+                gaugeAirQuality.setMarksNumber(5);
+                    ticks.add(1/6f);
+                    ticks.add(2/6f);
+                    ticks.add(3/6f);
+                    ticks.add(4/6f);
+                    ticks.add(5/6f);
+
+                gaugeAirQuality.setTicks(ticks);
+
                 gaugeAirQuality.speedTo(pressure/1000);
                 break;
             case 6:     // Temperature
-                getData();
                 gaugeAirQuality.speedTo(0);
-                gaugeAirQuality.setMinMaxSpeed(0,40);
-                gaugeAirQuality.setUnit(" Celsius");
+                gaugeAirQuality.setMinMaxSpeed(-40,40);
+                gaugeAirQuality.setUnit(" Celsius (C)");
+
+                s1 = new Section(0f,.5f,Color.parseColor("#74BBFB"),110);
+                s2 = new Section(.5f,1f,Color.parseColor("#ff6666"),110);
+                sections.add(s1);
+                sections.add(s2);
+                gaugeAirQuality.clearSections();
+                gaugeAirQuality.addSections(sections);
+
+                gaugeAirQuality.setMarksNumber(9);
+                    ticks.add(0.1f);
+                    ticks.add(0.2f);
+                    ticks.add(0.3f);
+                    ticks.add(0.4f);
+                    ticks.add(0.5f);
+                    ticks.add(0.6f);
+                    ticks.add(0.7f);
+                    ticks.add(0.8f);
+                    ticks.add(0.9f);
+                gaugeAirQuality.setTicks(ticks);
+
                 gaugeAirQuality.speedTo(temperature);
                 break;
         }
@@ -422,23 +647,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             locationManager.requestLocationUpdates(provider, 400, 1, this);
         }
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    protected void onResume()
     {
-        if (requestCode == REQUEST_ENABLE_BT)
+        super.onResume();
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+        boolean isPaired = false;
+        if(btAdapter!=null)
         {
-            if (requestCode == RESULT_OK) {
-                String msg = "Bluetooth enabled";
-                Toast.makeText(this, msg, Toast.LENGTH_LONG);
-            }
-            else if (requestCode == RESULT_CANCELED)
+            Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+            for (BluetoothDevice device : pairedDevices)
             {
-                String msg = "Bluetooth enable failed";
-                Toast.makeText(this, msg, Toast.LENGTH_LONG);
+                if (device.getName().equals("SensAir"))
+                    isPaired = true;
+            }
+            if (!isPaired)
+            {
+                longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     @Override
@@ -452,8 +681,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        int id = item.getItemId();          // gets item ID
-        if(id == R.id.infoButton)          // if edit button is clicked
+        int id = item.getItemId();
+        if(id == R.id.infoButton)
         {
             Intent intent = new Intent(MainActivity.this, InfoActivity.class);
             startActivity(intent);
@@ -461,6 +690,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return super.onOptionsItemSelected(item);
     }
 
+<<<<<<< HEAD
     @Override
     public void onLocationChanged(Location location) {
 
@@ -562,6 +792,40 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+=======
+    public Boolean checkBluetoothConnection()
+    {
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+        if (btAdapter == null)
+        {
+            return false;
+        }
+
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+        for(BluetoothDevice device : pairedDevices)
+        {
+            if(device.getName().equals("SensAir"))
+                return true;
+        }
+        return false;
+    }
+
+    public void print(String s)
+    {
+        System.out.println(s);
+    }
+>>>>>>> 37d7efa15cfda885a8414924e29cc7062e26a1a6
 
 
+    public void longToast(String toast_message)
+    {
+        Toast.makeText(this,toast_message,Toast.LENGTH_LONG).show();
+    }
+
+    public void shortToast(String toast_message)
+    {
+        Toast.makeText(this,toast_message,Toast.LENGTH_SHORT).show();
+    }
 }

@@ -16,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service android:name="com.example.sensair.BluetoothService"/>
         <activity
             android:name=".RealTimeActivity"
             android:label="@string/title_activity_real_time"
@@ -62,5 +63,11 @@
     </service>
 
 </application>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
+
 
 </manifest>
