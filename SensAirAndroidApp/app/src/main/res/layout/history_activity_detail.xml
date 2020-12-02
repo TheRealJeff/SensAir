@@ -28,7 +28,6 @@
         android:id="@+id/logActivityButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:text="View Daily Log"
         app:layout_constraintBottom_toTopOf="@+id/mapView_hour"
         app:layout_constraintEnd_toEndOf="parent"

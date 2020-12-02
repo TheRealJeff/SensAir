@@ -32,19 +32,14 @@ public class LogDataModel
         this.TIME = formattedTime;
     }
 
-    public LogDataModel(String KEY, String DATE, String TYPE, String VALUE, String UNIT)
+    public LogDataModel(String KEY, String DATE, String TIME, String TYPE, String VALUE, String UNIT)
     {
         this.KEY = KEY;
         this.DATE = DATE;
         this.TYPE = TYPE;
         this.VALUE = VALUE;
         this.UNIT = UNIT;
-
-        Date date = Calendar.getInstance().getTime();
-
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
-        String formattedTime = timeFormat.format(date);
-        this.TIME = formattedTime;
+        this.TIME = TIME;
     }
 
     public String getDATE()

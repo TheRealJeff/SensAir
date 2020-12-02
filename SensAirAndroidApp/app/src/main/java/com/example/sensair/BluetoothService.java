@@ -162,7 +162,7 @@ public class BluetoothService extends Service
                 {
                     try
                     {
-                        Thread.sleep(1000);
+                        Thread.sleep(100);
                     } catch (InterruptedException e)
                     {
                         e.printStackTrace();
