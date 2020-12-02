@@ -39,6 +39,7 @@ import com.example.sensair.realtimeplotting.CarbonDioxideDataActivity;
 import com.example.sensair.realtimeplotting.CarbonMonoxideDataActivity;
 import com.example.sensair.realtimeplotting.HumidityDataActivity;
 import com.example.sensair.realtimeplotting.PressureDataActivity;
+import com.example.sensair.realtimeplotting.SmokeIndexDataActivity;
 import com.example.sensair.realtimeplotting.TemperatureDataActivity;
 import com.example.sensair.realtimeplotting.VolatileOrganicCompoundsActivity;
 import androidx.core.app.ActivityCompat;
@@ -116,23 +117,11 @@ public class BluetoothService extends Service
     @Override
     public void onCreate()
     {
-        public BluetoothService getService()
-        {
-            return BluetoothService.this;
-        }
         supportsBluetooth = btInit();
         if (supportsBluetooth)
             connect();
     }
 
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
-        supportsBluetooth = btInit();
-        if(supportsBluetooth)
-            connect();
-    }
 
 
     @Override
@@ -200,7 +189,6 @@ public class BluetoothService extends Service
                 {
                     try
                     {
-                        Thread.sleep(1);
                         Thread.sleep(1000);
                     } catch (InterruptedException e)
                     {
@@ -280,7 +268,7 @@ public class BluetoothService extends Service
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
                     "SensAir Notification Center",
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
@@ -391,7 +379,7 @@ public class BluetoothService extends Service
             }
 
             if (mq2 >= 300) {
-                Intent intent = new Intent(this, CarbonMonoxideDataActivity.class);
+                Intent intent = new Intent(this, SmokeIndexDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -661,20 +649,6 @@ public class BluetoothService extends Service
     public float getTemperature()
     {
         return temperature;
-    }
-    public float getOverallQuality()
-    {
-        float co_weight = 0;
-        float tvoc_weight = 0;
-        float mq2_weight = 0;
-
-        if(co2<1000) co_weight=1;
-        if(tvoc<250) tvoc_weight=1;
-        if(mq2<240) mq2_weight = 1;
-
-        float score = (co_weight+tvoc_weight+mq2_weight)/3;
-        score*=100f;
-        return score;
     }
     public float getOverallQuality() { return overallAirQuality; }
     public double getLongitude() { return longitude; }

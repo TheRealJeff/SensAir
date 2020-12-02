@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".realtimeplotting.LoggedDataActivity"></activity>
+        <activity android:name=".realtimeplotting.LoggedDataActivity" />
         <activity android:name=".realtimeplotting.AltitudeDataActivity" />
         <activity android:name=".realtimeplotting.TemperatureDataActivity" />
         <activity android:name=".realtimeplotting.PressureDataActivity" />
@@ -35,16 +35,12 @@
             android:label="@string/title_activity_profile"
             android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".realtimeplotting.SmokeIndexDataActivity" />
-        <activity android:name=".RealTimeDataActivity" />
+
 
         <service android:name=".BluetoothService" />
         <service android:name=".GPSService" />
 
-        <activity
-            android:name=".ProfileActivity"
-            android:label="@string/title_activity_profile"
-            android:parentActivityName=".MainActivity">
-        </activity>
+
         <activity
             android:name=".history.HistoryActivity"
             android:label="History"
