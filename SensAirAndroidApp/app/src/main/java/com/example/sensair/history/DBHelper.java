@@ -51,8 +51,8 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-    String CREATE_AIRDATA_QUERY = " CREATE TABLE "  + TABLE_AIRSETS + "( " +
-                COLUMN_KEY + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    String CREATE_AIRDATA_QUERY = " CREATE TABLE "  + TABLE_AIRSETS + "(" +
+                COLUMN_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_DATE + " TEXT NOT NULL, " +
                 COLUMN_HOUR + " TEXT NOT NULL, " +
                 COLUMN_OVERALL + " TEXT NOT NULL, " +
@@ -68,9 +68,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         Log.d(TAG, CREATE_AIRDATA_QUERY);
-
         db.execSQL(CREATE_AIRDATA_QUERY);
-
     }
 
     @Override

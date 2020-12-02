@@ -32,7 +32,6 @@ public class LoggedDataActivity extends AppCompatActivity
     String date;
     LogDataAdapter logDataAdapter;
     Button clearButton;
-    DBHelper dbHelper;
 
 
     @Override
@@ -58,10 +57,9 @@ public class LoggedDataActivity extends AppCompatActivity
         ArrayList<LogDataModel> data = logDbHelper.getAllData();
 
         dataList = new ArrayList<>();
-
-        //TODO only include data for a given day
         for(LogDataModel datum : data)
         {
+            System.out.println("ITERATING OVER LOGGED DATA");
             if(datum.getDATE().equals(date))
                 dataList.add(datum);
         }

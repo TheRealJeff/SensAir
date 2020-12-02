@@ -18,6 +18,7 @@ public class LogDbHelper extends SQLiteOpenHelper
     public static final String TABLE_LOGGED_DATA = "loggedData" ;
     public static final String COLUMN_KEY = "key";
     public static final String COLUMN_DATE = "date";
+    public static final String COLUMN_TIME = "time";
     public static final String COLUMN_DATA_TYPE = "data_type";
     public static final String COLUMN_DATA_UNIT = "data_unit";
 
@@ -36,6 +37,7 @@ public class LogDbHelper extends SQLiteOpenHelper
         String CREATE_LOGDATA_QUERY = " CREATE TABLE "  + TABLE_LOGGED_DATA + "( " +
                 COLUMN_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_DATE + " TEXT NOT NULL, " +
+                COLUMN_TIME + " TEXT NOT NULL, " +
                 COLUMN_DATA_TYPE + " TEXT NOT NULL, " +
 
                 COLUMN_DATA_VALUE + " TEXT NOT NULL, " +
@@ -64,6 +66,7 @@ public class LogDbHelper extends SQLiteOpenHelper
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(COLUMN_DATE, logDataModel.getDATE());
+        contentValues.put(COLUMN_TIME, logDataModel.getTIME());
         contentValues.put(COLUMN_DATA_TYPE, logDataModel.getTYPE());
         contentValues.put(COLUMN_DATA_VALUE, logDataModel.getVALUE());
         contentValues.put(COLUMN_DATA_UNIT, logDataModel.getUNIT());
@@ -87,12 +90,10 @@ public class LogDbHelper extends SQLiteOpenHelper
     public ArrayList<LogDataModel> getAllData()
     {
         SQLiteDatabase db = this.getReadableDatabase();
-
         ArrayList<LogDataModel> airDataList = new ArrayList<>();
 
 
         Cursor cursor = null;
-
         try
         {
             cursor = db.query(TABLE_LOGGED_DATA, null, null,
@@ -105,12 +106,16 @@ public class LogDbHelper extends SQLiteOpenHelper
                 do {
                     String key = cursor.getString(cursor.getColumnIndex(COLUMN_KEY));
                     String date = cursor.getString(cursor.getColumnIndex(COLUMN_DATE));
+                    String time = cursor.getString(cursor.getColumnIndex(COLUMN_TIME));
                     String type = cursor.getString(cursor.getColumnIndex(COLUMN_DATA_TYPE));
                     String value = cursor.getString(cursor.getColumnIndex(COLUMN_DATA_VALUE));
 
                     String unit = cursor.getString(cursor.getColumnIndex(COLUMN_DATA_UNIT));
 
+
                     airDataList.add(new LogDataModel(key, date, type, value, unit));
+
+
 
                 } while (cursor.moveToNext());
             }

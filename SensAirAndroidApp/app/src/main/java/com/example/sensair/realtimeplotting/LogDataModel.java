@@ -35,6 +35,7 @@ public class LogDataModel
         this.TIME = formattedTime;
     }
 
+
     public LogDataModel(String KEY, String DATE, String TYPE, String VALUE, String UNIT)
 
     {
@@ -45,11 +46,13 @@ public class LogDataModel
 
         this.UNIT = UNIT;
 
+
         Date date = Calendar.getInstance().getTime();
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
         String formattedTime = timeFormat.format(date);
         this.TIME = formattedTime;
+
 
     }
 
