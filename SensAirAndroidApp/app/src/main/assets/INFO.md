@@ -1,6 +1,33 @@
 ## What is SensAir?
 * The SensAir application and device use sensors to relay air quality data directly to you. 
 ***
+## How to navigate SensAir?
+* __Main Page__
+ * View customizable air quality measurements 
+ * Switch between measurable data
+ * Access the info page, settings, real time data and history
+ 
+* __History Page__
+ * View logged data for each day
+ * Check air quality history of locations
+ 
+*__Settings Page__ 
+ * Enter custom altitude
+ * Enter custom temperature
+ * Enable/disable notification for pollutants
+ * Enable/disable notifications for humidity, temperature and altitude
+ * Enter your information
+
+*__Real Time Data Page__
+ * View real time data in graph form 
+
+*__Info Page__
+ * Get to know the app better :)
+ * learn how to use the app
+ * Information about the data collected from sensors
+ * Instructions in case of exposure
+ * Frequantly asked questions
+***
 ## Air Quality Metrics
 * **Overall Air Quality**, measured on a scale of 1-100, is a general overview of your air quality. This value is based on an algorithm to determine if all conditions point to good or bad surrounding air quality.
 ***
@@ -25,6 +52,11 @@
     * Convulsions
     * Coma
     * Death
+* **Actions to take in case of exposure**
+ * Increase ventilation
+ * Leave the effected area
+ * Turn off the source if it is accessible 
+ * In case of losing consciousness begin CPR, contact emergency services and poision control 
 
 | CO2 Level (ppm)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	| Level of Concern                                                                                                                                         	|
 |-----------------	|----------------------------------------------------------------------------------------------------------------------------------------------------------	|
@@ -123,7 +155,38 @@
 | 6400     | Death within 30   minutes                                                             |
 | 12,800   | Death within 1   to 3 minutes                                                         |
 ***
+#### **Carbon Monoxide**
+ moke is mixture of gasses and particulate matter which is the result of combustion of vegetation and artificial material. It is impossible to find for sure what the composition of smoke. Inhaling smoke can have immediate health effects and have serious repercussions. In addition, smoke can irritate the skin and eyes.
+* Sources 
+    * Forest fires
+	* Building fires
+	* Automobile exhaust 
+	* Wild Fires
+	* Combustable material
+3000 ppm
+	
+* __Symptoms__
+    * Dizziness
+    * Headache
+    * Nausea
+    * Fatigue
+    * Weakness and clumsiness
+    * Chest pain
+    * Blurry vision
+    * Disorientation or confusion seizures
+    * Hearing loss
+    * Quick irregular heartbeat
 
+* __Actions to take in case of exposure__
+    * Move to environment with fresh air
+	* identify te source 
+	* Attempt to move away from the sources
+	* Remove famable materials from the area
+	* Contact emergency services
+	
+
+                 
+***
 ####**Humidity**
  measured in precentage, Simply put humidity is the amount of concentration of water vapor in the air. Combined with heat, it can have adverse effects on the human body as well as properties and furniture. Areas located around open bodies of water have higher levels of humidity especially in hotter climates.Humidity levels (both high or low) can have dire consequences and make living conditions unpleasant.
 * __Symptoms (high humidity):__
@@ -170,7 +233,7 @@
 
 ***
 #### **Pressure**
- * Other info
+ * Atmospheric Pressure can be an important factor for people with certain professions, you can keep track of your Pressure and be notified when you cross that threshhold.
 ***
 #### **Temperature**
- * Other info
+ * Extreme tempretures can have dire effects on the human body. 
