@@ -2,6 +2,7 @@ package com.example.sensair;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+<<<<<<< HEAD
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -9,14 +10,23 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+=======
+import android.content.Intent;
+import android.os.Bundle;
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+<<<<<<< HEAD
 import com.example.sensair.realtimeplotting.AltitudeDataActivity;
 import com.example.sensair.realtimeplotting.CarbonDioxideDataActivity;
 import com.example.sensair.realtimeplotting.CarbonMonoxideDataActivity;
+=======
+import com.example.sensair.realtimeplotting.CarbonDioxideDataActivity;
+import com.example.sensair.realtimeplotting.SmokeIndexDataActivity;
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
 import com.example.sensair.realtimeplotting.HumidityDataActivity;
 import com.example.sensair.realtimeplotting.PressureDataActivity;
 import com.example.sensair.realtimeplotting.TemperatureDataActivity;
@@ -33,10 +43,16 @@ public class RealTimeDataActivity extends AppCompatActivity
 
     private final String CO2="Carbon Dioxide (CO2)";
     private final  String TVOC="Volatile Organic Compounds (VOC)";
+<<<<<<< HEAD
     private final String MQ2="Carbon Monoxide (CO)";
     private final String HUMIDITY="Humidity";
     private final String PRESSURE="Pressure";
     private final String ALTITUDE="Altitude";
+=======
+    private final String MQ2="Smoke Index";
+    private final String HUMIDITY="Humidity";
+    private final String PRESSURE="Pressure";
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
     private final String TEMPERATURE="Temperature";
 
     @Override
@@ -79,7 +95,11 @@ public class RealTimeDataActivity extends AppCompatActivity
                         startActivity(intent);
                         break;
                     case MQ2:
+<<<<<<< HEAD
                         intent = new Intent(RealTimeDataActivity.this, CarbonMonoxideDataActivity.class);
+=======
+                        intent = new Intent(RealTimeDataActivity.this, SmokeIndexDataActivity.class);
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
                         startActivity(intent);
                         break;
                     case TVOC:

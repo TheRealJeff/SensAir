@@ -1,5 +1,6 @@
 package com.example.sensair;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
@@ -16,6 +17,14 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Build;
+import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Binder;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Log;
@@ -32,8 +41,18 @@ import com.example.sensair.realtimeplotting.HumidityDataActivity;
 import com.example.sensair.realtimeplotting.PressureDataActivity;
 import com.example.sensair.realtimeplotting.TemperatureDataActivity;
 import com.example.sensair.realtimeplotting.VolatileOrganicCompoundsActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
 
+import com.example.sensair.history.AirData;
+import com.example.sensair.history.DBHelper;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
+
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
 public class BluetoothService extends Service
@@ -46,6 +65,11 @@ public class BluetoothService extends Service
     protected Thread thread;
     BluetoothAdapter btAdapter;
     protected String TAG = "BTService";
+    GPSService gpsService;
+    protected Location location;
+    protected AirData airData = null;
+    protected DBHelper dbHelper;
+    protected boolean firstRun = true;
 
 
     private static float co2;
@@ -55,6 +79,8 @@ public class BluetoothService extends Service
     private static float pressure;
     private static float altitude;
     private static float temperature;
+    private static int overallAirQuality;
+    private static double longitude, latitude;
 
     protected SharedPreferences preferences;
     protected boolean altitudeState;
@@ -87,17 +113,21 @@ public class BluetoothService extends Service
     private static final int humidityNotificationIDMin = 14;
 
 
-    public class LocalBinder extends Binder
+    @Override
+    public void onCreate()
     {
         public BluetoothService getService()
         {
             return BluetoothService.this;
         }
+        supportsBluetooth = btInit();
+        if (supportsBluetooth)
+            connect();
     }
 
 
     @Override
-    public void onCreate()
+    public int onStartCommand(Intent intent, int flags, int startId)
     {
         supportsBluetooth = btInit();
         if(supportsBluetooth)
@@ -119,6 +149,8 @@ public class BluetoothService extends Service
                 .setSmallIcon(R.drawable.ic_cloud_queue_black_18dp)
                 .setContentIntent(pendingIntent)
                 .build();
+
+        dbHelper = new DBHelper(getApplicationContext());
 
         if(supportsBluetooth)
             startBluetoothThreading();
@@ -169,6 +201,7 @@ public class BluetoothService extends Service
                     try
                     {
                         Thread.sleep(1);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e)
                     {
                         e.printStackTrace();
@@ -200,6 +233,32 @@ public class BluetoothService extends Service
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
                     print("Reading Data");
 
+                    overallAirQuality = 0;
+
+                    if(co2<=1000)
+                        overallAirQuality++;
+                    if(tvoc<=400)
+                        overallAirQuality++;
+                    if(mq2<=400)
+                        overallAirQuality++;
+
+                    longitude = gpsService.getLongitude();
+                    latitude = gpsService.getLatitude();
+
+                    Date date = Calendar.getInstance().getTime();
+
+                    AirData temp = new AirData(overallAirQuality,co2,tvoc,mq2,humidity,pressure,temperature,date,longitude,latitude);
+
+                    if(airData==null&&longitude!=0&&latitude!=0)
+                    {
+                        airData = temp;
+                        dbHelper.insertAirData(airData);
+                    }
+                    else if (Integer.parseInt(temp.getMinutes()) - Integer.parseInt(airData.getMinutes())  >= 1)
+                    {
+                        airData = temp;
+                        dbHelper.insertAirData(airData);
+                    }
                     valueCheck(co2, tvoc, mq2, humidity, pressure, altitude, temperature);
                 }
             }
@@ -617,4 +676,7 @@ public class BluetoothService extends Service
         score*=100f;
         return score;
     }
+    public float getOverallQuality() { return overallAirQuality; }
+    public double getLongitude() { return longitude; }
+    public double getLatitude() { return latitude; }
 }

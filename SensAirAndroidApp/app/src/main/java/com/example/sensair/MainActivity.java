@@ -1,11 +1,16 @@
 package com.example.sensair;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.preference.ListPreference;
 import androidx.preference.PreferenceManager;
 
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
@@ -13,9 +18,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,6 +38,9 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.sensair.history.AirData;
+import com.example.sensair.history.DBHelper;
+import com.example.sensair.history.HistoryActivity;
 import com.example.sensair.realtimeplotting.LoggedDataActivity;
 import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.Section;
@@ -39,7 +54,7 @@ import java.util.Set;
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 import kotlin.jvm.functions.Function2;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,LocationListener
 {
 
     protected SpeedView gaugeAirQuality;
@@ -48,7 +63,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected Thread thread;
     protected Spinner spinner;
     protected BluetoothService btService;
-    protected boolean btIsBound = false;
+    protected GPSService gpsService;
+    protected SharedPreferences sharedPreferences;
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    LocationManager locationManager;
+    String provider;
 
     private float co2;
     private float tvoc;
@@ -68,12 +88,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         uiInit();
         dropDownInit();
+        locationServicesInit();
         setTitle("Live Air Quality");
         btService = new BluetoothService();
+<<<<<<< HEAD
         Intent serviceIntent = new Intent(this, BluetoothService.class);
         startService(serviceIntent);
 
         if(btService.btInit()&& BluetoothService.supportsBluetooth)
+=======
+        Intent btServiceIntent = new Intent(getApplicationContext(), BluetoothService.class);
+        startService(btServiceIntent);
+
+        gpsService = new GPSService();
+        Intent gpsServiceIntent = new Intent(getApplicationContext(),GPSService.class);
+        startService(gpsServiceIntent);
+
+        if(btService.btInit())
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
         {
             longToast("Successfully connected to the SensAir Device!");
             startBluetoothThreading();
@@ -106,7 +138,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             public void onClick(View V)
             {
+<<<<<<< HEAD
                 Intent intent = new Intent(MainActivity.this, LoggedDataActivity.class);
+=======
+                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
                 startActivity(intent);
             }
         });
@@ -128,8 +164,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         assert spinner != null;
         spinner.setOnItemSelectedListener(this);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String defaultMetric = sharedPreferences.getString("meter","0");
+
         categories.add("Overall Air Quality");
+<<<<<<< HEAD
         categories.add("Carbon Monoxide");
+=======
+        categories.add("Smoke Index");
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
         categories.add("Carbon Dioxide");
         categories.add("Volatile Organic Compounds");
         categories.add("Humidity");
@@ -139,7 +182,108 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
         dataAdapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(dataAdapter);
-        spinner.setSelection(0);
+        spinner.setSelection(Integer.parseInt(defaultMetric));
+    }
+
+    public void locationServicesInit()
+    {
+        checkLocationPermission();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        provider = locationManager.getBestProvider(new Criteria(), false);
+
+        if(provider==null)
+        {
+            Toast.makeText(this, "Location Services Disabled. Visit Settings to Enable them.", Toast.LENGTH_LONG).show();
+
+        }
+        else
+        {
+            Location location = locationManager.getLastKnownLocation(provider);
+
+            if (location != null)
+            {
+
+                Log.i("Location Info", "Location achieved!");
+
+            } else
+            {
+
+                Log.i("Location Info", "No location :(");
+
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+            return false;
+        }
+         else
+            return true;
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        //Request location updates:
+                        locationManager.requestLocationUpdates(provider, 400, 1, this);
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        Double lat = location.getLatitude();
+        Double lng = location.getLongitude();
+
+        Log.i("Location info: Lat", lat.toString());
+        Log.i("Location info: Lng", lng.toString());
+
     }
 
     public void startBluetoothThreading()
@@ -175,21 +319,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         switch (spinner.getSelectedItemPosition())
                         {
                             case 0:     // overall quality
-                                //TODO Handle Overall choice and display meter values
-                                if(overallQualityScore/100==1.0f)
+                                if(overallQualityScore==3)
                                 {
-                                    gaugeAirQuality.speedTo(80f);
+                                    gaugeAirQuality.speedTo(2.5f);
                                     gaugeAirQuality.setUnit("Excellent Air Quality Index!");
                                 }
-                                else if(overallQualityScore/100<=1f&&overallQualityScore/100>=0.66666f)
+                                else if(overallQualityScore==2)
                                 {
-                                    gaugeAirQuality.speedTo(50f);
-                                    gaugeAirQuality.setUnit("Excellent Air Quality Index!");
+                                    gaugeAirQuality.speedTo(1.5f);
+                                    gaugeAirQuality.setUnit("Moderate Air Quality Index");
                                 }
-                                else if(overallQualityScore/100<=0.66666f&&overallQualityScore/100>=0f)
+                                else if(overallQualityScore==1)
                                 {
-                                    gaugeAirQuality.speedTo(20f);
-                                    gaugeAirQuality.setUnit("Excellent Air Quality Index!");
+                                    gaugeAirQuality.speedTo(0.5f);
+                                    gaugeAirQuality.setUnit("Garbage Air Quality Index");   // Big d approved
                                 }
                                 break;
                             case 1:     // CO
@@ -306,7 +449,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case 0:     // overall quality
                 //TODO Handle Overall choice and display meter values
                 gaugeAirQuality.speedTo(0);                     // reset gauge
+<<<<<<< HEAD
                 gaugeAirQuality.setMinMaxSpeed(0,100);          // rescale gauge for each metric
+=======
+                gaugeAirQuality.setMinMaxSpeed(0,3);          // rescale gauge for each metric
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
 
                 s1 = new Section(0f,.33333f,Color.parseColor("#EE5C42"),110);       // create according sections
                 s2 = new Section(.33333f,.66666f,Color.parseColor("#FFFF33"),110);
@@ -317,11 +464,45 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
 
+<<<<<<< HEAD
                 gaugeAirQuality.setMarksNumber(2);      // set labels
+=======
+                gaugeAirQuality.setSpeedTextColor(Color.TRANSPARENT);
+
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
                 gaugeAirQuality.setTickNumber(0);
+                gaugeAirQuality.setMarksNumber(0);      // set labels
 
                 break;
             case 1:     // CO
+                gaugeAirQuality.speedTo(0);
+                gaugeAirQuality.setMinMaxSpeed(0,800);
+                gaugeAirQuality.setUnit("");
+
+                s1 = new Section(0f,.5f,Color.parseColor("#00CD66"),110);
+                s2 = new Section(.5f,1f,Color.parseColor("#EE5C42"),110);
+                sections.add(s1);
+                sections.add(s2);
+                gaugeAirQuality.clearSections();
+                gaugeAirQuality.addSections(sections);
+
+                gaugeAirQuality.setSpeedTextColor(Color.BLACK);
+
+                gaugeAirQuality.setMarksNumber(3);
+                ticks.add(0.25f);
+                ticks.add(0.5f);
+                ticks.add(0.75f);
+
+
+                gaugeAirQuality.setTicks(ticks);
+
+                gaugeAirQuality.speedTo(mq2);
+                break;
+<<<<<<< HEAD
+            case 1:     // CO
+=======
+            case 2:     // co
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,125);
                 gaugeAirQuality.setUnit("Parts-per Million (ppm)");
@@ -335,18 +516,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
 
+                gaugeAirQuality.setSpeedTextColor(Color.BLACK);
+
                 gaugeAirQuality.setMarksNumber(9);
                 ticks.add(0.2f);
                 ticks.add(0.4f);
                 ticks.add(0.6f);
                 ticks.add(0.8f);
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
                 gaugeAirQuality.setTicks(ticks);
 
                 gaugeAirQuality.speedTo(mq2);
                 break;
+<<<<<<< HEAD
             case 2:     // co
+=======
+
+            case 3:     // TVOC
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
                 gaugeAirQuality.speedTo(0);
                 gaugeAirQuality.setMinMaxSpeed(0,2500);
                 gaugeAirQuality.setUnit("Parts-per Million (ppm)");
@@ -360,6 +551,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
 
+<<<<<<< HEAD
                 gaugeAirQuality.setMarksNumber(9);
                 ticks.add(0.2f);
                 ticks.add(0.4f);
@@ -383,6 +575,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 sections.add(s3);
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
+=======
+                gaugeAirQuality.setSpeedTextColor(Color.BLACK);
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
 
                 gaugeAirQuality.setMarksNumber(9);
                 ticks.add(0.1f);
@@ -412,6 +607,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
 
+                gaugeAirQuality.setSpeedTextColor(Color.BLACK);
+
                 gaugeAirQuality.setMarksNumber(9);
                 ticks.add(0.1f);
                 ticks.add(0.2f);
@@ -440,6 +637,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
 
+                gaugeAirQuality.setSpeedTextColor(Color.BLACK);
+
                 gaugeAirQuality.setMarksNumber(5);
                 ticks.add(1/6f);
                 ticks.add(2/6f);
@@ -462,6 +661,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 sections.add(s2);
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
+
+                gaugeAirQuality.setSpeedTextColor(Color.BLACK);
 
                 gaugeAirQuality.setMarksNumber(9);
                 ticks.add(0.1f);
@@ -500,6 +701,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
             }
         }
+<<<<<<< HEAD
 
 
     }
@@ -524,4 +726,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
+=======
+        setGauge();
+    }
+
+    public void setGauge()
+    {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String defaultMetric = sharedPreferences.getString("meter","0");
+
+        spinner.setSelection(Integer.parseInt(defaultMetric));
+    }
+
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
 }

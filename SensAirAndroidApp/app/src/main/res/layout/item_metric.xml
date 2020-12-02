@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+<<<<<<< HEAD
     android:layout_height="60dp">
+=======
+    android:layout_height="80dp">
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
 
     <TextView
         android:id="@+id/airQualityMetric"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
+<<<<<<< HEAD
         android:layout_marginTop="20dp"
         android:textColor="#000000"
         android:textSize="18sp"
+=======
+        android:layout_marginTop="28dp"
+        android:textColor="#000000"
+        android:textSize="20sp"
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
         android:textStyle="bold" />
 </RelativeLayout>

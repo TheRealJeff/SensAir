@@ -46,6 +46,10 @@ public class VolatileOrganicCompoundsActivity extends AppCompatActivity implemen
     protected float average,n;
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
+<<<<<<< HEAD
+=======
+    protected LogDbHelper logDbHelper = new LogDbHelper(this);
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
 
     protected BtThread thread;
     protected BluetoothService btService = new BluetoothService();
@@ -99,6 +103,7 @@ public class VolatileOrganicCompoundsActivity extends AppCompatActivity implemen
             @Override
             public void onClick(View v)
             {
+<<<<<<< HEAD
                 // TODO save to database
                 if(selected==0)
                 {
@@ -107,6 +112,14 @@ public class VolatileOrganicCompoundsActivity extends AppCompatActivity implemen
                 else
                 {
                     Toast.makeText(VolatileOrganicCompoundsActivity.this, String.format("%.0f", selected) + " ppb VOC saved!", Toast.LENGTH_SHORT).show();
+=======
+                if (selected == 0)
+                    Toast.makeText(VolatileOrganicCompoundsActivity.this, "No Value Selected!", Toast.LENGTH_SHORT).show();
+                else
+                {
+                    logDbHelper.insertLogData(new LogDataModel("-1", "VOC", String.format("%.0f", selected), "ppm"));
+                    Toast.makeText(VolatileOrganicCompoundsActivity.this, String.format("%.0f", selected) + " ppm VOC saved!", Toast.LENGTH_SHORT).show();
+>>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
                 }
             }
         });

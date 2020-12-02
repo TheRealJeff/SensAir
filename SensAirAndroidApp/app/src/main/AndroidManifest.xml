@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COURSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -30,6 +34,27 @@
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
             android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".realtimeplotting.SmokeIndexDataActivity" />
+        <activity android:name=".RealTimeDataActivity" />
+
+        <service android:name=".BluetoothService" />
+        <service android:name=".GPSService" />
+
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/title_activity_profile"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity
+            android:name=".history.HistoryActivity"
+            android:label="History"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity
+            android:name=".history.HistoryDetailActivity"
+            android:label="HistoryDetail"
+            android:parentActivityName=".history.HistoryActivity">
+        </activity>
         <activity
             android:name=".InfoActivity"
             android:parentActivityName=".MainActivity" />
@@ -40,10 +65,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAbZKn3cPA7D2QFBLwlmZloZxUsHTvrIvY"/>
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+        <service
+            android:name=".MainActivity"
+            android:foregroundServiceType="location"  >
+        </service>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
     </application>
 
 </manifest>

@@ -2,17 +2,11 @@ package com.example.sensair.realtimeplotting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +17,7 @@ import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.Section;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -36,30 +31,27 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class HumidityDataActivity extends AppCompatActivity implements OnChartValueSelectedListener
+public class SmokeIndexDataActivity extends AppCompatActivity implements OnChartValueSelectedListener
 {
-    protected LineChart humidityChart;
+    protected LineChart coChart;
     protected ImageButton imageButtonFreeze,imageButtonSave;
     protected boolean frozen = false;
-    protected SpeedView gaugeHumidity;
+    protected SpeedView gaugeCo;
     protected float average,n;
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
-<<<<<<< HEAD
-=======
     protected LogDbHelper logDbHelper = new LogDbHelper(this);
->>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
 
     protected BtThread thread;
     protected BluetoothService btService = new BluetoothService();
 
-    private float humidity,selected;
+    private float co,selected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_humidity_data);
+        setContentView(R.layout.activity_smoke_index_data);
         uiInit();
         plottingInit();
         gaugeInit();
@@ -70,9 +62,11 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
     {
         Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("Humidity");
+        setTitle("Smoke Index");
 
-        imageButtonFreeze = findViewById(R.id.humidityFreezeButton);
+        textViewAverage = findViewById(R.id.coAverage);
+
+        imageButtonFreeze = findViewById(R.id.coFreezeButton);
         imageButtonFreeze.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -82,20 +76,16 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
                 {
                     frozen = false;
                     imageButtonFreeze.setImageResource(R.drawable.ic_pause_black_18dp);
-                    humidityChart.clear();
+                    coChart.clear();
                     plottingInit();
-                    thread = new BtThread();
-                    thread.start();
+                    thread.interrupt();
                 }
-<<<<<<< HEAD
-                else if(!frozen)
-=======
                 else
->>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
                 {
                     frozen = true;
                     imageButtonFreeze.setImageResource(R.drawable.ic_play_arrow_black_18dp);
-                    thread.interrupt();
+                    thread = new BtThread();
+                    thread.start();
                 }
             }
         });
@@ -106,67 +96,55 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
             @Override
             public void onClick(View v)
             {
-<<<<<<< HEAD
-                // TODO save to database
                 if(selected==0)
-                {
-                    Toast.makeText(HumidityDataActivity.this,"No Value Selected: Select a data point on graph first",Toast.LENGTH_LONG).show();
-                }
+                    Toast.makeText(SmokeIndexDataActivity.this, "No Value Selected!", Toast.LENGTH_SHORT).show();
                 else
                 {
-                    Toast.makeText(HumidityDataActivity.this, String.format("%.0f", selected) + " % Humidity saved!", Toast.LENGTH_SHORT).show();
-=======
-                if(selected==0)
-                    Toast.makeText(HumidityDataActivity.this, "No Value Selected!", Toast.LENGTH_SHORT).show();
-                else
-                {
-                    logDbHelper.insertLogData(new LogDataModel("-1", "Humidity", String.format("%.0f", selected), "%"));
-                    Toast.makeText(HumidityDataActivity.this, String.format("%.0f", selected) + "% Humidity saved!", Toast.LENGTH_SHORT).show();
->>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
+                    logDbHelper.insertLogData(new LogDataModel("-1", "Smoke Index", String.format("%.0f", selected), ""));
+                    Toast.makeText(SmokeIndexDataActivity.this, "Smoke Level of " + String.format("%.0f", selected) + " saved!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        textViewAverage = findViewById(R.id.humidityAverage);
     }
 
     public void plottingInit()
     {
-        humidityChart = findViewById(R.id.humidityChart);
-        humidityChart.setOnChartValueSelectedListener(this);
+        coChart = findViewById(R.id.coChart);
+        coChart.setOnChartValueSelectedListener(this);
 
         MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
-        mv.setChartView(humidityChart); // For bounds control
-        humidityChart.setMarker(mv); // Set the marker to the chart
+        mv.setChartView(coChart); // For bounds control
+        coChart.setMarker(mv); // Set the marker to the chart
 
         // enable touch gestures
-        humidityChart.setTouchEnabled(true);
+        coChart.setTouchEnabled(true);
 
         // enable scaling and dragging
-        humidityChart.setDragEnabled(true);
-        humidityChart.setScaleEnabled(true);
-        humidityChart.setDrawGridBackground(false);
+        coChart.setDragEnabled(true);
+        coChart.setScaleEnabled(true);
+        coChart.setDrawGridBackground(false);
 
         // if disabled, scaling can be done on x- and y-axis separately
-        humidityChart.setPinchZoom(true);
+        coChart.setPinchZoom(true);
 
         // set an alternative background color
-        humidityChart.setBackgroundColor(Color.TRANSPARENT);
+        coChart.setBackgroundColor(Color.TRANSPARENT);
 
         LineData data = new LineData();
         data.setValueTextColor(Color.BLACK);
 
         // add empty data
-        humidityChart.setData(data);
+        coChart.setData(data);
 
         // get the legend (only possible after setting data)
-        Legend l =humidityChart.getLegend();
+        Legend l =coChart.getLegend();
 
         // modify the legend ...
         l.setForm(Legend.LegendForm.LINE);
         l.setTypeface(tfLight);
         l.setTextColor(Color.BLACK);
 
-        XAxis xl =humidityChart.getXAxis();
+        XAxis xl =coChart.getXAxis();
         xl.setTypeface(tfLight);
         xl.setTextColor(Color.BLACK);
         xl.setDrawGridLines(false);
@@ -175,62 +153,62 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
         xl.setTextSize(12f);
         xl.setEnabled(true);
 
-        YAxis leftAxis =humidityChart.getAxisLeft();
+
+        LimitLine upper = new LimitLine(400f,"Dangerous");
+        upper.setLineColor(Color.RED);
+        upper.setLineWidth(2f);
+        upper.enableDashedLine(10f, 10f, 0f);
+        upper.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        upper.setTextSize(11f);
+        upper.setTypeface(tfLight);
+
+        YAxis leftAxis =coChart.getAxisLeft();
+        leftAxis.removeAllLimitLines();
+        leftAxis.addLimitLine(upper);
         leftAxis.setTypeface(tfLight);
         leftAxis.setTextColor(Color.BLACK);
-        leftAxis.setAxisMaximum(100);
+        leftAxis.setAxisMaximum(800f);
         leftAxis.setAxisMinimum(0f);
         leftAxis.setTextSize(12f);
         leftAxis.setDrawGridLines(true);
 
-        YAxis rightAxis =humidityChart.getAxisRight();
+        YAxis rightAxis =coChart.getAxisRight();
         rightAxis.setEnabled(false);
 
-        humidityChart.getDescription().setEnabled(false);
-        humidityChart.getLegend().setEnabled(false);
+        coChart.getDescription().setEnabled(false);
+        coChart.getLegend().setEnabled(false);
     }
 
     public void gaugeInit()
     {
-        gaugeHumidity = (SpeedView) findViewById(R.id.gaugeHumidity);
-        gaugeHumidity.setMinMaxSpeed(0,100);
-        gaugeHumidity.setWithTremble(false);
-        gaugeHumidity.setUnit(" %");
+        gaugeCo = findViewById(R.id.gaugeCo);
+        gaugeCo.setMinMaxSpeed(0,800);
+        gaugeCo.setWithTremble(false);
+        gaugeCo.setUnit("");
 
-        Section s1,s2,s3,s4,s5;
+        Section s1,s2;
         ArrayList<Section> sections = new ArrayList<>();
         ArrayList<Float> ticks = new ArrayList<>();
 
-        s1 = new Section(0f,.2f,Color.parseColor("#BFEFFF"),80);
-        s2 = new Section(.2f,.4f,Color.parseColor("#B0E2FF"),80);
-        s3 = new Section(.4f,.6f,Color.parseColor("#7EC0EE"),80);
-        s4 = new Section(.6f,.8f,Color.parseColor("#499DF5"),80);
-        s5 = new Section(.8f,1f,Color.parseColor("#0276FD"),80);
+        s1 = new Section(0f,.5f,Color.parseColor("#00CD66"),80);
+        s2 = new Section(.5f,1f,Color.parseColor("#EE5C42"),80);
         sections.add(s1);
         sections.add(s2);
-        sections.add(s3);
-        sections.add(s4);
-        sections.add(s5);
-        gaugeHumidity.clearSections();
-        gaugeHumidity.addSections(sections);
+        gaugeCo.clearSections();
+        gaugeCo.addSections(sections);
 
-        gaugeHumidity.setMarksNumber(9);
-        ticks.add(0.1f);
-        ticks.add(0.2f);
-        ticks.add(0.3f);
-        ticks.add(0.4f);
+        gaugeCo.setMarksNumber(3);
+        ticks.add(0.25f);
         ticks.add(0.5f);
-        ticks.add(0.6f);
-        ticks.add(0.7f);
-        ticks.add(0.8f);
-        ticks.add(0.9f);
-        gaugeHumidity.setTicks(ticks);
+        ticks.add(0.75f);
+
+        gaugeCo.setTicks(ticks);
     }
 
     private void addEntry()
     {
 
-        LineData data = humidityChart.getData();
+        LineData data = coChart.getData();
 
         if (data != null)
         {
@@ -242,11 +220,11 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
                 set = createSet();
                 data.addDataSet(set);
             }
-            data.addEntry(new Entry(set.getEntryCount()/100f, humidity), 0);
+            data.addEntry(new Entry(set.getEntryCount()/100f, co), 0);
             data.notifyDataChanged();
-            humidityChart.notifyDataSetChanged();
-            humidityChart.setVisibleXRangeMaximum(6);
-            humidityChart.moveViewToX(data.getEntryCount());
+            coChart.notifyDataSetChanged();
+            coChart.setVisibleXRangeMaximum(6);
+            coChart.moveViewToX(data.getEntryCount());
 
         }
     }
@@ -284,6 +262,10 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
     protected void onStart()
     {
         super.onStart();
+        if(thread!=null&&!thread.isAlive())
+        {
+            thread.start();
+        }
     }
 
     @Override
@@ -300,10 +282,7 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
     public void onValueSelected(Entry e, Highlight h)
     {
         Log.i("Entry selected", e.toString());
-        if(humidityChart.getData()!=null)
-        {
-            selected = e.getY();
-        }
+        selected = e.getY();
     }
 
     @Override
@@ -333,18 +312,19 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
                     {
                         if(!frozen)
                         {
-                            humidity = btService.getHumidity();
+                            co = btService.getMq2();
                             addEntry();
 
                             n++;
-                            average = average + ((humidity - average)) / n;
+                            average = average + ((co-average))/n;
 
-                            textViewAverage.setText(String.format("%.0f", average) + " %");
-                            gaugeHumidity.speedTo(humidity);
+                            textViewAverage.setText(String.format("%.0f",average));
+                            gaugeCo.speedTo(co);
                         }
                     }
                 });
             }
         }
     }
+
 }
