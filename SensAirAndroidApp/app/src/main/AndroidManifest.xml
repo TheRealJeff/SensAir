@@ -4,10 +4,12 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COURSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -16,33 +18,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name="com.example.sensair.BluetoothService"/>
-        <activity
-            android:name=".RealTimeActivity"
-            android:label="@string/title_activity_real_time"
-            android:theme="@style/AppTheme"
-            android:parentActivityName="com.example.sensair.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.sensair.RealTimeActivity" />
-        </activity>
+        <activity android:name=".realtimeplotting.LoggedDataActivity"/>
+        <activity android:name=".realtimeplotting.TemperatureDataActivity" />
+        <activity android:name=".realtimeplotting.PressureDataActivity" />
+        <activity android:name=".realtimeplotting.HumidityDataActivity" />
+        <activity android:name=".realtimeplotting.VolatileOrganicCompoundsActivity" />
+        <activity android:name=".realtimeplotting.CarbonDioxideDataActivity" />
+        <activity android:name=".realtimeplotting.SmokeIndexDataActivity" />
+        <activity android:name=".RealTimeDataActivity" />
+
+        <service android:name=".BluetoothService" />
+        <service android:name=".GPSService" />
+
         <activity
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
             android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.sensair.HistoryActivity" />
         </activity>
         <activity
-            android:name=".HistoryActivity"
+            android:name=".history.HistoryActivity"
             android:label="History"
             android:parentActivityName=".MainActivity">
         </activity>
         <activity
-            android:name=".HistoryDetailActivity"
+            android:name=".history.HistoryDetailActivity"
             android:label="HistoryDetail"
-            android:parentActivityName=".HistoryActivity">
+            android:parentActivityName=".history.HistoryActivity">
         </activity>
         <activity
             android:name=".InfoActivity"
@@ -59,15 +60,11 @@
         <service
             android:name=".MainActivity"
             android:foregroundServiceType="location"  >
-        <!-- Any inner elements would go here. -->
-    </service>
-
-</application>
-
+        </service>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-    </application>
 
+    </application>
 
 </manifest>

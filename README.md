@@ -1,13 +1,6 @@
 # SensAir
 Air Quality Sensor Application for Android. 
 
-## Priority To Do List 
-- [x] **Get the bluetooth working** using a bluetooth helper
-- [ ] Implement the **search function** for the History Activity
-- [ ] Add **new settings** to Profile Activity; implement the features using sharedpreferences
-- [x] Format the **Real Time Data Activity**
-- [ ] Format the **History item (aka date) data**
-
 ## Android Libraries
 * [SpeedView Library](https://github.com/anastr/SpeedView) for the gauge in the MainActivity
 * [MP Android Charts](https://github.com/PhilJay/MPAndroidChart) for graphing needs 

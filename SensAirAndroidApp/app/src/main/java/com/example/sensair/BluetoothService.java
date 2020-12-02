@@ -1,50 +1,123 @@
 package com.example.sensair;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Binder;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
 
+import com.example.sensair.history.AirData;
+import com.example.sensair.history.DBHelper;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
+
 import eu.basicairdata.bluetoothhelper.BluetoothHelper;
 
 public class BluetoothService extends Service
 {
-    private final IBinder binder = new LocalBinder();
+    public static final String CHANNEL_ID = "ForegroundServiceChannel";
 
     protected BluetoothHelper mBluetooth = new BluetoothHelper();
-    protected final String DEVICE_NAME = "SensAir";
+    protected BluetoothDevice mBluetoothDevice;
+    protected static boolean supportsBluetooth;
     protected Thread thread;
+    BluetoothAdapter btAdapter;
+    GPSService gpsService;
+    protected String TAG = "BTService";
+    protected Location location;
+    protected AirData airData = null;
+    protected DBHelper dbHelper;
+    protected boolean firstRun = true;
 
-    private float co2;
-    private float tvoc;
-    private float mq2;
-    private float humidity;
-    private float pressure;
-    private float altitude;
-    private float temperature;
 
-    public class LocalBinder extends Binder
-    {
-        BluetoothService getService()
-        {
-            return BluetoothService.this;
-        }
-    }
+    private static float co2;
+    private static float tvoc;
+    private static float mq2;
+    private static float humidity;
+    private static float pressure;
+    private static float altitude;
+    private static float temperature;
+    private static int overallAirQuality;
+    private static double longitude, latitude;
+
+    protected SharedPreferences preferences;
+    protected boolean altitudeState;
+    protected boolean pressureState;
+    protected boolean temperatureState;
+    protected boolean criticalAlertsState;
+    protected String altitudeThreshold;
+    protected String pressureThreshold;
+    protected String temperatureThreshold;
+
+    private static final int co2NotificationIDDefault = 1;
+    private static final int mq2NotificationIDDefault = 2;
+    private static final int tvocNotificationIDDefault = 3;
+    private static final int altitudeNotificationIDDefault = 4;
+    private static final int temperatureNotificationIDDefault = 5;
+    private static final int pressureNotificationIDDefault = 6;
+    private static final int co2NotificationIDDanger = 7;
+    private static final int mq2NotificationIDDanger = 8;
+    private static final int tvocNotificationIDDanger = 9;
+
 
     @Override
     public void onCreate()
     {
-        connect();
-        btInit();
+        supportsBluetooth = btInit();
+        if (supportsBluetooth)
+            connect();
+    }
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+        String input = intent.getStringExtra("inputExtra");
+        createNotificationChannel();
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Foreground Service")
+                .setContentText(input)
+                .setSmallIcon(R.drawable.ic_cloud_queue_black_18dp)
+                .setContentIntent(pendingIntent)
+                .build();
+
+        dbHelper = new DBHelper(getApplicationContext());
+
+        if(supportsBluetooth)
+            startBluetoothThreading();
+
+        return START_STICKY;
     }
 
 
@@ -52,7 +125,7 @@ public class BluetoothService extends Service
     @Override
     public IBinder onBind(Intent intent)
     {
-        return binder;
+        return null;
     }
 
     public void getData()
@@ -60,31 +133,23 @@ public class BluetoothService extends Service
         mBluetooth.SendMessage("1");
     }
 
-    public void btInit()
+    public boolean btInit()
     {
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        Intent btEnableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        if (btAdapter == null)
-        {
-            print("ERROR: Phone does not support bluetooth. Bluetooth connection failed!");
-            return;
-        } else if (!btAdapter.isEnabled())
-        {
-//            startActivityForResult(btEnableIntent, REQUEST_ENABLE_BT);
-        }
+        if(btAdapter==null)
+            return false;
 
-        boolean isPaired = false;
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         for(BluetoothDevice device : pairedDevices)
         {
-            if(device.getName().equals("SensAir"))
-                isPaired = true;
+            if (device.getName().equals("SensAir"))
+            {
+                mBluetoothDevice = device;
+                return true;
+            }
         }
-        if(isPaired)
-        {
-            startBluetoothThreading();
-        }
+        return false;
     }
 
     public void startBluetoothThreading()
@@ -97,12 +162,13 @@ public class BluetoothService extends Service
                 {
                     try
                     {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e)
                     {
                         e.printStackTrace();
                     }
-                    getData();
+                    if(mBluetooth!=null)
+                        getData();
                 }
             }
         };
@@ -111,7 +177,7 @@ public class BluetoothService extends Service
 
     public void connect()
     {
-        mBluetooth.Connect(DEVICE_NAME);
+        mBluetooth.Connect(mBluetoothDevice);
         mBluetooth.setBluetoothHelperListener(new BluetoothHelper.BluetoothHelperListener() {
             @Override
             public void onBluetoothHelperMessageReceived(BluetoothHelper bluetoothhelper, final String message)
@@ -126,23 +192,255 @@ public class BluetoothService extends Service
                     pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
                     altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
+                    overallAirQuality = 0;
+
+                    if(co2<=1000)
+                        overallAirQuality++;
+                    if(tvoc<=400)
+                        overallAirQuality++;
+                    if(mq2<=400)
+                        overallAirQuality++;
+
+                    longitude = gpsService.getLongitude();
+                    latitude = gpsService.getLatitude();
+
+                    Date date = Calendar.getInstance().getTime();
+
+                    AirData temp = new AirData(overallAirQuality,co2,tvoc,mq2,humidity,pressure,temperature,date,longitude,latitude);
+
+                    if(airData==null&&longitude!=0&&latitude!=0)
+                    {
+                        airData = temp;
+                        dbHelper.insertAirData(airData);
+                    }
+                    else if (Integer.parseInt(temp.getMinutes()) - Integer.parseInt(airData.getMinutes())  >= 1)
+                    {
+                        airData = temp;
+                        dbHelper.insertAirData(airData);
+                    }
+                    valueCheck(co2, tvoc, mq2, humidity, pressure, altitude, temperature);
                 }
             }
 
             @Override
             public void onBluetoothHelperConnectionStateChanged(BluetoothHelper bluetoothhelper, boolean isConnected) {
-                if (isConnected)
+                if (!isConnected)
                 {
-                    mBluetooth.SendMessage("1");
-                }
-                else
-                {
-                    System.out.println("Disconnected");
-                    mBluetooth.Connect(DEVICE_NAME);
+                    mBluetooth.Connect(mBluetoothDevice);
                 }
             }
         });
     }
+
+    private void createNotificationChannel()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Air Quality Alert",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
+
+    public void valueCheck(float co2, float tvoc, float mq2, float humidity, float pressure, float altitude, float temperature){
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        altitudeState = preferences.getBoolean("SettingAltitudeState", false);
+        pressureState = preferences.getBoolean("SettingPressureState", false);
+        temperatureState = preferences.getBoolean("SettingTemperatureState", false);
+        criticalAlertsState = preferences.getBoolean("AirQualityAlerts", false);
+
+        if(altitudeState) {
+            altitudeThreshold = preferences.getString("SettingAltitudeThreshold", null);
+        }
+        if(pressureState){
+            pressureThreshold = preferences.getString("SettingPressureThreshold", null);
+        }
+        if(temperatureState){
+            temperatureThreshold = preferences.getString("SettingTemperatureThreshold", null);
+        }
+        //TODO makes custom messages with expandable notifications
+        if (criticalAlertsState) {
+
+            if (co2 >= 1000 && co2 < 2000) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! CO2 Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(co2NotificationIDDefault, builder.build());
+            } else if (co2 >= 2000) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_danger)
+                        .setContentTitle("Warning! CO2 Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(co2NotificationIDDanger, builder.build());
+            }
+
+            if (tvoc >= 400 && tvoc < 2000) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! TVOC Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(tvocNotificationIDDefault, builder.build());
+            } else if (tvoc >= 2000) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_danger)
+                        .setContentTitle("Warning! TVOC Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(tvocNotificationIDDanger, builder.build());
+            }
+
+            if (mq2 >= 50 && mq2 < 100) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! CO Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(mq2NotificationIDDefault, builder.build());
+            } else if (mq2 >= 1000) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_danger)
+                        .setContentTitle("Warning! CO Levels are Significant")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(mq2NotificationIDDanger, builder.build());
+            }
+        }
+
+        if(pressureState) {
+            if( pressure >= Integer.parseInt(pressureThreshold)) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! Pressure Threshold Reached")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(pressureNotificationIDDefault, builder.build());
+            }
+        }
+
+        if (altitudeState) {
+            if (altitude >= Integer.parseInt(altitudeThreshold)){
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! Altitude Threshold Reached")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(altitudeNotificationIDDefault, builder.build());
+            }
+        }
+        //TODO modify for negative temp values
+        if (temperatureState == true) {
+            if (temperature >= Integer.parseInt(temperatureThreshold)){
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! Temperature Threshold Reached")
+                        .setContentText("Hello")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(temperatureNotificationIDDefault, builder.build());
+            }
+        }
+
+    }
+
 
     public void disconnect()
     {
@@ -182,18 +480,7 @@ public class BluetoothService extends Service
     {
         return temperature;
     }
-    public float getOverallQuality()
-    {
-        float co2_weight = 0;
-        float tvoc_weight = 0;
-        float mq2_weight = 0;
-
-        if(co2<1000) co2_weight=1;
-        if(tvoc<250) tvoc_weight=1;
-        if(mq2<240) mq2_weight = 1;
-
-        float score = (co2_weight+tvoc_weight+mq2_weight)/3;
-        score*=100f;
-        return score;
-    }
+    public float getOverallQuality() { return overallAirQuality; }
+    public double getLongitude() { return longitude; }
+    public double getLatitude() { return latitude; }
 }

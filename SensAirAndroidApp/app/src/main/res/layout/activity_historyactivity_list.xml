@@ -5,41 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TableLayout
-        android:id="@+id/tableLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="16dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/historyactivity_list"
-        android:layout_width="match_parent"
-        android:layout_height="275dp"
+    <ListView
+        android:id="@+id/dayList"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:divider="#9A9797"
+        android:dividerHeight="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/mapView_day"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView_day"
         android:layout_width="410dp"
         android:layout_height="350dp"
-        android:layout_marginTop="300dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="425dp"
-        android:layout_marginBottom="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tableLayout"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout"
-        app:srcCompat="@drawable/ic_search_black_18dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

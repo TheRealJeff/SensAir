@@ -1,16 +1,22 @@
 <resources>
     <!-- Reply Preference -->
     <string-array name="gauge_option_entries">
-        <item>CO2</item>
-        <item>TVOC</item>
-        <item>Combustible Gasses</item>
-        <item>Overall Quality</item>
+        <item>Overall Air Quality</item>
+        <item>Smoke Level</item>
+        <item>Carbon Dioxide</item>
+        <item>Volatile Organic Compounts</item>
+        <item>Humidity</item>
+        <item>Pressure</item>
+        <item>Temperature</item>
     </string-array>
 
     <string-array name="gauge_option_values">
-        <item>co2</item>
-        <item>tvoc</item>
-        <item>combustible_gasses</item>
-        <item>overall_quality</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
     </string-array>
 </resources>

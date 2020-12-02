@@ -5,39 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TableLayout
-        android:id="@+id/tableLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="16dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/daily_list"
-        android:layout_width="match_parent"
-        android:layout_height="275dp"
+    <ListView
+        android:id="@+id/hourList"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:divider="#9A9797"
+        android:dividerHeight="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/logActivityButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView_hour"
         android:layout_width="410dp"
-        android:layout_height="350dp"
-        android:layout_marginTop="300dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/Delete"
-        android:layout_width="wrap_content"
+        android:id="@+id/logActivityButton"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="150dp"
-        android:layout_marginTop="650dp"
-        android:text="Delete"
-        android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="10dp"
+        android:text="View Daily Log"
+        app:layout_constraintBottom_toTopOf="@+id/mapView_hour"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
