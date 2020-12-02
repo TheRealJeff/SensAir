@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         locationServicesInit();
         setTitle("Live Air Quality");
         btService = new BluetoothService();
+
         Intent btServiceIntent = new Intent(getApplicationContext(), BluetoothService.class);
         startService(btServiceIntent);
 
@@ -131,7 +132,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             public void onClick(View V)
             {
+
                 Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+
                 startActivity(intent);
             }
         });
@@ -434,7 +437,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case 0:     // overall quality
                 //TODO Handle Overall choice and display meter values
                 gaugeAirQuality.speedTo(0);                     // reset gauge
+
                 gaugeAirQuality.setMinMaxSpeed(0,3);          // rescale gauge for each metric
+
 
                 s1 = new Section(0f,.33333f,Color.parseColor("#EE5C42"),110);       // create according sections
                 s2 = new Section(.33333f,.66666f,Color.parseColor("#FFFF33"),110);
@@ -445,7 +450,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
 
+
                 gaugeAirQuality.setSpeedTextColor(Color.TRANSPARENT);
+
 
                 gaugeAirQuality.setTickNumber(0);
                 gaugeAirQuality.setMarksNumber(0);      // set labels
@@ -475,9 +482,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 gaugeAirQuality.speedTo(mq2);
                 break;
+
             case 2:     // co
+
                 gaugeAirQuality.speedTo(0);
-                gaugeAirQuality.setMinMaxSpeed(0,2500);
+                gaugeAirQuality.setMinMaxSpeed(0,125);
                 gaugeAirQuality.setUnit("Parts-per Million (ppm)");
 
                 s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
@@ -496,26 +505,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 ticks.add(0.4f);
                 ticks.add(0.6f);
                 ticks.add(0.8f);
+
                 gaugeAirQuality.setTicks(ticks);
 
-                gaugeAirQuality.speedTo(co2);
+                gaugeAirQuality.speedTo(mq2);
                 break;
 
-            case 3:     // TVOC
-                gaugeAirQuality.speedTo(0);
-                gaugeAirQuality.setMinMaxSpeed(0,4000);
-                gaugeAirQuality.setUnit("Parts-per Billion (ppb)");
 
-                s1 = new Section(0f,.1f,Color.parseColor("#00CD66"),110);
-                s2 = new Section(.1f,.5f,Color.parseColor("#FFFF33"),110);
-                s3 = new Section(.5f,1f,Color.parseColor("#EE5C42"),110);
+            case 3:     // TVOC
+
+                gaugeAirQuality.speedTo(0);
+                gaugeAirQuality.setMinMaxSpeed(0,2500);
+                gaugeAirQuality.setUnit("Parts-per Million (ppm)");
+
+                s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
+                s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),110);
+                s3 = new Section(.8f,1f,Color.parseColor("#EE5C42"),110);
                 sections.add(s1);
                 sections.add(s2);
                 sections.add(s3);
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
 
+
                 gaugeAirQuality.setSpeedTextColor(Color.BLACK);
+
 
                 gaugeAirQuality.setMarksNumber(9);
                 ticks.add(0.1f);
@@ -639,6 +653,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 longToast("Oops! Looks like the SensAir device was disconnected. Please reconnect in settings.");
             }
         }
+
         setGauge();
     }
 
@@ -649,5 +664,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         spinner.setSelection(Integer.parseInt(defaultMetric));
     }
+
 
 }

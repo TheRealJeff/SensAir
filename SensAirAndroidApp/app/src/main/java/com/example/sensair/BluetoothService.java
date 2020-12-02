@@ -14,6 +14,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.os.Binder;
+import android.os.Build;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -27,6 +30,18 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
+
+import com.example.sensair.realtimeplotting.AltitudeDataActivity;
+import com.example.sensair.realtimeplotting.CarbonDioxideDataActivity;
+import com.example.sensair.realtimeplotting.CarbonMonoxideDataActivity;
+import com.example.sensair.realtimeplotting.HumidityDataActivity;
+import com.example.sensair.realtimeplotting.PressureDataActivity;
+import com.example.sensair.realtimeplotting.SmokeIndexDataActivity;
+import com.example.sensair.realtimeplotting.TemperatureDataActivity;
+import com.example.sensair.realtimeplotting.VolatileOrganicCompoundsActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -50,8 +65,8 @@ public class BluetoothService extends Service
     protected static boolean supportsBluetooth;
     protected Thread thread;
     BluetoothAdapter btAdapter;
-    GPSService gpsService;
     protected String TAG = "BTService";
+    GPSService gpsService;
     protected Location location;
     protected AirData airData = null;
     protected DBHelper dbHelper;
@@ -72,20 +87,31 @@ public class BluetoothService extends Service
     protected boolean altitudeState;
     protected boolean pressureState;
     protected boolean temperatureState;
+    protected boolean humidityState;
     protected boolean criticalAlertsState;
-    protected String altitudeThreshold;
-    protected String pressureThreshold;
-    protected String temperatureThreshold;
+    protected String altitudeMaxThreshold;
+    protected String altitudeMinThreshold;
+    protected String pressureMaxThreshold;
+    protected String pressureMinThreshold;
+    protected String temperatureMaxThreshold;
+    protected String temperatureMinThreshold;
+    protected String humidityMaxThreshold;
+    protected String humidityMinThreshold;
 
     private static final int co2NotificationIDDefault = 1;
     private static final int mq2NotificationIDDefault = 2;
     private static final int tvocNotificationIDDefault = 3;
-    private static final int altitudeNotificationIDDefault = 4;
-    private static final int temperatureNotificationIDDefault = 5;
-    private static final int pressureNotificationIDDefault = 6;
+    private static final int altitudeNotificationIDMax = 4;
+    private static final int temperatureNotificationIDMax = 5;
+    private static final int pressureNotificationIDMax = 6;
     private static final int co2NotificationIDDanger = 7;
     private static final int mq2NotificationIDDanger = 8;
     private static final int tvocNotificationIDDanger = 9;
+    private static final int humidityNotificationIDMax = 10;
+    private static final int altitudeNotificationIDMin = 11;
+    private static final int temperatureNotificationIDMin = 12;
+    private static final int pressureNotificationIDMin = 13;
+    private static final int humidityNotificationIDMin = 14;
 
 
     @Override
@@ -95,6 +121,7 @@ public class BluetoothService extends Service
         if (supportsBluetooth)
             connect();
     }
+
 
 
     @Override
@@ -192,6 +219,8 @@ public class BluetoothService extends Service
                     pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
                     altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
+                    print("Reading Data");
+
                     overallAirQuality = 0;
 
                     if(co2<=1000)
@@ -238,7 +267,7 @@ public class BluetoothService extends Service
         {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
-                    "Air Quality Alert",
+                    "SensAir Notification Center",
                     NotificationManager.IMPORTANCE_HIGH
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
@@ -248,27 +277,37 @@ public class BluetoothService extends Service
 
     public void valueCheck(float co2, float tvoc, float mq2, float humidity, float pressure, float altitude, float temperature){
 
+        Log.d(TAG, "checking values");
+
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         altitudeState = preferences.getBoolean("SettingAltitudeState", false);
         pressureState = preferences.getBoolean("SettingPressureState", false);
         temperatureState = preferences.getBoolean("SettingTemperatureState", false);
+        humidityState = preferences.getBoolean("SettingHumidityState", false);
         criticalAlertsState = preferences.getBoolean("AirQualityAlerts", false);
 
-        if(altitudeState) {
-            altitudeThreshold = preferences.getString("SettingAltitudeThreshold", null);
+        if(altitudeState == true) {
+            altitudeMaxThreshold = preferences.getString("SettingMaximumAltitudeThreshold", null);
+            altitudeMinThreshold = preferences.getString("SettingMinimumAltitudeThreshold", null);
         }
-        if(pressureState){
-            pressureThreshold = preferences.getString("SettingPressureThreshold", null);
+        if(pressureState == true){
+            pressureMaxThreshold = preferences.getString("SettingMaximumPressureThreshold", null);
+            pressureMinThreshold = preferences.getString("SettingMinimumPressureThreshold", null);
         }
-        if(temperatureState){
-            temperatureThreshold = preferences.getString("SettingTemperatureThreshold", null);
+        if(temperatureState == true){
+            temperatureMaxThreshold = preferences.getString("SettingMaximumTemperatureThreshold", null);
+            temperatureMinThreshold = preferences.getString("SettingMinimumTemperatureThreshold", null);
+        }
+        if(humidityState == true){
+            humidityMaxThreshold = preferences.getString("SettingMaximumHumidityThreshold", null);
+            humidityMinThreshold = preferences.getString("SettingMinimumHumidityThreshold", null);
         }
         //TODO makes custom messages with expandable notifications
-        if (criticalAlertsState) {
+        if (criticalAlertsState == true) {
 
             if (co2 >= 1000 && co2 < 2000) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, CarbonDioxideDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -276,8 +315,8 @@ public class BluetoothService extends Service
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification_warning)
                         .setContentTitle("Warning! CO2 Levels are Significant")
-                        .setContentText("Hello")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setContentText("The CO2 levels in your surrounding environment seem to be higher than acceptable levels, please try to protect yourself and stay away from the source of CO2")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("The CO2 levels in your surrounding environment seem to be higher than acceptable levels, please try to protect yourself and stay away from the source of CO2"))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true);
@@ -285,16 +324,16 @@ public class BluetoothService extends Service
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                 notificationManagerCompat.notify(co2NotificationIDDefault, builder.build());
             } else if (co2 >= 2000) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, CarbonDioxideDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
                 createNotificationChannel();
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification_danger)
-                        .setContentTitle("Warning! CO2 Levels are Significant")
-                        .setContentText("Hello")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setContentTitle("DANGER! CO2 Levels are High")
+                        .setContentText("The CO2 levels in your surrounding environment seem to be higher than acceptable levels, please try to protect yourself and stay away from the source of CO2")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("The CO2 levels in your surrounding environment seem to be higher than acceptable levels, please try to protect yourself and stay away from the source of CO2"))
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true);
@@ -304,7 +343,7 @@ public class BluetoothService extends Service
             }
 
             if (tvoc >= 400 && tvoc < 2000) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, VolatileOrganicCompoundsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -312,8 +351,8 @@ public class BluetoothService extends Service
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification_warning)
                         .setContentTitle("Warning! TVOC Levels are Significant")
-                        .setContentText("Hello")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setContentText("TVOC levels in your surrounding environment seem to be higher than acceptable levels, please try to protect yourself and stay away from the source of TVOC")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("TVOC levels in your surrounding environment seem to be higher than acceptable levels, please try to protect yourself and stay away from the source of TVOC"))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true);
@@ -321,16 +360,16 @@ public class BluetoothService extends Service
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                 notificationManagerCompat.notify(tvocNotificationIDDefault, builder.build());
             } else if (tvoc >= 2000) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, VolatileOrganicCompoundsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
                 createNotificationChannel();
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification_danger)
-                        .setContentTitle("Warning! TVOC Levels are Significant")
-                        .setContentText("Hello")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setContentTitle("DANGER! TVOC Levels are High")
+                        .setContentText("TVOC levels in your surrounding environment are significantly higher than the safety threshold, please move away from the source as soon as possible and contact emergency services if necessary")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("TVOC levels in your surrounding environment are significantly higher than the safety threshold, please move away from the source as soon as possible and contact emergency services if necessary"))
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true);
@@ -339,46 +378,29 @@ public class BluetoothService extends Service
                 notificationManagerCompat.notify(tvocNotificationIDDanger, builder.build());
             }
 
-            if (mq2 >= 50 && mq2 < 100) {
-                Intent intent = new Intent(this, MainActivity.class);
+            if (mq2 >= 300) {
+                Intent intent = new Intent(this, SmokeIndexDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
                 createNotificationChannel();
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification_warning)
-                        .setContentTitle("Warning! CO Levels are Significant")
-                        .setContentText("Hello")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setContentTitle("Warning! Smoke Levels are Significant")
+                        .setContentText("Smoke levels are significant, there is a danger of smoke inhalation, please detect the source of smoke and contact emergency services in necessary")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Smoke levels are significant, there is a danger of smoke inhalation, please detect the source of smoke and contact emergency services in necessary"))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true);
 
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                 notificationManagerCompat.notify(mq2NotificationIDDefault, builder.build());
-            } else if (mq2 >= 1000) {
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-                createNotificationChannel();
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_notification_danger)
-                        .setContentTitle("Warning! CO Levels are Significant")
-                        .setContentText("Hello")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
-                        .setPriority(NotificationCompat.PRIORITY_MAX)
-                        .setContentIntent(pendingIntent)
-                        .setAutoCancel(true);
-
-                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-                notificationManagerCompat.notify(mq2NotificationIDDanger, builder.build());
             }
         }
 
-        if(pressureState) {
-            if( pressure >= Integer.parseInt(pressureThreshold)) {
-                Intent intent = new Intent(this, MainActivity.class);
+        if(pressureState == true && pressureMaxThreshold != null) {
+            if( pressure >= Integer.parseInt(pressureMaxThreshold)) {
+                Intent intent = new Intent(this, PressureDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -386,20 +408,41 @@ public class BluetoothService extends Service
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification_warning)
                         .setContentTitle("Warning! Pressure Threshold Reached")
-                        .setContentText("Hello")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setContentText("Pressure levels have surpassed the custom maximum level. Please check the real time data page for the exact humidity reading")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Pressure levels have surpassed the custom maximum level. Please check the real time data page for the exact humidity reading"))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true);
 
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-                notificationManagerCompat.notify(pressureNotificationIDDefault, builder.build());
+                notificationManagerCompat.notify(pressureNotificationIDMax, builder.build());
             }
         }
 
-        if (altitudeState) {
-            if (altitude >= Integer.parseInt(altitudeThreshold)){
-                Intent intent = new Intent(this, MainActivity.class);
+        if(pressureState == true && pressureMinThreshold != null) {
+            if( pressure <= Integer.parseInt(pressureMinThreshold)) {
+                Intent intent = new Intent(this, PressureDataActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! Pressure Threshold Reached")
+                        .setContentText("Pressure levels have surpassed the custom minimum level. Please check the real time data page for the exact humidity reading")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Pressure levels have surpassed the custom minimum level. Please check the real time data page for the exact humidity reading"))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(pressureNotificationIDMin, builder.build());
+            }
+        }
+
+        if (altitudeState == true && altitudeMaxThreshold != null) {
+            if (altitude >= Integer.parseInt(altitudeMaxThreshold)){
+                Intent intent = new Intent(this, AltitudeDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -407,40 +450,167 @@ public class BluetoothService extends Service
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification_warning)
                         .setContentTitle("Warning! Altitude Threshold Reached")
-                        .setContentText("Hello")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setContentText("Altitude has surpassed the custom maximum level indicated by you. Please check the real time data page for the exact temperature reading")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Altitude has surpassed the custom maximum level indicated by you. Please check the real time data page for the exact temperature reading"))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true);
 
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-                notificationManagerCompat.notify(altitudeNotificationIDDefault, builder.build());
+                notificationManagerCompat.notify(altitudeNotificationIDMax, builder.build());
             }
         }
-        //TODO modify for negative temp values
-        if (temperatureState == true) {
-            if (temperature >= Integer.parseInt(temperatureThreshold)){
-                Intent intent = new Intent(this, MainActivity.class);
+
+        if (altitudeState == true && altitudeMinThreshold != null) {
+            if (altitude <= Integer.parseInt(altitudeMinThreshold)){
+                Intent intent = new Intent(this, AltitudeDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
                 createNotificationChannel();
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification_warning)
-                        .setContentTitle("Warning! Temperature Threshold Reached")
-                        .setContentText("Hello")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("This is a larger text sequence"))
+                        .setContentTitle("Warning! Altitude Threshold Reached")
+                        .setContentText("Altitude has surpassed the custom minimum level indicated by you. Please check the real time data page for the exact temperature reading")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Altitude has surpassed the custom minimum level indicated by you. Please check the real time data page for the exact temperature reading"))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true);
 
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-                notificationManagerCompat.notify(temperatureNotificationIDDefault, builder.build());
+                notificationManagerCompat.notify(altitudeNotificationIDMin, builder.build());
+            }
+        }
+
+        if (temperatureState == true && temperatureMaxThreshold != null) {
+            if (Integer.parseInt(temperatureMaxThreshold) > 0) {
+                if (temperature >= Integer.parseInt(temperatureMaxThreshold)) {
+                    Intent intent = new Intent(this, TemperatureDataActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                    createNotificationChannel();
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_notification_warning)
+                            .setContentTitle("Warning! Temperature Threshold Reached")
+                            .setContentText("Temperature has surpassed the custom maximum level indicated by you. Please check the real time data page for the exact temperature reading ")
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText("Temperature has surpassed the custom maximum level indicated by you. Please check the real time data page for the exact temperature reading "))
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true);
+
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                    notificationManagerCompat.notify(temperatureNotificationIDMax, builder.build());
+                }
+            }
+            else if(Integer.parseInt(temperatureMaxThreshold) < 0){
+                if (temperature <= Integer.parseInt(temperatureMaxThreshold)) {
+                    Intent intent = new Intent(this, TemperatureDataActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                    createNotificationChannel();
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_notification_warning)
+                            .setContentTitle("Warning! Temperature Threshold Reached")
+                            .setContentText("Temperature has surpassed the custom maximum level indicated by you. Please check the real time data page for the exact temperature reading ")
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText("Temperature has surpassed the custom maximum level indicated by you. Please check the real time data page for the exact temperature reading "))
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true);
+
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                    notificationManagerCompat.notify(temperatureNotificationIDMax, builder.build());
+                }
+            }
+        }
+
+        if (temperatureState == true && temperatureMinThreshold != null) {
+            if (Integer.parseInt(temperatureMinThreshold) > 0) {
+                if (temperature <= Integer.parseInt(temperatureMinThreshold)) {
+                    Intent intent = new Intent(this, TemperatureDataActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                    createNotificationChannel();
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_notification_warning)
+                            .setContentTitle("Warning! Temperature Threshold Reached")
+                            .setContentText("Temperature has surpassed the custom minimum level indicated by you. Please check the real time data page for the exact temperature reading ")
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText("Temperature has surpassed the custom minimum level indicated by you. Please check the real time data page for the exact temperature reading "))
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true);
+
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                    notificationManagerCompat.notify(temperatureNotificationIDMax, builder.build());
+                }
+            }
+            else if(Integer.parseInt(temperatureMinThreshold) < 0){
+                if (temperature >= Integer.parseInt(temperatureMinThreshold)) {
+                    Intent intent = new Intent(this, TemperatureDataActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                    createNotificationChannel();
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_notification_warning)
+                            .setContentTitle("Warning! Temperature Threshold Reached")
+                            .setContentText("Temperature has surpassed the custom minimum level indicated by you. Please check the real time data page for the exact temperature reading ")
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText("Temperature has surpassed the custom minimum level indicated by you. Please check the real time data page for the exact temperature reading "))
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true);
+
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                    notificationManagerCompat.notify(temperatureNotificationIDMin, builder.build());
+                }
+            }
+        }
+
+        if (humidityState == true && humidityMaxThreshold != null){
+            if (humidity >= Integer.parseInt(humidityMaxThreshold)){
+                Intent intent = new Intent(this, HumidityDataActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! Humidity Threshold Reached")
+                        .setContentText("Humidity levels have surpassed the custom maximum level indicated by you. Please check the real time data page for the exact humidity reading ")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Humidity levels have surpassed the custom maximum level indicated by you. Please check the real time data page for the exact humidity reading "))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(humidityNotificationIDMax, builder.build());
+            }
+        }
+
+        if (humidityState == true && humidityMinThreshold != null){
+            if (humidity <= Integer.parseInt(humidityMinThreshold)){
+                Intent intent = new Intent(this, HumidityDataActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_warning)
+                        .setContentTitle("Warning! Humidity Threshold Reached")
+                        .setContentText("Humidity levels have surpassed the custom minimum level indicated by you. Please check the real time data page for the exact humidity reading ")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Humidity levels have surpassed the custom minimum level indicated by you. Please check the real time data page for the exact humidity reading "))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                notificationManagerCompat.notify(humidityNotificationIDMin, builder.build());
             }
         }
 
     }
-
 
     public void disconnect()
     {

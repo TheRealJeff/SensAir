@@ -20,6 +20,7 @@ public class LogDataAdapter extends ArrayAdapter<LogDataModel>
 
     public LogDataAdapter(@NonNull Context context, ArrayList<LogDataModel> data)
     {
+
         super(context, 0,data);
         this.data = data;
     }
@@ -30,6 +31,7 @@ public class LogDataAdapter extends ArrayAdapter<LogDataModel>
     {
         View listItem = convertView;
         if(listItem==null)
+
             listItem = LayoutInflater.from(getContext()).inflate(R.layout.item_log_data,parent,false);
 
         LogDataModel data = getItem(position);

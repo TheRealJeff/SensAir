@@ -2,6 +2,12 @@ package com.example.sensair.realtimeplotting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import android.os.Bundle;
+import com.example.sensair.R;
+
+import java.util.ArrayList;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,10 +20,12 @@ import com.example.sensair.history.DBHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.Objects;
 
 public class LoggedDataActivity extends AppCompatActivity
 {
+
     LogDbHelper logDbHelper = new LogDbHelper(this);
     ArrayList<LogDataModel> dataList;
     ListView listView;
@@ -25,14 +33,17 @@ public class LoggedDataActivity extends AppCompatActivity
     LogDataAdapter logDataAdapter;
     Button clearButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_data);
 
+
         Intent intent = getIntent();
         date = intent.getStringExtra("date");
+
 
         uiInit();
     }
@@ -41,6 +52,7 @@ public class LoggedDataActivity extends AppCompatActivity
     {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle("Logged Data");
+
 
         ArrayList<LogDataModel> data = logDbHelper.getAllData();
 
@@ -78,6 +90,7 @@ public class LoggedDataActivity extends AppCompatActivity
         {
             logDbHelper.deleteItem(datum);
         }
+
     }
 
     @Override

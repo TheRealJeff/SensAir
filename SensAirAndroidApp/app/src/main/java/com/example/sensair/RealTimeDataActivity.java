@@ -2,15 +2,31 @@ package com.example.sensair;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+
+import com.example.sensair.realtimeplotting.AltitudeDataActivity;
+import com.example.sensair.realtimeplotting.CarbonDioxideDataActivity;
+import com.example.sensair.realtimeplotting.CarbonMonoxideDataActivity;
+
 import com.example.sensair.realtimeplotting.CarbonDioxideDataActivity;
 import com.example.sensair.realtimeplotting.SmokeIndexDataActivity;
+
 import com.example.sensair.realtimeplotting.HumidityDataActivity;
 import com.example.sensair.realtimeplotting.PressureDataActivity;
 import com.example.sensair.realtimeplotting.TemperatureDataActivity;
@@ -27,6 +43,7 @@ public class RealTimeDataActivity extends AppCompatActivity
 
     private final String CO2="Carbon Dioxide (CO2)";
     private final  String TVOC="Volatile Organic Compounds (VOC)";
+
     private final String MQ2="Smoke Index";
     private final String HUMIDITY="Humidity";
     private final String PRESSURE="Pressure";
@@ -54,6 +71,7 @@ public class RealTimeDataActivity extends AppCompatActivity
         metrics.add(HUMIDITY);
         metrics.add(PRESSURE);
         metrics.add(TEMPERATURE);
+        metrics.add(ALTITUDE);
 
         listAdapter = new ArrayAdapter<String>(this, R.layout.item_metric,R.id.airQualityMetric,metrics);
         listView = findViewById(R.id.airQualityMetricList);
@@ -71,7 +89,9 @@ public class RealTimeDataActivity extends AppCompatActivity
                         startActivity(intent);
                         break;
                     case MQ2:
+
                         intent = new Intent(RealTimeDataActivity.this, SmokeIndexDataActivity.class);
+
                         startActivity(intent);
                         break;
                     case TVOC:
@@ -90,6 +110,11 @@ public class RealTimeDataActivity extends AppCompatActivity
                         intent = new Intent(RealTimeDataActivity.this, TemperatureDataActivity.class);
                         startActivity(intent);
                         break;
+                    case ALTITUDE:
+                        intent = new Intent(RealTimeDataActivity.this, AltitudeDataActivity.class);
+                        startActivity(intent);
+//                    default:
+//                        throw new IllegalStateException("Unexpected value: " + metric);
                 }
             }
         });

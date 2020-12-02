@@ -47,6 +47,7 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
     protected float average,n;
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
+
     protected LogDbHelper logDbHelper = new LogDbHelper(this);
 
     protected BtThread thread;
@@ -101,6 +102,7 @@ public class TemperatureDataActivity extends AppCompatActivity implements OnChar
             @Override
             public void onClick(View v)
             {
+
                 if(selected==0)
                     Toast.makeText(TemperatureDataActivity.this, "No Value Selected!", Toast.LENGTH_SHORT).show();
                 else

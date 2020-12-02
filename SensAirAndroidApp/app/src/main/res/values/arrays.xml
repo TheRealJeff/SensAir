@@ -1,6 +1,7 @@
 <resources>
     <!-- Reply Preference -->
     <string-array name="gauge_option_entries">
+
         <item>Overall Air Quality</item>
         <item>Smoke Level</item>
         <item>Carbon Dioxide</item>
@@ -18,5 +19,6 @@
         <item>4</item>
         <item>5</item>
         <item>6</item>
+
     </string-array>
 </resources>

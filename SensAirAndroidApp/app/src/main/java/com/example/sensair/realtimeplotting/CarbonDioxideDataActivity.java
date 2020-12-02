@@ -52,7 +52,9 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
     protected float average,n;
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
+
     protected LogDbHelper logDbHelper = new LogDbHelper(this);
+
 
     protected BtThread thread;
     protected BluetoothService btService = new BluetoothService();
@@ -110,11 +112,13 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
             @Override
             public void onClick(View v)
             {
+
                 if(selected==0)
                     Toast.makeText(CarbonDioxideDataActivity.this, "No Value Selected!", Toast.LENGTH_SHORT).show();
                 else
                 {
                     logDbHelper.insertLogData(new LogDataModel("-1", "Carbon Dioxide", String.format("%.0f", selected), "ppm"));
+
                     Toast.makeText(CarbonDioxideDataActivity.this, String.format("%.0f", selected) + " ppm CO2 saved!", Toast.LENGTH_SHORT).show();
                 }
             }

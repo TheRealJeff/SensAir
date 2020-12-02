@@ -5,33 +5,68 @@
 
         <ListPreference
             android:id="@+id/listPreferenceMeterDisplayPreference"
-            app:defaultValue="0"
+            app:defaultValue="reply"
             app:entries="@array/gauge_option_entries"
             app:entryValues="@array/gauge_option_values"
-            app:key="meter"
+            app:key="reply"
             app:summary="Set what measurement is displayed on the Home Page meter."
             app:title="@string/reply_title" />
         <EditTextPreference
-            android:id="@+id/editTextPreferenceAltitudeThreshold"
-            android:key="@string/altitude_setting_threshold"
+            android:id="@+id/editTextPreferenceMaxAltitudeThreshold"
+            android:key="@string/altitude_max_setting_threshold"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/altitude_setting_title"
-            app:summary="@string/altitude_setting_summary" />
+            android:title="@string/altitude_setting_title_max"
+            app:summary="@string/altitude_setting_summary_max" />
         <EditTextPreference
-            android:id="@+id/editTextPreferencePressureThreshold"
-            android:key="@string/pressure_setting_threshold"
+            android:id="@+id/editTextPreferenceMinAltitudeThreshold"
+            android:key="@string/altitude_min_setting_threshold"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/pressure_setting_title"
-            app:summary="@string/pressure_setting_summary" />
+            android:title="@string/altitude_setting_title_min"
+            app:summary="@string/altitude_setting_summary_min"/>
         <EditTextPreference
-            android:id="@+id/editTextPreferenceTemperatureSetting"
-            android:key="@string/temperature_setting_threshold"
+            android:id="@+id/editTextPreferenceMaxPressureThreshold"
+            android:key="@string/pressure_max_setting_threshold"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/temperature_setting_title"
-            app:summary="@string/temperature_setting_summary" />
+            android:title="@string/pressure_setting_title_max"
+            app:summary="@string/pressure_setting_summary_max" />
+        <EditTextPreference
+            android:id="@+id/editTextPreferenceMinPressureThreshold"
+            android:key="@string/pressure_min_setting_threshold"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pressure_setting_title_min"
+            app:summary="@string/pressure_setting_summary_min" />
+        <EditTextPreference
+            android:id="@+id/editTextPreferenceMaxTemperatureSetting"
+            android:key="@string/temperature_max_setting_threshold"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/temperature_setting_title_max"
+            app:summary="@string/temperature_setting_summary_max" />
+        <EditTextPreference
+            android:id="@+id/editTextPreferenceMinTemperatureSetting"
+            android:key="@string/temperature_min_setting_threshold"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/temperature_setting_title_min"
+            app:summary="@string/temperature_setting_summary_min" />
+        <EditTextPreference
+            android:id="@+id/editTextPreferenceMaxHumiditySetting"
+            android:key="@string/humidity_max_setting_threshold"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/humidity_setting_title_max"
+            app:summary="@string/humidity_setting_summary_max" />
+        <EditTextPreference
+            android:id="@+id/editTextPreferenceMinHumiditySetting"
+            android:key="@string/humidity_min_setting_threshold"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/humidity_setting_title_min"
+            app:summary="@string/humidity_setting_summary_min" />
 
     </PreferenceCategory>
 
@@ -45,13 +80,6 @@
             app:summary="@string/allow_notifications_description"
             app:title="@string/allow_notifications" />
 
-        <SwitchPreferenceCompat
-            android:id="@+id/switchAllowDataCollection"
-            app:key="AllowDataCollection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:summary="@string/data_setting_description"
-            app:title="@string/data_setting_title" />
         <SwitchPreferenceCompat
             android:id="@+id/switchCriticalAltitudeAlerts"
             android:layout_width="wrap_content"
@@ -76,6 +104,14 @@
             app:key="@string/temperature_setting_state"
             app:summary="@string/data_setting_temperature_description"
             app:title="@string/data_setting_temperature_title" />
+        <SwitchPreferenceCompat
+            android:id="@+id/switchCriticalHumidityAlerts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:defaultValue="false"
+            app:key="@string/humidity_setting_state"
+            app:summary="@string/data_setting_humidity_description"
+            app:title="@string/data_setting_humidity_title" />
 
     </PreferenceCategory>
 

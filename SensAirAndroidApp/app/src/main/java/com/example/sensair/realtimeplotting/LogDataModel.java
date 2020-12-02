@@ -10,6 +10,7 @@ public class LogDataModel
     private String DATE;
     private String TYPE;
     private String VALUE;
+
     private String UNIT;
     private String KEY;
     private String TIME;
@@ -19,9 +20,11 @@ public class LogDataModel
         this.TYPE = TYPE;
         this.VALUE = VALUE;
         this.UNIT = UNIT;
+
         this.KEY = KEY;
 
         Date date = Calendar.getInstance().getTime();
+
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
         String formattedDate = dateFormat.format(date);
@@ -32,14 +35,25 @@ public class LogDataModel
         this.TIME = formattedTime;
     }
 
-    public LogDataModel(String KEY, String DATE, String TIME, String TYPE, String VALUE, String UNIT)
+
+    public LogDataModel(String KEY, String DATE, String TYPE, String VALUE, String UNIT)
+
     {
         this.KEY = KEY;
         this.DATE = DATE;
         this.TYPE = TYPE;
         this.VALUE = VALUE;
+
         this.UNIT = UNIT;
-        this.TIME = TIME;
+
+
+        Date date = Calendar.getInstance().getTime();
+
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        String formattedTime = timeFormat.format(date);
+        this.TIME = formattedTime;
+
+
     }
 
     public String getDATE()
@@ -62,6 +76,7 @@ public class LogDataModel
         return KEY;
     }
 
+
     public String getUNIT()
     {
         return UNIT;
@@ -71,4 +86,5 @@ public class LogDataModel
     {
         return TIME;
     }
+
 }
