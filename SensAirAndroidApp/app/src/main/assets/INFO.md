@@ -155,26 +155,26 @@
 | 6400     | Death within 30   minutes                                                             |
 | 12,800   | Death within 1   to 3 minutes                                                         |
 ***
-#### **Carbon Monoxide**
- moke is mixture of gasses and particulate matter which is the result of combustion of vegetation and artificial material. It is impossible to find for sure what the composition of smoke. Inhaling smoke can have immediate health effects and have serious repercussions. In addition, smoke can irritate the skin and eyes.
+#### **Smoke**
+ Smoke is mixture of gasses and particulate matter which is the result of combustion of vegetation and artificial material. It is impossible to find for sure what the composition of smoke. Inhaling smoke can have immediate health effects and have serious repercussions. In addition, smoke can irritate the skin and eyes.
 * Sources 
     * Forest fires
 	* Building fires
 	* Automobile exhaust 
 	* Wild Fires
 	* Combustable material
-3000 ppm
 	
 * __Symptoms__
+    * Shortness of breath
     * Dizziness
     * Headache
     * Nausea
-    * Fatigue
-    * Weakness and clumsiness
+    * Coughing
+    * Stinging eyes
     * Chest pain
-    * Blurry vision
-    * Disorientation or confusion seizures
-    * Hearing loss
+    * Scratchy throat
+    * Fast heartbeat
+    * Mental confusion
     * Quick irregular heartbeat
 
 * __Actions to take in case of exposure__
@@ -184,6 +184,8 @@
 	* Remove famable materials from the area
 	* Contact emergency services
 	
+*__Danger Level__
+3000 Parts Per Million of smoke in an environment can be health hazard
 
                  
 ***
@@ -236,4 +238,5 @@
  * Atmospheric Pressure can be an important factor for people with certain professions, you can keep track of your Pressure and be notified when you cross that threshhold.
 ***
 #### **Temperature**
- * Extreme tempretures can have dire effects on the human body. 
+ * Extreme tempretures can have dire effects on the human body.Custom temperature can be set to notify you in case the threshold is reached.
+ 
