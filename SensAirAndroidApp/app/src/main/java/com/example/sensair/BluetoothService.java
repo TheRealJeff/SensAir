@@ -220,7 +220,7 @@ public class BluetoothService extends Service
         {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
-                    "Foreground Service Channel",
+                    "SensAir Notification Center",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
@@ -530,7 +530,7 @@ public class BluetoothService extends Service
                 createNotificationChannel();
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification_warning)
-                        .setContentTitle("Warning! THumidity Threshold Reached")
+                        .setContentTitle("Warning! Humidity Threshold Reached")
                         .setContentText("Humidity levels have surpassed the custom maximum level indicated by you. Please check the real time data page for the exact humidity reading ")
                         .setStyle(new NotificationCompat.BigTextStyle().bigText("Humidity levels have surpassed the custom maximum level indicated by you. Please check the real time data page for the exact humidity reading "))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -551,7 +551,7 @@ public class BluetoothService extends Service
                 createNotificationChannel();
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification_warning)
-                        .setContentTitle("Warning! THumidity Threshold Reached")
+                        .setContentTitle("Warning! Humidity Threshold Reached")
                         .setContentText("Humidity levels have surpassed the custom minimum level indicated by you. Please check the real time data page for the exact humidity reading ")
                         .setStyle(new NotificationCompat.BigTextStyle().bigText("Humidity levels have surpassed the custom minimum level indicated by you. Please check the real time data page for the exact humidity reading "))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
