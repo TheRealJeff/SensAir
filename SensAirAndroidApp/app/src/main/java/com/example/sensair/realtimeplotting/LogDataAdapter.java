@@ -20,11 +20,8 @@ public class LogDataAdapter extends ArrayAdapter<LogDataModel>
 
     public LogDataAdapter(@NonNull Context context, ArrayList<LogDataModel> data)
     {
-<<<<<<< HEAD
-        super(context, 0);
-=======
+
         super(context, 0,data);
->>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
         this.data = data;
     }
 
@@ -34,11 +31,7 @@ public class LogDataAdapter extends ArrayAdapter<LogDataModel>
     {
         View listItem = convertView;
         if(listItem==null)
-<<<<<<< HEAD
-            listItem = LayoutInflater.from(getContext()).inflate(R.layout.item_metric,parent,false);
 
-       // TODO set data to adapter
-=======
             listItem = LayoutInflater.from(getContext()).inflate(R.layout.item_log_data,parent,false);
 
         LogDataModel data = getItem(position);
@@ -53,7 +46,6 @@ public class LogDataAdapter extends ArrayAdapter<LogDataModel>
         type.setText(data.getTYPE());
         unit.setText(data.getUNIT());
 
->>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
         return listItem;
     }
 }

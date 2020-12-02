@@ -45,10 +45,9 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
     protected float average,n;
     protected TextView textViewAverage;
     protected Typeface tfLight = Typeface.DEFAULT;
-<<<<<<< HEAD
-=======
+
     protected LogDbHelper logDbHelper = new LogDbHelper(this);
->>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
+
 
     protected BtThread thread;
     protected BluetoothService btService = new BluetoothService();
@@ -87,11 +86,8 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
                     thread = new BtThread();
                     thread.start();
                 }
-<<<<<<< HEAD
-                else if(!frozen)
-=======
+
                 else
->>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
                 {
                     frozen = true;
                     imageButtonFreeze.setImageResource(R.drawable.ic_play_arrow_black_18dp);
@@ -106,23 +102,14 @@ public class HumidityDataActivity extends AppCompatActivity implements OnChartVa
             @Override
             public void onClick(View v)
             {
-<<<<<<< HEAD
-                // TODO save to database
-                if(selected==0)
-                {
-                    Toast.makeText(HumidityDataActivity.this,"No Value Selected: Select a data point on graph first",Toast.LENGTH_LONG).show();
-                }
-                else
-                {
-                    Toast.makeText(HumidityDataActivity.this, String.format("%.0f", selected) + " % Humidity saved!", Toast.LENGTH_SHORT).show();
-=======
+
                 if(selected==0)
                     Toast.makeText(HumidityDataActivity.this, "No Value Selected!", Toast.LENGTH_SHORT).show();
                 else
                 {
                     logDbHelper.insertLogData(new LogDataModel("-1", "Humidity", String.format("%.0f", selected), "%"));
                     Toast.makeText(HumidityDataActivity.this, String.format("%.0f", selected) + "% Humidity saved!", Toast.LENGTH_SHORT).show();
->>>>>>> d091fd0a4a2f69cc49a76e5bc66cb57a487f3f8a
+
                 }
             }
         });
