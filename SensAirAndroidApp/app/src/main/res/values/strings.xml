@@ -9,12 +9,22 @@
     <!-- Messages Preferences -->
     <string name="user_name">Name</string>
     <string name="reply_title">Meter Preference</string>
-    <string name="altitude_setting_title">Custom Altitude Threshold</string>
-    <string name="altitude_setting_summary">Set a custom altitude threshold that will cause a notification</string>
-    <string name="temperature_setting_title">Custom Temperature Threshold</string>
-    <string name="temperature_setting_summary">Set custom temperature threshold that cause a notification</string>
-    <string name="pressure_setting_title">Custom Pressure Threshold</string>
-    <string name="pressure_setting_summary">Set custom pressure threshold that cause a notification</string>
+    <string name="altitude_setting_title_max">Maximum Altitude Threshold</string>
+    <string name="altitude_setting_summary_max">Set a custom maximum altitude threshold that will cause a notification</string>
+    <string name="altitude_setting_title_min">Minimum Altitude Threshold</string>
+    <string name="altitude_setting_summary_min">Set a custom minimum altitude threshold that will cause a notification</string>
+    <string name="temperature_setting_title_max">Maximum Temperature Threshold</string>
+    <string name="temperature_setting_summary_max">Set a custom maximum temperature threshold in degrees Celsius that will causes a notification</string>
+    <string name="temperature_setting_title_min">Minimum Temperature Threshold</string>
+    <string name="temperature_setting_summary_min">Set a custom minimum temperature threshold in degrees Celsius that will causes a notification</string>
+    <string name="pressure_setting_title_max">Maximum Pressure Threshold</string>
+    <string name="pressure_setting_summary_max">Set a custom maximum pressure threshold that will cause a notification</string>
+    <string name="pressure_setting_title_min">Minimum Pressure Threshold</string>
+    <string name="pressure_setting_summary_min">Set a custom minimum pressure threshold that will cause a notification</string>
+    <string name="humidity_setting_title_max">Maximum Humidity Threshold</string>
+    <string name="humidity_setting_summary_max">Set a custom maximum humidity threshold that will cause a notification</string>
+    <string name="humidity_setting_title_min">Minimum Humidity Threshold</string>
+    <string name="humidity_setting_summary_min">Set a custom minimum humidity threshold that will cause a notification</string>
 
     <!-- Sync Preferences -->
     <string name="allow_notifications">Critical Air Quality Alerts</string>
@@ -32,18 +42,26 @@
     <string name="session_avg"><u>Session Average:</u></string>
 
     <string name="data_setting_altitude_title">Critical Altitude Alerts</string>
-    <string name="data_setting_altitude_description">Notifies you when the altitude is above the set threshold</string>
+    <string name="data_setting_altitude_description">Notifies you when the altitude is above the custom set threshold</string>
     <string name="data_setting_temperature_title">Critical Temperature Alert</string>
-    <string name="data_setting_temperature_description">Notifies you when the temperature is above or below the set threshold</string>
+    <string name="data_setting_temperature_description">Notifies you when the temperature is above or below the custom set threshold</string>
     <string name="data_setting_pressure_title">Critical Pressure Alerts</string>
-    <string name="data_setting_pressure_description">Notifies you when the pressure is above the set threshold</string>
+    <string name="data_setting_pressure_description">Notifies you when the pressure is above the custom set threshold</string>
+    <string name="data_setting_humidity_title"> Critical Humidity Alerts</string>
+    <string name="data_setting_humidity_description">Notifies you when the humidity is above or below the custom set thresholds</string>
 
     <!-- root preferences Key Strings -->
     <string name="altitude_setting_state">SettingAltitudeState</string>
     <string name="pressure_setting_state">SettingPressureState</string>
     <string name="temperature_setting_state">SettingTemperatureState</string>
-    <string name="altitude_setting_threshold">SettingAltitudeThreshold</string>
-    <string name="pressure_setting_threshold">SettingPressureThreshold</string>
-    <string name="temperature_setting_threshold">SettingTemperatureThreshold</string>
+    <string name="humidity_setting_state">SettingHumidityState</string>
+    <string name="altitude_max_setting_threshold">SettingMaximumAltitudeThreshold</string>
+    <string name="altitude_min_setting_threshold">SettingMinimumAltitudeThreshold</string>
+    <string name="pressure_max_setting_threshold">SettingMaximumPressureThreshold</string>
+    <string name="pressure_min_setting_threshold">SettingMinimumPressureThreshold</string>
+    <string name="temperature_max_setting_threshold">SettingMaximumTemperatureThreshold</string>
+    <string name="temperature_min_setting_threshold">SettingMinimumTemperatureThreshold</string>
+    <string name="humidity_max_setting_threshold">SettingMaximumHumidityThreshold</string>
+    <string name="humidity_min_setting_threshold">SettingMinimumHumidityThreshold</string>
 
 </resources>
