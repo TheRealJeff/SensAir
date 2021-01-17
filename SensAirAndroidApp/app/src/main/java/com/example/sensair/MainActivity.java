@@ -47,6 +47,8 @@ import com.github.anastr.speedviewlib.components.Section;
 import com.github.anastr.speedviewlib.components.Style;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected BluetoothService btService;
     protected GPSService gpsService;
     protected SharedPreferences sharedPreferences;
+    protected DBHelper dbHelper = new DBHelper(this);
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     LocationManager locationManager;
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private float overallQualityScore;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -108,12 +112,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             longToast("Failed to connect to the SensAir Device. Please check Bluetooth Settings and try again.");
         }
+
+        Date date = Calendar.getInstance().getTime();
+        AirData sampleAirData = new AirData(3,453,34,150,47, (float) 101.32,18,date,(double) 34.3160f,(double) 115.1597f);
+        dbHelper.insertAirData(sampleAirData);
     }
 
     public void uiInit()
     {
         gaugeAirQuality = findViewById(R.id.gaugeAirQuality);
-        gaugeAirQuality.setWithTremble(false);
+        gaugeAirQuality.setWithTremble(true);
 
         buttonRealTime = findViewById(R.id.buttonRealTime);
         buttonHistory = findViewById(R.id.buttonHistory);
@@ -173,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setSelection(Integer.parseInt(defaultMetric));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void locationServicesInit()
     {
         checkLocationPermission();
@@ -285,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             {
                 try
                 {
-                    Thread.sleep(10);
+                    Thread.sleep(100);
                 } catch (InterruptedException e)
                 {
                     e.printStackTrace();
@@ -435,11 +444,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch (position)           // handles different gauge selections
         {
             case 0:     // overall quality
-                //TODO Handle Overall choice and display meter values
                 gaugeAirQuality.speedTo(0);                     // reset gauge
 
                 gaugeAirQuality.setMinMaxSpeed(0,3);          // rescale gauge for each metric
-
 
                 s1 = new Section(0f,.33333f,Color.parseColor("#EE5C42"),110);       // create according sections
                 s2 = new Section(.33333f,.66666f,Color.parseColor("#FFFF33"),110);
@@ -453,9 +460,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 gaugeAirQuality.setSpeedTextColor(Color.TRANSPARENT);
 
-
                 gaugeAirQuality.setTickNumber(0);
                 gaugeAirQuality.setMarksNumber(0);      // set labels
+
+                gaugeAirQuality.speedTo(3);
 
                 break;
             case 1:     // CO
@@ -485,8 +493,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             case 2:     // co
 
-                gaugeAirQuality.speedTo(0);
-                gaugeAirQuality.setMinMaxSpeed(0,125);
+                gaugeAirQuality.speedTo(770);
+                gaugeAirQuality.setMinMaxSpeed(0,2000);
                 gaugeAirQuality.setUnit("Parts-per Million (ppm)");
 
                 s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
@@ -497,39 +505,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 sections.add(s3);
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
-
-                gaugeAirQuality.setSpeedTextColor(Color.BLACK);
 
                 gaugeAirQuality.setMarksNumber(9);
                 ticks.add(0.2f);
                 ticks.add(0.4f);
                 ticks.add(0.6f);
                 ticks.add(0.8f);
-
                 gaugeAirQuality.setTicks(ticks);
 
-                gaugeAirQuality.speedTo(mq2);
+//                gaugeAirQuality.speedTo(mq2);
                 break;
 
 
             case 3:     // TVOC
 
-                gaugeAirQuality.speedTo(0);
-                gaugeAirQuality.setMinMaxSpeed(0,2500);
+
+                gaugeAirQuality.setMinMaxSpeed(0,4000);
                 gaugeAirQuality.setUnit("Parts-per Million (ppm)");
 
-                s1 = new Section(0f,.4f,Color.parseColor("#00CD66"),110);
-                s2 = new Section(.4f,.8f,Color.parseColor("#FFFF33"),110);
-                s3 = new Section(.8f,1f,Color.parseColor("#EE5C42"),110);
+                s1 = new Section(0f,.1f,Color.parseColor("#00CD66"),110);
+                s2 = new Section(.1f,.5f,Color.parseColor("#FFFF33"),110);
+                s3 = new Section(.5f,1f,Color.parseColor("#EE5C42"),110);
                 sections.add(s1);
                 sections.add(s2);
                 sections.add(s3);
                 gaugeAirQuality.clearSections();
                 gaugeAirQuality.addSections(sections);
-
-
-                gaugeAirQuality.setSpeedTextColor(Color.BLACK);
-
 
                 gaugeAirQuality.setMarksNumber(9);
                 ticks.add(0.1f);
@@ -539,7 +540,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 ticks.add(0.9f);
                 gaugeAirQuality.setTicks(ticks);
 
-                gaugeAirQuality.speedTo(tvoc);
+                gaugeAirQuality.speedTo(300);
+//                gaugeAirQuality.speedTo(tvoc);
                 break;
             case 4:     // Humidity
                 gaugeAirQuality.speedTo(0);

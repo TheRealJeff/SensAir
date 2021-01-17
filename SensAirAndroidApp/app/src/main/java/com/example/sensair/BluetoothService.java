@@ -1,8 +1,5 @@
 package com.example.sensair;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,22 +7,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.os.Binder;
 import android.os.Build;
-import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Binder;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -36,16 +21,11 @@ import androidx.preference.PreferenceManager;
 
 import com.example.sensair.realtimeplotting.AltitudeDataActivity;
 import com.example.sensair.realtimeplotting.CarbonDioxideDataActivity;
-import com.example.sensair.realtimeplotting.CarbonMonoxideDataActivity;
 import com.example.sensair.realtimeplotting.HumidityDataActivity;
 import com.example.sensair.realtimeplotting.PressureDataActivity;
 import com.example.sensair.realtimeplotting.SmokeIndexDataActivity;
 import com.example.sensair.realtimeplotting.TemperatureDataActivity;
 import com.example.sensair.realtimeplotting.VolatileOrganicCompoundsActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.preference.PreferenceManager;
 
 import com.example.sensair.history.AirData;
 import com.example.sensair.history.DBHelper;
@@ -219,7 +199,6 @@ public class BluetoothService extends Service
                     pressure = Float.parseFloat(data[4].substring(0, data[4].length() - 1));
                     altitude = Float.parseFloat(data[5].substring(0, data[5].length() - 1));
                     temperature = Float.parseFloat(data[6].substring(0, data[6].length() - 1));
-                    print("Reading Data");
 
                     overallAirQuality = 0;
 
@@ -286,6 +265,7 @@ public class BluetoothService extends Service
         temperatureState = preferences.getBoolean("SettingTemperatureState", false);
         humidityState = preferences.getBoolean("SettingHumidityState", false);
         criticalAlertsState = preferences.getBoolean("AirQualityAlerts", false);
+        System.out.println(criticalAlertsState);
 
         if(altitudeState == true) {
             altitudeMaxThreshold = preferences.getString("SettingMaximumAltitudeThreshold", null);
@@ -378,7 +358,7 @@ public class BluetoothService extends Service
                 notificationManagerCompat.notify(tvocNotificationIDDanger, builder.build());
             }
 
-            if (mq2 >= 300) {
+            if (mq2 >= 400) {
                 Intent intent = new Intent(this, SmokeIndexDataActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);

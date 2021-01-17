@@ -25,7 +25,6 @@
         <activity android:name=".realtimeplotting.HumidityDataActivity" />
         <activity android:name=".realtimeplotting.VolatileOrganicCompoundsActivity" />
         <activity android:name=".realtimeplotting.CarbonDioxideDataActivity" />
-        <activity android:name=".realtimeplotting.CarbonMonoxideDataActivity" />
         <activity android:name=".RealTimeDataActivity" />
 
         <service android:name=".BluetoothService" />
@@ -33,7 +32,7 @@
         <activity
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".realtimeplotting.SmokeIndexDataActivity" />
 
 

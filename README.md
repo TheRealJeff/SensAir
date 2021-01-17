@@ -1,10 +1,6 @@
 # SensAir
 Air Quality Sensor Application for Android. 
 
-The SensAir App is an open-source air quality sensing app. Interfacing with three sensors, the application allows a user to monitor their air quality in real-time, providing users with alerts, graphs, and air quality gauges (as seen below).
-<img src="https://i.imgur.com/HmIWCRY.png" width="40%">
-<img src="https://i.imgur.com/KYzBIQI.png" width="40%">
-
 ## Android Libraries
 * [SpeedView Library](https://github.com/anastr/SpeedView) for the gauge in the MainActivity
 * [MP Android Charts](https://github.com/PhilJay/MPAndroidChart) for graphing needs 

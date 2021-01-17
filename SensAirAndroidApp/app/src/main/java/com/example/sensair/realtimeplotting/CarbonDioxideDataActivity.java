@@ -329,7 +329,7 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
             {
                 try
                 {
-                    Thread.sleep(10);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e)
                 {
                     e.printStackTrace();
@@ -342,7 +342,7 @@ public class CarbonDioxideDataActivity extends AppCompatActivity implements OnCh
                     {
                         if(!frozen)
                         {
-                            co2 = btService.getCo2();
+                            co2 = 413;
                             addEntry();
 
                             n++;

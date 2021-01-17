@@ -85,11 +85,11 @@ public class HistoryActivity  extends AppCompatActivity implements OnMapReadyCal
 
         for(AirData airData : airDataList)
         {
-            System.out.println("AIR DATA HOUR IN ENTIRE LIST: "+airData.getDATE() + airData.getHOUR());
             if(!airData.getDate().equals(temp))
             {
                 days.add(airData.getDate());
                 latLngs.add(new LatLng(airData.getLattidude(),airData.getLongitude()));
+                temp = airData.getDate();
             }
         }
 
@@ -105,8 +105,12 @@ public class HistoryActivity  extends AppCompatActivity implements OnMapReadyCal
                     count++;
                 }
             }
-            int overallQualityAverage = overallSum/count;
-            overallAverages.add(overallQualityAverage);
+            if(count!=0)
+            {
+                int overallQualityAverage = overallSum / count;
+                overallAverages.add(overallQualityAverage);
+            }
+            else overallAverages.add(0);
         }
 
         System.out.println("OVERALL AVERAGES: "+overallAverages);
@@ -117,16 +121,15 @@ public class HistoryActivity  extends AppCompatActivity implements OnMapReadyCal
         assert listView != null;
         listView.setAdapter(dayDataAdapter);
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 String date = (String) parent.getItemAtPosition(position);
                 Intent intent = new Intent(HistoryActivity.this,HistoryDetailActivity.class);
                 intent.putExtra("date",date);
                 startActivity(intent);
-                return false;
             }
         });
     }
